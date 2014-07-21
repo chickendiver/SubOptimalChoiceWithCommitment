@@ -272,12 +272,22 @@ def drawCA():
     drawLeftInitialLink()
     drawRightInitialLink()
 
+
+    topRight = (CA.x + (CA.width/2), CA.y + (CA.height/2))
+    bottomLeft = (CA.x - (CA.width/2), CA.y - (CA.height/2))
+    topLeft = (CA.x - (CA.width/2), CA.y + (CA.height/2))
+    bottomRight = (CA.x + (CA.width/2), CA.y - (CA.height/2))
+
     CARect = visual.Rect(win, lineWidth = LINE_WIDTH, width = CA.width, height = CA.height, pos = (CA.x, CA.y), units = "pix", lineColor = CA.outlineColour, fillColor = CA.fillColour)
+    CALine1 = visual.Line(win, start = (topRight), end = (bottomLeft), lineWidth = LINE_WIDTH, units = "pix", lineColor = "Black")
+    CALine2 = visual.Line(win, start = (bottomRight), end = (topLeft), lineWidth = LINE_WIDTH, units = "pix", lineColor = "Black")
     CARect.draw()
+    CALine1.draw()
+    CALine2.draw()
     win.flip()
     
 def drawCB():
-    global win, CBCirc
+    global win, CBRect
 
     drawLeftChoice()
     drawCentreChoice()
@@ -285,8 +295,10 @@ def drawCB():
     drawLeftInitialLink()
     drawRightInitialLink()
 
-    rect = visual.Rect(win, lineWidth = LINE_WIDTH, width = CB.width, height = CB.height, pos = (CB.x, CB.y), units = "pix", lineColor = CB.outlineColour, fillColor = CB.fillColour)
-    rect.draw()
+    CBInnerRect = visual.Rect(win, lineWidth = LINE_WIDTH, width = 30, height = 30, pos = (CB.x, CB.y), units = "pix", lineColor = "Black", fillColor = "Black")
+    CBRect = visual.Rect(win, lineWidth = LINE_WIDTH, width = CB.width, height = CB.height, pos = (CB.x, CB.y), units = "pix", lineColor = CB.outlineColour, fillColor = CB.fillColour)
+    CBRect.draw()
+    CBInnerRect.draw()
     win.flip()
     
 def drawCC():
@@ -389,13 +401,13 @@ def doAutoshaping():
     writer.writerow([row, 'Subject Number', 'Trial Number', 'Total Pecks', 'Elapsed Time', 'Stimulus Presented', 
                           'Stimulus Side', 'Satisfied No. Pecks', 'No. Pecks on Target', 'Accuracy'])
 
-    stimuli = [["L", "IA"], ["R", "IA"], ["L","IB"], ["R","IB"], ["L","IC"], ["R","IC"], ["L","ID"]
-             , ["R","ID"], ["L","CA"], ["R","CA"], ["L","CB"], ["R","CB"], ["L","CC"], ["R","CC"]
-             , ["L","InitA"], ["R","InitA"], ["L","InitB"], ["R","InitB"], ["L","InitC"], ["R","InitC"]]
+    stimuli = [["L", "CB"], ["R", "CB"]]#["L", "IA"], ["R", "IA"], ["L","IB"], ["R","IB"], ["L","IC"], ["R","IC"], ["L","ID"]
+             #, ["R","ID"], ["L","CA"], ["R","CA"], ["L","CB"], ["R","CB"], ["L","CC"], ["R","CC"]
+             #, ["L","InitA"], ["R","InitA"], ["L","InitB"], ["R","InitB"], ["L","InitC"], ["R","InitC"]]
 
     #random.shuffle(stimuli) #Present stimuli in a random order
 
-    core.wait(1) # give the CPU a bit of a break
+    core.wait(1) #Give the CPU a bit of a break
     
     startTime = time.time() #Set a timer to record times for the log
     expTimer = core.CountdownTimer(FORTYFIVE_MINUTES)
