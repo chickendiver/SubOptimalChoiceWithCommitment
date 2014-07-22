@@ -58,8 +58,7 @@ class InitialLinkStim :
         self.x = xCoord
         self.y = yCoord
         self.fillColour = "Gray"
-        self.outlineColour = "White"
-        
+        self.outlineColour = "Silver"
     def set_fill (self, fillCol):
         self.fillColour = fillCol
         
@@ -74,7 +73,7 @@ class ChoiceStim:
         self.x = xCoord
         self.y = yCoord
         self.fillColour = "Gray"
-        self.outlineColour = "White"
+        self.outlineColour = "Silver"
    
     def set_fill (self, fillCol):
         self.fillColour = fillCol
@@ -278,7 +277,7 @@ def drawCA():
     topLeft = (CA.x - (CA.width/2), CA.y + (CA.height/2))
     bottomRight = (CA.x + (CA.width/2), CA.y - (CA.height/2))
 
-    CARect = visual.Rect(win, lineWidth = LINE_WIDTH, width = CA.width, height = CA.height, pos = (CA.x, CA.y), units = "pix", lineColor = CA.outlineColour, fillColor = CA.fillColour)
+    CARect = visual.Rect(win, lineWidth = LINE_WIDTH, width = CA.width, height = CA.height, pos = (CA.x, CA.y), units = "pix", lineColor = CA.outlineColour, fillColor = "White")
     CALine1 = visual.Line(win, start = (topRight), end = (bottomLeft), lineWidth = LINE_WIDTH, units = "pix", lineColor = "Black")
     CALine2 = visual.Line(win, start = (bottomRight), end = (topLeft), lineWidth = LINE_WIDTH, units = "pix", lineColor = "Black")
     CARect.draw()
@@ -295,8 +294,8 @@ def drawCB():
     drawLeftInitialLink()
     drawRightInitialLink()
 
-    CBInnerRect = visual.Rect(win, lineWidth = LINE_WIDTH, width = 30, height = 30, pos = (CB.x, CB.y), units = "pix", lineColor = "Black", fillColor = "Black")
-    CBRect = visual.Rect(win, lineWidth = LINE_WIDTH, width = CB.width, height = CB.height, pos = (CB.x, CB.y), units = "pix", lineColor = CB.outlineColour, fillColor = CB.fillColour)
+    CBInnerRect = visual.Rect(win, lineWidth = LINE_WIDTH, width = 30, height = 30, pos = (CB.x, CB.y), units = "pix", lineColor = "Black", fillColor = "White")
+    CBRect = visual.Rect(win, lineWidth = LINE_WIDTH, width = CB.width, height = CB.height, pos = (CB.x, CB.y), units = "pix", lineColor = CB.outlineColour, fillColor = "White")
     CBRect.draw()
     CBInnerRect.draw()
     win.flip()
@@ -310,8 +309,10 @@ def drawCC():
     drawLeftInitialLink()
     drawRightInitialLink()
 
-    CCRect = visual.Rect(win, lineWidth = LINE_WIDTH, width = CC.width, height = CC.height, pos = (CC.x, CC.y), units = "pix", lineColor = CC.outlineColour, fillColor = CC.fillColour)
+    CCRect = visual.Rect(win, lineWidth = LINE_WIDTH, width = CC.width, height = CC.height, pos = (CC.x, CC.y), units = "pix", lineColor = CC.outlineColour, fillColor = "White")
+    CCInnerCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = 15, pos = (CC.x, CC.y), units = "pix", lineColor = "Black", fillColor = "Black")
     CCRect.draw()
+    CCInnerCirc.draw()
     win.flip()
     
 def drawInitA():
@@ -327,8 +328,10 @@ def drawInitA():
     else:
         drawRightInitialLink()
 
-    InitACirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = InitA.radius, pos = (InitA.x, InitA.y), units = "pix", lineColor = InitA.outlineColour, fillColor = InitA.fillColour)
+    InitACirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = InitA.radius, pos = (InitA.x, InitA.y), units = "pix", lineColor = InitA.outlineColour, fillColor = "White")
+    InitAVertLine = visual.Line(win, start = (InitA.x, (InitA.y + InitA.radius)), end = (InitA.x, (InitA.y - InitA.radius)), lineWidth = LINE_WIDTH, units = "pix", lineColor = "Black")
     InitACirc.draw()
+    InitAVertLine.draw()
     win.flip()
     
 def drawInitB():
@@ -338,14 +341,27 @@ def drawInitB():
     drawCentreChoice()
     drawRightChoice()
 
+    topStart = ((InitB.x - 35), (InitB.y + 20))
+    topEnd = ((InitB.x + 35), (InitB.y + 20))
+    midStart = ((InitB.x - InitB.radius), (InitB.y))
+    midEnd = ((InitB.x + InitB.radius), (InitB.y))
+    bottomStart = ((InitB.x - 35), (InitB.y - 20))
+    bottomEnd = ((InitB.x + 35), (InitB.y - 20))
+
     if InitB.x >= 0:
         drawLeftInitialLink()
 
     else:
         drawRightInitialLink()
 
-    InitBCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = InitB.radius, pos = (InitB.x, InitB.y), units = "pix", lineColor = InitB.outlineColour, fillColor = InitB.fillColour)
+    InitBCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = InitB.radius, pos = (InitB.x, InitB.y), units = "pix", lineColor = InitB.outlineColour, fillColor = "White")
+    InitBTopLine = visual.Line(win, start = (topStart), end = (topEnd), lineWidth = LINE_WIDTH, units = "pix", lineColor = "Black")
+    InitBMidLine = visual.Line(win, start = (midStart), end = (midEnd), lineWidth = LINE_WIDTH, units = "pix", lineColor = "Black")
+    InitBBottomLine = visual.Line(win, start = (bottomStart), end = (bottomEnd), lineWidth = LINE_WIDTH, units = "pix", lineColor = "Black")
     InitBCirc.draw()
+    InitBTopLine.draw()
+    InitBMidLine.draw()
+    InitBBottomLine.draw()
     win.flip()
     
 def drawInitC():
@@ -401,11 +417,11 @@ def doAutoshaping():
     writer.writerow([row, 'Subject Number', 'Trial Number', 'Total Pecks', 'Elapsed Time', 'Stimulus Presented', 
                           'Stimulus Side', 'Satisfied No. Pecks', 'No. Pecks on Target', 'Accuracy'])
 
-    stimuli = [["L", "CB"], ["R", "CB"]]#["L", "IA"], ["R", "IA"], ["L","IB"], ["R","IB"], ["L","IC"], ["R","IC"], ["L","ID"]
-             #, ["R","ID"], ["L","CA"], ["R","CA"], ["L","CB"], ["R","CB"], ["L","CC"], ["R","CC"]
-             #, ["L","InitA"], ["R","InitA"], ["L","InitB"], ["R","InitB"], ["L","InitC"], ["R","InitC"]]
+    stimuli = [[["L", "IA"], ["R", "IA"], ["L","IB"], ["R","IB"], ["L","IC"], ["R","IC"], ["L","ID"], ["R","ID"],
+             ["L","CA"], ["R","CA"], ["L","CB"], ["R","CB"], ["L","CC"], ["R","CC"],
+             [["L","InitA"], ["R","InitA"]], ["L","InitB"], ["R","InitB"]]#, ["L","InitC"], ["R","InitC"]]
 
-    #random.shuffle(stimuli) #Present stimuli in a random order
+    random.shuffle(stimuli) #Present stimuli in a random order
 
     core.wait(1) #Give the CPU a bit of a break
     
@@ -887,8 +903,8 @@ def main():
 
     if str(experimentParameters[5]) == "Yes":
         rewardTime = 0
-        stimDur = 10
-        ITI = 5
+        stimDur = 1
+        ITI = 1
     elif str(experimentParameters[5]) == "No":
         mouse.setVisible = False
     
