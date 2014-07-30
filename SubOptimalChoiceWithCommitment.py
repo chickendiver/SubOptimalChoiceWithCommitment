@@ -130,24 +130,24 @@ def getUserInput():
         
 def initializeStims():
     #Create new stimulus objects
-    global leftChoice, centreChoice, rightChoice, leftInitLink, centreInitLink, rightInitLink, termLinkA, termLinkB, termLinkC, ID, CA, CB, CC, InitA, InitB, InitC
+    global leftChoice, centreChoice, rightChoice, leftInitLink, centreInitLink, rightInitLink, termLinkA, termLinkB, termLinkC, termLinkD, CA, CB, CC, InitA, InitB, InitC
     leftChoice = ChoiceStim(L_CHOICE_STIM_X, L_CHOICE_STIM_Y)
     centreChoice = ChoiceStim(C_CHOICE_STIM_X, C_CHOICE_STIM_Y)
     rightChoice = ChoiceStim(R_CHOICE_STIM_X, R_CHOICE_STIM_Y)
-    leftInitLink =  InitialLinkStim(L_I_STIM_X, L_I_STIM_Y)
+    leftInitLink =  InitialLinkStim(L_I_STIM_X, L_I_STIM_Y, "blankL")
     #Reserved for future use
     #centreInitLink = InitialLinkStim(C_I_STIM_X, C_I_STIM_Y)
-    rightInitLink = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y)
+    rightInitLink = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y, "blankR")
     
     #Choice trial initializations
-    termLinkA = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y)
+    termLinkA = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y, "termA")
     termLinkA.set_fill("Orange")
-    termLinkB = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y)
+    termLinkB = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y, "termB")
     termLinkB.set_fill("Green")
-    termLinkC = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y)
+    termLinkC = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y, "termC")
     termLinkC.set_fill("Red")
-    ID = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y)
-    ID.set_fill("Purple")
+    termLinkD = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y, "termLinkD")
+    termLinkD.set_fill("Purple")
     CA = ChoiceStim(R_CHOICE_STIM_X, R_CHOICE_STIM_Y)
     CB = ChoiceStim(R_CHOICE_STIM_X, R_CHOICE_STIM_Y)
     CC = ChoiceStim(R_CHOICE_STIM_X, R_CHOICE_STIM_Y)
@@ -163,7 +163,7 @@ def drawBlankLeftChoice():
    
 def drawBlankCentreChoice():
     global win
-    rect = visual.Rect(win, lineWidth = LINE_WIDTH, width = centreChoice.width, height = centreChoice.height, pos = (centreChoice.x, centreChoice.y), units = "pix", lineColor = centreChoice.outlineColour, fillColor = centreChoice.fillColour)
+    rect = visual.Rect(win, lineWidth = LINE_WIDDTH, width = centreChoice.width, height = centreChoice.height, pos = (centreChoice.x, centreChoice.y), units = "pix", lineColor = centreChoice.outlineColour, fillColor = centreChoice.fillColour)
     rect.draw()
 
 def drawBlankRightChoice():
@@ -247,21 +247,21 @@ def drawtermLinkC():
     termLinkCCirc.draw()
     win.flip()
     
-def drawID():
-    global win, IDCirc
+def drawtermLinkD():
+    global win, termLinkDCirc
 
     drawBlankLeftChoice()
     drawBlankCentreChoice()
     drawBlankRightChoice()
 
-    if ID.x >= 0:
+    if termLinkD.x >= 0:
         drawBlankLeftIL()
 
     else:
         drawBlankRightIL()
 
-    IDCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = ID.radius, pos = (ID.x, ID.y), units = "pix", lineColor = ID.outlineColour, fillColor = ID.fillColour)
-    IDCirc.draw()
+    termLinkDCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = termLinkD.radius, pos = (termLinkD.x, termLinkD.y), units = "pix", lineColor = termLinkD.outlineColour, fillColor = termLinkD.fillColour)
+    termLinkDCirc.draw()
     win.flip()
     
 def drawCA():
@@ -415,8 +415,6 @@ def doTraining(interTrialInterval, peckRewardRatio, rewardForNoEffort, stimuli):
     victoryFlag = False
     stimSide = "R"
     
-    writer.writerow([row, 'Subject Number', 'Trial Number', 'Total Pecks', 'Elapsed Time', 'Stimulus Presented', 
-                          'Stimulus Side', 'Satisfied No. Pecks', 'No. Pecks on Target', 'Accuracy'])
 
     random.shuffle(stimuli) #Present stimuli in a random order
 
@@ -555,13 +553,13 @@ def doTraining(interTrialInterval, peckRewardRatio, rewardForNoEffort, stimuli):
                 
             pass
             
-        elif stimuli[index][1] == "ID":
-            stimType = "ID"
+        elif stimuli[index][1] == "termLinkD":
+            stimType = "termLinkD"
             if stimuli[index][0] == "L":
-                ID.x *= -1
+                termLinkD.x *= -1
                 stimSide = "L"
                 
-            drawID()
+            drawtermLinkD()
 
             stimTimer = core.CountdownTimer(stimDur)
             while (stimTimer.getTime() > 0):
@@ -569,7 +567,7 @@ def doTraining(interTrialInterval, peckRewardRatio, rewardForNoEffort, stimuli):
                 event.clearEvents()
                 mouse.clickReset()
                 #get bird's input. If it pecks the target, break give the bird food. Otherwise, increase the peck count and keep looking for input
-                if mouse.isPressedIn(IDCirc):
+                if mouse.isPressedIn(termLinkDCirc):
                     print("Clicked in target") # TESTING ONLY
                     peckNum += 1
                     pecksOnTarget += 1
@@ -593,7 +591,7 @@ def doTraining(interTrialInterval, peckRewardRatio, rewardForNoEffort, stimuli):
             
             # Reset the stimulus
             if stimuli[index][0] == "L":
-                ID.x *= -1
+                termLinkD.x *= -1
                 
         elif stimuli[index][1] == "InitA":
             stimType = "InitA"
@@ -912,7 +910,7 @@ def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, 
 
         while (forcedChoiceCount < forcedChoiceTrialCount):
 
-            for(i in initialLinks):
+            for i in range(0,1):
 
                 ## HANDLE THE FIRST INITIAL LINK
                 if initialLinks[i][0].name == "A":
@@ -997,9 +995,9 @@ def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, 
                     if initVictoryFlag == True:
                         pass
 
-                    # if pecked in stim time, show the terminal link
+                        # if pecked in stim time, show the terminal link
 
-                    # if pecked terminal link before timeout, give reward
+                        # if pecked terminal link before timeout, give reward
 
                     if initialLinks[i][1] == "L":
                         InitB.x *= -1
@@ -1059,6 +1057,9 @@ def main():
         
     setup()
 
+    writer.writerow(['Subject Number', 'Trial Number', 'Total Pecks', 'Elapsed Time', 'Stimulus Presented', 
+                          'Stimulus Side', 'Satisfied No. Pecks', 'No. Pecks on Target', 'Accuracy'])
+
     if str(experimentParameters[5]) == "Yes":
         rewardTime = 0
         stimDur = 5
@@ -1066,7 +1067,7 @@ def main():
     elif str(experimentParameters[5]) == "No":
         mouse.setVisible = False
     
-    stimuli = [["L", "termLinkA"], ["R", "termLinkA"], ["L","termLinkB"], ["R","termLinkB"], ["L","termLinkC"], ["R","termLinkC"], ["L","ID"], ["R","ID"],
+    stimuli = [["L", "termLinkA"], ["R", "termLinkA"], ["L","termLinkB"], ["R","termLinkB"], ["L","termLinkC"], ["R","termLinkC"], ["L","termLinkD"], ["R","termLinkD"],
                ["L","CA"], ["R","CA"], ["L","CB"], ["R","CB"], ["L","CC"], ["R","CC"],
                ["L","InitA"], ["R","InitA"], ["L","InitB"], ["R","InitB"], ["C", "CA"], ["C", "CB"], ["C", "CC"]]#, ["L","InitC"], ["R","InitC"]]
 
