@@ -886,51 +886,132 @@ def doTraining(interTrialInterval, peckRewardRatio, rewardForNoEffort, stimuli):
         nPecksToReward = 5'''
     
     
-def doStimPairing():
+def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, timeout):
     global experimentParameters
     print("PHASE 3")
+
+    # Start csv file
 
     if str(experimentParameters[5]) == "No":
         rewardTime = experimentParameters[3]
         stimDur = experimentParameters[4]
-        ITI = 60 #Change to user-input later
+        ITI = interTrialInterval
 
     initialLinks = randomizeInit()
 
+    nPecksToReward = 1
+    initVictoryFlag = False
+    termVictoryFlag = False
+    peckNum = 0
+    pecksOnTarget = 0
     forcedChoiceCount = 0
+    choiceCount = 0
 
-    #While the experiment is running under 45 minutes...
+    setTimer = core.CountdownTimer(FORTYFIVE_MINUTES)
+    while(setTimer.getTime() > 0):
 
-    while (forcedChoiceCount < 40):
-    for(i in initialLinks):
-        if initialLinks[i][0].name == "A":
-            if initialLinks[i][1] == "L":
-                pass
-                #reverse initA's X axis
+        while (forcedChoiceCount < forcedChoiceTrialCount):
 
-            #drawInitA()
+            for(i in initialLinks):
 
-            # if pecked in stim time, show the terminal link
+                ## HANDLE THE FIRST INITIAL LINK
+                if initialLinks[i][0].name == "A":
+                    if initialLinks[i][1] == "L":
+                        InitA.x *= -1
+                        
 
-            # if pecked terminal link before timeout, give reward
+                    drawInitA()
 
-            #reset initA's X axis
+                    stimTimer = core.CountdownTimer(stimDur)
+                    while (stimTimer.getTime() > 0):
+                            
+                        event.clearEvents()
+                        mouse.clickReset()
+                        if mouse.isPressedIn(InitACirc):
+                            print("Clicked in target") # TESTING ONLY
+                            peckNum += 1
+                            pecksOnTarget += 1
+                            event.clearEvents()
+                            if pecksOnTarget == nPecksToReward:
+                                initVictoryFlag = True
+                                break
+                                
+                        elif (mouse.getPressed()[0] == 1):
+                            while(mouse.getPressed()[0] == 1): # waits for the mouse button to raise before counting another peck
+                                if (mouse.getPressed()[0] == 0):
+                                    break
+                                
+                            peckNum += 1
+                            event.clearEvents()
+                            
+                        if event.getKeys(["escape"]):
+                            print("User pressed escape")
+                            print(str(peckNum))
+                            exit()
 
-        elif initialLinks[i][0].name == "B":
-            if initialLinks[i][1] == "L":
-                pass
-                #reverse initB's X axis
+                    if initVictoryFlag == True:
+                        pass
 
-            #drawInitB()
+                        # show the terminal link
 
-            # if pecked in stim time, show the terminal link
+                        # if pecked terminal link before timeout, give reward
 
-            # if pecked terminal link before timeout, give reward
+                    if initialLinks[i][1] == "L":
+                        InitA.x *= -1
 
-            #reset initB's X axis
+                ## HANDLE THE SECOND INITIAL LINK
+                elif initialLinks[i][0].name == "B":
+                    if initialLinks[i][1] == "L":
+                        InitB.x *= -1
+                        
 
+                    drawInitB()
 
-    forcedChoiceCount += 1
+                    stimTimer = core.CountdownTimer(stimDur)
+                    while (stimTimer.getTime() > 0):
+                            
+                        event.clearEvents()
+                        mouse.clickReset()
+                        if mouse.isPressedIn(InitBCirc):
+                            print("Clicked in target") # TESTING ONLY
+                            peckNum += 1
+                            pecksOnTarget += 1
+                            event.clearEvents()
+                            if pecksOnTarget == nPecksToReward:
+                                initVictoryFlag = True
+                                break
+                                
+                        elif (mouse.getPressed()[0] == 1):
+                            while(mouse.getPressed()[0] == 1): # waits for the mouse button to raise before counting another peck
+                                if (mouse.getPressed()[0] == 0):
+                                    break
+                                
+                            peckNum += 1
+                            event.clearEvents()
+                            
+                        if event.getKeys(["escape"]):
+                            print("User pressed escape")
+                            print(str(peckNum))
+                            exit()
+
+                    if initVictoryFlag == True:
+                        pass
+
+                    # if pecked in stim time, show the terminal link
+
+                    # if pecked terminal link before timeout, give reward
+
+                    if initialLinks[i][1] == "L":
+                        InitB.x *= -1
+
+                #write to csv file
+                pecksOnTarget = 0
+                initVictoryFlag = False
+                termVictoryFlag = False
+                peckNum = 0
+
+            forcedChoiceCount += 2
+
 
     
 def randomizeInit():
@@ -1004,7 +1085,7 @@ def main():
             doTraining(60, 5, False, stimuli)
         
     elif str(experimentParameters[2]) == "Stim Pairing":
-        doStimPairing()
+        doStimPairing(60, 40, 20, 30)
         
     elif str(experimentParameters[2]) == "Experimental Phase":
         doExpPhase()
