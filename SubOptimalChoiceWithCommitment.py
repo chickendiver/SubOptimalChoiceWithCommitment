@@ -53,12 +53,14 @@ FORTYFIVE_MINUTES = 2700 #seconds
   
   # Circular Initial/Terminal Link objects, of which there will be 2 (1L, 1R)
 class InitialLinkStim :
-    def __init__(self, xCoord, yCoord):
+    def __init__(self, xCoord, yCoord, name):
         self.radius = 50
         self.x = xCoord
         self.y = yCoord
         self.fillColour = "Gray"
         self.outlineColour = "Silver"
+        self.name = name
+
     def set_fill (self, fillCol):
         self.fillColour = fillCol
         
@@ -113,7 +115,7 @@ def getUserInput():
     myDlg = gui.Dlg(title="Sub-Optimal Choice with Commitment")
     myDlg.addField('Subject number:', 0)
     myDlg.addField('Session number:', 0)
-    myDlg.addField('Condition:', choices = ['Autoshaping (FR1)', 'Operant Training (FR1)', 'Operant Training (FR3)', 'Operant Training (FR5)', 'Phase 3', 'Phase 4', 'Phase 4 Reversal'])
+    myDlg.addField('Condition:', choices = ['Autoshaping (FR1)', 'Operant Training (FR1)', 'Operant Training (FR3)', 'Operant Training (FR5)', 'Stim Pairing', 'Experimental Phase', 'Experimental Reversal'])
     myDlg.addField('Reward Duration:', 10)
     myDlg.addField('Stimulus Timeout:', 60)
     myDlg.addField('Is this a test?:', choices = ['Yes', 'No'])
@@ -128,7 +130,7 @@ def getUserInput():
         
 def initializeStims():
     #Create new stimulus objects
-    global leftChoice, centreChoice, rightChoice, leftInitLink, centreInitLink, rightInitLink, IA, IB, IC, ID, CA, CB, CC, InitA, InitB, InitC
+    global leftChoice, centreChoice, rightChoice, leftInitLink, centreInitLink, rightInitLink, termLinkA, termLinkB, termLinkC, ID, CA, CB, CC, InitA, InitB, InitC
     leftChoice = ChoiceStim(L_CHOICE_STIM_X, L_CHOICE_STIM_Y)
     centreChoice = ChoiceStim(C_CHOICE_STIM_X, C_CHOICE_STIM_Y)
     rightChoice = ChoiceStim(R_CHOICE_STIM_X, R_CHOICE_STIM_Y)
@@ -138,38 +140,38 @@ def initializeStims():
     rightInitLink = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y)
     
     #Choice trial initializations
-    IA = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y)
-    IA.set_fill("Orange")
-    IB = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y)
-    IB.set_fill("Green")
-    IC = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y)
-    IC.set_fill("Red")
+    termLinkA = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y)
+    termLinkA.set_fill("Orange")
+    termLinkB = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y)
+    termLinkB.set_fill("Green")
+    termLinkC = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y)
+    termLinkC.set_fill("Red")
     ID = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y)
     ID.set_fill("Purple")
-    CA = ChoiceStim(L_CHOICE_STIM_X, L_CHOICE_STIM_Y)
-    CB = ChoiceStim(C_CHOICE_STIM_X, C_CHOICE_STIM_Y)
+    CA = ChoiceStim(R_CHOICE_STIM_X, R_CHOICE_STIM_Y)
+    CB = ChoiceStim(R_CHOICE_STIM_X, R_CHOICE_STIM_Y)
     CC = ChoiceStim(R_CHOICE_STIM_X, R_CHOICE_STIM_Y)
-    InitA = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y)
-    InitB = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y)
-    InitC = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y)
+    InitA = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y, "A")
+    InitB = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y, "B")
+    InitC = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y, "C")
     
-def drawLeftChoice():
+def drawBlankLeftChoice():
     
     global win
     rect = visual.Rect(win, lineWidth = 4, width = leftChoice.width, height = leftChoice.height, pos = (leftChoice.x, leftChoice.y), units = "pix", lineColor = leftChoice.outlineColour, fillColor = leftChoice.fillColour)
     rect.draw()
    
-def drawCentreChoice():
+def drawBlankCentreChoice():
     global win
     rect = visual.Rect(win, lineWidth = LINE_WIDTH, width = centreChoice.width, height = centreChoice.height, pos = (centreChoice.x, centreChoice.y), units = "pix", lineColor = centreChoice.outlineColour, fillColor = centreChoice.fillColour)
     rect.draw()
 
-def drawRightChoice():
+def drawBlankRightChoice():
     global win
     rect = visual.Rect(win, lineWidth = LINE_WIDTH, width = rightChoice.width, height = rightChoice.height, pos = (rightChoice.x, rightChoice.y), units = "pix", lineColor = rightChoice.outlineColour, fillColor = rightChoice.fillColour)
     rect.draw()
     
-def drawLeftInitialLink():
+def drawBlankLeftIL():
     global win
     circ = visual.Circle(win, lineWidth = LINE_WIDTH, radius = leftInitLink.radius, pos = (leftInitLink.x, leftInitLink.y), units = "pix", lineColor = leftInitLink.outlineColour, fillColor = leftInitLink.fillColour)
     circ.draw()
@@ -179,84 +181,84 @@ def drawCentreInitialLink():
     circ = visual.Circle(win, lineWidth = LINE_WIDTH, radius = centreInitLink.radius, pos = (centreInitLink.x, centreInitLink.y), units = "pix", lineColor = centreInitLink.outlineColour, fillColor = centreInitLink.fillColour)
     circ.draw()
     
-def drawRightInitialLink():
+def drawBlankRightIL():
     global win
     circ = visual.Circle(win, lineWidth = LINE_WIDTH, radius = rightInitLink.radius, pos = (rightInitLink.x, rightInitLink.y), units = "pix", lineColor = rightInitLink.outlineColour, fillColor = rightInitLink.fillColour)
     circ.draw()
     
 def drawInitialStims():
-    drawLeftChoice()
-    drawCentreChoice()
-    drawRightChoice()
-    drawLeftInitialLink()
+    drawBlankLeftChoice()
+    drawBlankCentreChoice()
+    drawBlankRightChoice()
+    drawBlankLeftIL()
     #Reserved for future use
     #drawCentreInitialLink()
-    drawRightInitialLink()
+    drawBlankRightIL()
     win.flip()
     
-def drawIA():
-    global win, IACirc
+def drawtermLinkA():
+    global win, termLinkACirc
 
-    drawLeftChoice()
-    drawCentreChoice()
-    drawRightChoice()
+    drawBlankLeftChoice()
+    drawBlankCentreChoice()
+    drawBlankRightChoice()
 
-    if IA.x >= 0:
-        drawLeftInitialLink()
+    if termLinkA.x >= 0:
+        drawBlankLeftIL()
 
     else:
-        drawRightInitialLink()
+        drawBlankRightIL()
 
-    IACirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = IA.radius, pos = (IA.x, IA.y), units = "pix", lineColor = IA.outlineColour, fillColor = IA.fillColour)
-    IACirc.draw()
+    termLinkACirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = termLinkA.radius, pos = (termLinkA.x, termLinkA.y), units = "pix", lineColor = termLinkA.outlineColour, fillColor = termLinkA.fillColour)
+    termLinkACirc.draw()
     win.flip()
     
-def drawIB():
-    global win, IBCirc
+def drawtermLinkB():
+    global win, termLinkBCirc
 
-    drawLeftChoice()
-    drawCentreChoice()
-    drawRightChoice()
+    drawBlankLeftChoice()
+    drawBlankCentreChoice()
+    drawBlankRightChoice()
 
-    if IB.x >= 0:
-        drawLeftInitialLink()
+    if termLinkB.x >= 0:
+        drawBlankLeftIL()
 
     else:
-        drawRightInitialLink()
+        drawBlankRightIL()
 
-    IBCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = IB.radius, pos = (IB.x, IB.y), units = "pix", lineColor = IB.outlineColour, fillColor = IB.fillColour)
-    IBCirc.draw()
+    termLinkBCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = termLinkB.radius, pos = (termLinkB.x, termLinkB.y), units = "pix", lineColor = termLinkB.outlineColour, fillColor = termLinkB.fillColour)
+    termLinkBCirc.draw()
     win.flip()
     
-def drawIC():
-    global win,ICCirc
+def drawtermLinkC():
+    global win,termLinkCCirc
 
-    drawLeftChoice()
-    drawCentreChoice()
-    drawRightChoice()
+    drawBlankLeftChoice()
+    drawBlankCentreChoice()
+    drawBlankRightChoice()
 
-    if IC.x >= 0:
-        drawLeftInitialLink()
+    if termLinkC.x >= 0:
+        drawBlankLeftIL()
 
     else:
-        drawRightInitialLink()
+        drawBlankRightIL()
 
-    ICCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = IC.radius, pos = (IC.x, IC.y), units = "pix", lineColor = IC.outlineColour, fillColor = IC.fillColour)
-    ICCirc.draw()
+    termLinkCCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = termLinkC.radius, pos = (termLinkC.x, termLinkC.y), units = "pix", lineColor = termLinkC.outlineColour, fillColor = termLinkC.fillColour)
+    termLinkCCirc.draw()
     win.flip()
     
 def drawID():
     global win, IDCirc
 
-    drawLeftChoice()
-    drawCentreChoice()
-    drawRightChoice()
+    drawBlankLeftChoice()
+    drawBlankCentreChoice()
+    drawBlankRightChoice()
 
     if ID.x >= 0:
-        drawLeftInitialLink()
+        drawBlankLeftIL()
 
     else:
-        drawRightInitialLink()
+        drawBlankRightIL()
 
     IDCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = ID.radius, pos = (ID.x, ID.y), units = "pix", lineColor = ID.outlineColour, fillColor = ID.fillColour)
     IDCirc.draw()
@@ -265,11 +267,11 @@ def drawID():
 def drawCA():
     global win, CARect
 
-    drawLeftChoice()
-    drawCentreChoice()
-    drawRightChoice()
-    drawLeftInitialLink()
-    drawRightInitialLink()
+    drawBlankLeftChoice()
+    drawBlankCentreChoice()
+    drawBlankRightChoice()
+    drawBlankLeftIL()
+    drawBlankRightIL()
 
 
     topRight = (CA.x + (CA.width/2), CA.y + (CA.height/2))
@@ -288,11 +290,11 @@ def drawCA():
 def drawCB():
     global win, CBRect
 
-    drawLeftChoice()
-    drawCentreChoice()
-    drawRightChoice()
-    drawLeftInitialLink()
-    drawRightInitialLink()
+    drawBlankLeftChoice()
+    drawBlankCentreChoice()
+    drawBlankRightChoice()
+    drawBlankLeftIL()
+    drawBlankRightIL()
 
     CBInnerRect = visual.Rect(win, lineWidth = LINE_WIDTH, width = 30, height = 30, pos = (CB.x, CB.y), units = "pix", lineColor = "Black", fillColor = "White")
     CBRect = visual.Rect(win, lineWidth = LINE_WIDTH, width = CB.width, height = CB.height, pos = (CB.x, CB.y), units = "pix", lineColor = CB.outlineColour, fillColor = "White")
@@ -303,11 +305,11 @@ def drawCB():
 def drawCC():
     global win, CCRect
 
-    drawLeftChoice()
-    drawCentreChoice()
-    drawRightChoice()
-    drawLeftInitialLink()
-    drawRightInitialLink()
+    drawBlankLeftChoice()
+    drawBlankCentreChoice()
+    drawBlankRightChoice()
+    drawBlankLeftIL()
+    drawBlankRightIL()
 
     CCRect = visual.Rect(win, lineWidth = LINE_WIDTH, width = CC.width, height = CC.height, pos = (CC.x, CC.y), units = "pix", lineColor = CC.outlineColour, fillColor = "White")
     CCInnerCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = 15, pos = (CC.x, CC.y), units = "pix", lineColor = "Black", fillColor = "Black")
@@ -318,15 +320,15 @@ def drawCC():
 def drawInitA():
     global win, InitACirc
 
-    drawLeftChoice()
-    drawCentreChoice()
-    drawRightChoice()
+    drawBlankLeftChoice()
+    drawBlankCentreChoice()
+    drawBlankRightChoice()
 
     if InitA.x >= 0:
-        drawLeftInitialLink()
+        drawBlankLeftIL()
 
     else:
-        drawRightInitialLink()
+        drawBlankRightIL()
 
     InitACirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = InitA.radius, pos = (InitA.x, InitA.y), units = "pix", lineColor = InitA.outlineColour, fillColor = "White")
     InitAVertLine = visual.Line(win, start = (InitA.x, (InitA.y + InitA.radius)), end = (InitA.x, (InitA.y - InitA.radius)), lineWidth = LINE_WIDTH, units = "pix", lineColor = "Black")
@@ -337,9 +339,9 @@ def drawInitA():
 def drawInitB():
     global win, InitBCirc
 
-    drawLeftChoice()
-    drawCentreChoice()
-    drawRightChoice()
+    drawBlankLeftChoice()
+    drawBlankCentreChoice()
+    drawBlankRightChoice()
 
     topStart = ((InitB.x - 35), (InitB.y + 20))
     topEnd = ((InitB.x + 35), (InitB.y + 20))
@@ -349,10 +351,10 @@ def drawInitB():
     bottomEnd = ((InitB.x + 35), (InitB.y - 20))
 
     if InitB.x >= 0:
-        drawLeftInitialLink()
+        drawBlankLeftIL()
 
     else:
-        drawRightInitialLink()
+        drawBlankRightIL()
 
     InitBCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = InitB.radius, pos = (InitB.x, InitB.y), units = "pix", lineColor = InitB.outlineColour, fillColor = "White")
     InitBTopLine = visual.Line(win, start = (topStart), end = (topEnd), lineWidth = LINE_WIDTH, units = "pix", lineColor = "Black")
@@ -367,15 +369,15 @@ def drawInitB():
 def drawInitC():
     global win, InitCCirc
 
-    drawLeftChoice()
-    drawCentreChoice()
-    drawRightChoice()
+    drawBlankLeftChoice()
+    drawBlankCentreChoice()
+    drawBlankRightChoice()
 
     if InitC.x >= 0:
-        drawLeftInitialLink()
+        drawBlankLeftIL()
 
     else:
-        drawRightInitialLink()
+        drawBlankRightIL()
 
     InitCCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = InitC.radius, pos = (InitC.x, InitC.y), units = "pix", lineColor = InitC.outlineColour, fillColor = InitC.fillColour)
     InitCCirc.draw()
@@ -387,22 +389,22 @@ def raiseHopper():
 def giveReward(duration):
     print("Reward Given for duration of " + str(duration) + " seconds")
     raiseHopper()
-    drawLeftChoice()
-    drawCentreChoice()
-    drawRightChoice()
-    drawLeftInitialLink()
-    drawRightInitialLink()
+    drawBlankLeftChoice()
+    drawBlankCentreChoice()
+    drawBlankRightChoice()
+    drawBlankLeftIL()
+    drawBlankRightIL()
     win.flip()
     core.wait(duration)
     
-def doAutoshaping():
-    global nPecksToReward, ITI, allTrialsFinished, datafile, writer, peckNum, row, stimuli, rewardTime, stimDur
+def doTraining(interTrialInterval, peckRewardRatio, rewardForNoEffort, stimuli):
+    global nPecksToReward, ITI, allTrialsFinished, datafile, writer, peckNum, row, rewardTime, stimDur
     if str(experimentParameters[5]) == "No":
         rewardTime = experimentParameters[3]
         stimDur = experimentParameters[4]
-        ITI = 240
+        ITI = interTrialInterval
 
-    nPecksToReward = 1
+    nPecksToReward = peckRewardRatio
     pecksOnTarget = 0
     allTrialsFinished = False
     peckNum = 0
@@ -411,15 +413,10 @@ def doAutoshaping():
     trialTime = 0
     stimType = ""
     victoryFlag = False
+    stimSide = "R"
     
-    # FINDING A BETTER WAY TO DRAW THESE STIMULI WILL BE HELPFUL.
-    # START HERE.
     writer.writerow([row, 'Subject Number', 'Trial Number', 'Total Pecks', 'Elapsed Time', 'Stimulus Presented', 
                           'Stimulus Side', 'Satisfied No. Pecks', 'No. Pecks on Target', 'Accuracy'])
-
-    stimuli = [[["L", "IA"], ["R", "IA"], ["L","IB"], ["R","IB"], ["L","IC"], ["R","IC"], ["L","ID"], ["R","ID"],
-             ["L","CA"], ["R","CA"], ["L","CB"], ["R","CB"], ["L","CC"], ["R","CC"],
-             [["L","InitA"], ["R","InitA"]], ["L","InitB"], ["R","InitB"]]#, ["L","InitC"], ["R","InitC"]]
 
     random.shuffle(stimuli) #Present stimuli in a random order
 
@@ -431,13 +428,13 @@ def doAutoshaping():
 
         #core.wait(0.5) # TESTING
             
-        if stimuli[index][1] == "IA":
-            stimType = "IA"
+        if stimuli[index][1] == "termLinkA":
+            stimType = "termLinkA"
             if stimuli[index][0] == "L":
-                IA.x *= -1
+                termLinkA.x *= -1
                 stimSide = "L"
                 
-            drawIA()
+            drawtermLinkA()
 
             stimTimer = core.CountdownTimer(stimDur)
             while (stimTimer.getTime() > 0):
@@ -445,7 +442,7 @@ def doAutoshaping():
                 event.clearEvents()
                 mouse.clickReset()
                 #get bird's input. If it pecks the target, break and give the bird food. Otherwise, increase the peck count and keep looking for input
-                if mouse.isPressedIn(IACirc):
+                if mouse.isPressedIn(termLinkACirc):
                     print("Clicked in target") # TESTING ONLY
                     peckNum += 1
                     pecksOnTarget += 1
@@ -472,16 +469,16 @@ def doAutoshaping():
                 
             # Reset the stimulus to be placed on the right
             if stimuli[index][0] == "L":
-                IA.x *= -1
+                termLinkA.x *= -1
                 
            
-        elif stimuli[index][1] == "IB":
-            stimType = "IB"
+        elif stimuli[index][1] == "termLinkB":
+            stimType = "termLinkB"
             if stimuli[index][0] == "L":
-                IB.x *= -1
+                termLinkB.x *= -1
                 stimSide = "L"
                 
-            drawIB()
+            drawtermLinkB()
 
             stimTimer = core.CountdownTimer(stimDur)
             while (stimTimer.getTime() > 0):
@@ -489,7 +486,7 @@ def doAutoshaping():
                 event.clearEvents()
                 mouse.clickReset()
                 #get bird's input. If it pecks the target, break give the bird food. Otherwise, increase the peck count and keep looking for input
-                if mouse.isPressedIn(IBCirc):
+                if mouse.isPressedIn(termLinkBCirc):
                     print("Clicked in target") # TESTING ONLY
                     peckNum += 1
                     pecksOnTarget += 1
@@ -513,16 +510,16 @@ def doAutoshaping():
             
             # Reset the stimulus
             if stimuli[index][0] == "L":
-                IB.x *= -1
+                termLinkB.x *= -1
             pass
             
-        elif stimuli[index][1] == "IC":
-            stimType = "IC"
+        elif stimuli[index][1] == "termLinkC":
+            stimType = "termLinkC"
             if stimuli[index][0] == "L":
-                IC.x *= -1
+                termLinkC.x *= -1
                 stimSide = "L"
                 
-            drawIC()
+            drawtermLinkC()
 
             stimTimer = core.CountdownTimer(stimDur)
             while (stimTimer.getTime() > 0):
@@ -530,7 +527,7 @@ def doAutoshaping():
                 event.clearEvents()
                 mouse.clickReset()
                 #get bird's input. If it pecks the target, break give the bird food. Otherwise, increase the peck count and keep looking for input
-                if mouse.isPressedIn(ICCirc):
+                if mouse.isPressedIn(termLinkCCirc):
                     print("Clicked in target") # TESTING ONLY
                     peckNum += 1
                     pecksOnTarget += 1
@@ -554,7 +551,7 @@ def doAutoshaping():
             
             # Reset the stimulus
             if stimuli[index][0] == "L":
-                IC.x *= -1
+                termLinkC.x *= -1
                 
             pass
             
@@ -724,7 +721,10 @@ def doAutoshaping():
             if stimuli[index][0] == "L":
                 CA.x *= -1
                 stimSide = "L"
-                
+            elif stimuli[index][0] == "C":
+                CA.x = 0
+                stimSide = "C"
+
             drawCA()
 
             stimTimer = core.CountdownTimer(stimDur)
@@ -762,8 +762,11 @@ def doAutoshaping():
         elif stimuli[index][1] == "CB":
             stimType = "CB"
             if stimuli[index][0] == "L":
-                CA.x *= -1
+                CB.x *= -1
                 stimSide = "L"
+            elif stimuli[index][0] == "C":
+                CB.x = 0
+                stimSide = "C"
                 
             drawCB()
 
@@ -804,6 +807,9 @@ def doAutoshaping():
             if stimuli[index][0] == "L":
                 CC.x *= -1
                 stimSide = "L"
+            elif stimuli[index][0] == "C":
+                CC.x = 0
+                stimSide = "C"
                 
             drawCC()
 
@@ -845,7 +851,9 @@ def doAutoshaping():
             print(str(peckNum))
             exit()
 
-        giveReward(rewardTime) # CHANGE 0 TO REWARD TIME LATER
+        if ((rewardForNoEffort == True) or (victoryFlag == True and rewardForNoEffort == False)):
+            giveReward(rewardTime) # CHANGE 0 TO REWARD TIME LATER
+
         displayBlankPanel(ITI) # 5 for testing, change to ITI after
         index += 1
         row += 1
@@ -860,28 +868,97 @@ def doAutoshaping():
         pecksOnTarget = 0
         stimSide = "R"
 
-def doOperantTraining():
-    global nPecksToReward, ITI, stimDur
-    ITI = 60
-    stimDur = 10
+'''def doOperantTraining():
+    global nPecksToReward, ITI, stimDur, rewardTime, experimentParameters
+
+    if str(experimentParameters[5]) == "No":
+        rewardTime = experimentParameters[3]
+        stimDur = experimentParameters[4]
+        ITI = 60
     if str(experimentParameters[2])[17:] == "(FR1)":
         print("FIXED RATIO 1 OT")
         nPecksToReward = 1
-    if str(experimentParameters[2])[17:] == "(FR3)":
+    elif str(experimentParameters[2])[17:] == "(FR3)":
         print("FIXED RATIO 3 OT")
         nPecksToReward = 3
-    if str(experimentParameters[2])[17:] == "(FR5)":
+    elif str(experimentParameters[2])[17:] == "(FR5)":
         print("FIXED RATIO 5 OT")
-        nPecksToReward = 5
+        nPecksToReward = 5'''
+    
+    
+def doStimPairing():
+    global experimentParameters
+    print("PHASE 3")
+
+    if str(experimentParameters[5]) == "No":
+        rewardTime = experimentParameters[3]
+        stimDur = experimentParameters[4]
+        ITI = 60 #Change to user-input later
+
+    initialLinks = randomizeInit()
+
+    forcedChoiceCount = 0
+
+    #While the experiment is running under 45 minutes...
+
+    while (forcedChoiceCount < 40):
+    for(i in initialLinks):
+        if initialLinks[i][0].name == "A":
+            if initialLinks[i][1] == "L":
+                pass
+                #reverse initA's X axis
+
+            #drawInitA()
+
+            # if pecked in stim time, show the terminal link
+
+            # if pecked terminal link before timeout, give reward
+
+            #reset initA's X axis
+
+        elif initialLinks[i][0].name == "B":
+            if initialLinks[i][1] == "L":
+                pass
+                #reverse initB's X axis
+
+            #drawInitB()
+
+            # if pecked in stim time, show the terminal link
+
+            # if pecked terminal link before timeout, give reward
+
+            #reset initB's X axis
+
+
+    forcedChoiceCount += 1
+
+    
+def randomizeInit():
+    global InitA, InitB
+    print("Randomizing Initial Links")
+    initList = [InitA, InitB]
+    sideList = ["L", "R"]
+    termLinkList = ["1", "2"]
+
+    random.shuffle(initList)
+    random.shuffle(sideList)
+    random.shuffle(termLinkList)
+
+    outputList = [[initList[0], sideList[0], termLinkList[0]], [initList[1], sideList[1], termLinkList[1]]]
+
+    return outputList
+
+def displayTLink1():
     pass
-    
-def doPhase3():
-    print("PHASE 1")
-    
-def doPhase4():
+
+def displayTLink2():
+    pass
+
+
+def doExpPhase():
     print("PHASE 4")
     
-def doPhase4Reversal():
+def doExpPhaseReversal():
     print("PHASE 4 REVERSAL")
     
 def displayBlankPanel(duration):
@@ -903,25 +980,37 @@ def main():
 
     if str(experimentParameters[5]) == "Yes":
         rewardTime = 0
-        stimDur = 1
+        stimDur = 5
         ITI = 1
     elif str(experimentParameters[5]) == "No":
         mouse.setVisible = False
     
+    stimuli = [["L", "termLinkA"], ["R", "termLinkA"], ["L","termLinkB"], ["R","termLinkB"], ["L","termLinkC"], ["R","termLinkC"], ["L","ID"], ["R","ID"],
+               ["L","CA"], ["R","CA"], ["L","CB"], ["R","CB"], ["L","CC"], ["R","CC"],
+               ["L","InitA"], ["R","InitA"], ["L","InitB"], ["R","InitB"], ["C", "CA"], ["C", "CB"], ["C", "CC"]]#, ["L","InitC"], ["R","InitC"]]
+
     if str(experimentParameters[2]) == "Autoshaping (FR1)":
-        doAutoshaping()
+        doTraining(240, 1, True, stimuli)
         
     elif str(experimentParameters[2])[0:16] == "Operant Training":
-        doOperantTraining()
+        if str(experimentParameters[2])[17:] == "(FR1)":
+            print("FIXED RATIO 1 OT")
+            doTraining(60, 1, False, stimuli)
+        elif str(experimentParameters[2])[17:] == "(FR3)":
+            print("FIXED RATIO 3 OT")
+            doTraining(60, 3, False, stimuli)
+        elif str(experimentParameters[2])[17:] == "(FR5)":
+            print("FIXED RATIO 5 OT")
+            doTraining(60, 5, False, stimuli)
         
-    elif str(experimentParameters[2]) == "Phase 3":
-        doPhase3()
+    elif str(experimentParameters[2]) == "Stim Pairing":
+        doStimPairing()
         
-    elif str(experimentParameters[2]) == "Phase 4":
-        doPhase4()
+    elif str(experimentParameters[2]) == "Experimental Phase":
+        doExpPhase()
         
-    elif str(experimentParameters[2]) == "Phase 4 Reversal":
-        doPhase4Reversal()
+    elif str(experimentParameters[2]) == "Experimental Reversal":
+        doExpPhaseReversal()
     
     
     #testScrn()
