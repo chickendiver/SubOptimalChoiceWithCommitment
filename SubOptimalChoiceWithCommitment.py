@@ -947,13 +947,6 @@ def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, 
                             print(str(peckNum))
                             exit()
 
-                    if initVictoryFlag == True:
-                        pass
-
-                        # show the terminal link
-
-                        # if pecked terminal link before timeout, give reward
-
                     if initialLinks[i][1] == "L":
                         InitA.x *= -1
 
@@ -992,15 +985,19 @@ def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, 
                             print(str(peckNum))
                             exit()
 
-                    if initVictoryFlag == True:
-                        pass
-
-                        # if pecked in stim time, show the terminal link
-
-                        # if pecked terminal link before timeout, give reward
-
                     if initialLinks[i][1] == "L":
                         InitB.x *= -1
+
+                if initVictoryFlag == True:
+                        pass
+
+                        if initialLinks[i][2] == "1":
+                            #Present Term link set 1
+
+                        elif initialLinks[i][2] == "2":
+                            #Present Term link set 2
+
+                        # if pecked terminal link before timeout, give reward
 
                 #write to csv file
                 pecksOnTarget = 0
