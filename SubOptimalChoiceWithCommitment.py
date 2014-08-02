@@ -203,11 +203,11 @@ def drawtermLinkA():
     drawBlankCentreChoice()
     drawBlankRightChoice()
 
-    '''if termLinkA.x >= 0:
+    if termLinkA.x >= 0:
         drawBlankLeftIL()
 
     else:
-        drawBlankRightIL()'''
+        drawBlankRightIL()
 
     termLinkACirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = termLinkA.radius, pos = (termLinkA.x, termLinkA.y), units = "pix", lineColor = termLinkA.outlineColour, fillColor = termLinkA.fillColour)
     termLinkACirc.draw()
@@ -220,11 +220,11 @@ def drawtermLinkB():
     drawBlankCentreChoice()
     drawBlankRightChoice()
 
-    '''if termLinkB.x >= 0:
+    if termLinkB.x >= 0:
         drawBlankLeftIL()
 
     else:
-        drawBlankRightIL()'''
+        drawBlankRightIL()
 
     termLinkBCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = termLinkB.radius, pos = (termLinkB.x, termLinkB.y), units = "pix", lineColor = termLinkB.outlineColour, fillColor = termLinkB.fillColour)
     termLinkBCirc.draw()
@@ -237,11 +237,11 @@ def drawtermLinkC():
     drawBlankCentreChoice()
     drawBlankRightChoice()
 
-    '''if termLinkC.x >= 0:
+    if termLinkC.x >= 0:
         drawBlankLeftIL()
 
     else:
-        drawBlankRightIL()'''
+        drawBlankRightIL()
 
     termLinkCCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = termLinkC.radius, pos = (termLinkC.x, termLinkC.y), units = "pix", lineColor = termLinkC.outlineColour, fillColor = termLinkC.fillColour)
     termLinkCCirc.draw()
@@ -254,11 +254,11 @@ def drawtermLinkD():
     drawBlankCentreChoice()
     drawBlankRightChoice()
 
-    '''if termLinkD.x >= 0:
+    if termLinkD.x >= 0:
         drawBlankLeftIL()
 
     else:
-        drawBlankRightIL()'''
+        drawBlankRightIL()
 
     termLinkDCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = termLinkD.radius, pos = (termLinkD.x, termLinkD.y), units = "pix", lineColor = termLinkD.outlineColour, fillColor = termLinkD.fillColour)
     termLinkDCirc.draw()
@@ -865,27 +865,10 @@ def doTraining(interTrialInterval, peckRewardRatio, rewardForNoEffort, stimuli):
         victoryFlag = False
         pecksOnTarget = 0
         stimSide = "R"
-
-'''def doOperantTraining():
-    global nPecksToReward, ITI, stimDur, rewardTime, experimentParameters
-
-    if str(experimentParameters[5]) == "No":
-        rewardTime = experimentParameters[3]
-        stimDur = experimentParameters[4]
-        ITI = 60
-    if str(experimentParameters[2])[17:] == "(FR1)":
-        print("FIXED RATIO 1 OT")
-        nPecksToReward = 1
-    elif str(experimentParameters[2])[17:] == "(FR3)":
-        print("FIXED RATIO 3 OT")
-        nPecksToReward = 3
-    elif str(experimentParameters[2])[17:] == "(FR5)":
-        print("FIXED RATIO 5 OT")
-        nPecksToReward = 5'''
     
     
 def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, timeout):
-    global experimentParameters, stimDur, ITI, peckNum
+    global experimentParameters, stimDur, ITI, peckNum, terminalProbabilityCounter1, terminalProbabilityCounter2, termProbList1, termProbList2
     print("PHASE 3")
 
     # Start csv file
@@ -895,8 +878,16 @@ def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, 
         stimDur = experimentParameters[4]
         ITI = interTrialInterval
 
+    timeout = 5 ## TESTING
+
     initialLinks = randomizeInit()
 
+    #80% is 1, 20% is 0
+    termProbList1 = [1,1,1,1,1,1,1,1,0,0]
+    termProbList2 = [1,1,1,1,1,1,1,1,0,0]
+
+    terminalProbabilityCounter1 = 0
+    terminalProbabilityCounter2 = 0
     nPecksToReward = 1
     initVictoryFlag = False
     termVictoryFlag = False
@@ -993,15 +984,22 @@ def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, 
                         # Present terminal links
 
                         if initialLinks[i][2] == "1":
-                            termVictoryFlag = displayTLink1(ITI, timeout, nPecksToReward)
+                            termVictoryFlag, termStimPecked = displayTLink1(ITI, timeout, nPecksToReward)
 
                         elif initialLinks[i][2] == "2":
-                            termVictoryFlag = displayTLink2(ITI, timeout, nPecksToReward)
+                            termVictoryFlag, termStimPecked = displayTLink2(ITI, timeout, nPecksToReward)
 
 
                         if termVictoryFlag == True:
-                            pass
-                            print ("Gave reward")
+
+                            if termStimPecked == "A":
+                                birdAte = giveReward(1)
+                            elif termStimPecked == "D":
+                                birdAte = giveReward(0)
+                            elif termStimPecked == "B":
+                                bidAte = giveReward(.5)
+                            elif termStimPecked == "C":
+                                birdAte = giveReward(.5)
 
                         # If the peck the terminal link before timeout, give reward based on probability
 
@@ -1043,49 +1041,200 @@ def randomizeInit():
     return outputList
 
 def displayTLink1(interTrialInterval, timeout, nPecksToReward):
-    global peckNum
-    displayBlankPanel(interTrialInterval)
+    global peckNum, terminalProbabilityCounter1, termLinkACirc, termLinkDCirc, termProbList1
+    #displayBlankPanel(interTrialInterval)
     print("Presenting Terminal Link 1")
 
-    drawtermLinkA() # DRAW THESE AT THE SAME TIME.
-    drawtermLinkD()
-
-    pecksOnTarget = 0
+    pecksOnTargetA = 0
+    pecksOnTargetD = 0
     termVictoryFlag = False
+    termStimPecked = ""
+
+    if terminalProbabilityCounter1 >= 10:
+        termProbabilityCounter1 = 0
+
+    if terminalProbabilityCounter1 == 0:
+        random.shuffle(termProbList1)
+
+    if termProbList1[terminalProbabilityCounter1] == 0:
+        #20% chance of getting term link B
+        drawtermLinkA()
+
+    elif termProbList1[terminalProbabilityCounter1] == 1:
+        #80% chance of getting term link C
+        drawtermLinkD()
 
     termLinkTimer = core.CountdownTimer(timeout)
     while (termLinkTimer.getTime() <= timeout):
 
         event.clearEvents()
         mouse.clickReset()
-        if mouse.isPressedIn(termLinkACirc) or mouse.isPressedIn(termLinkDCirc):
-            print("Clicked in target") # TESTING ONLY
-            peckNum += 1
-            pecksOnTarget += 1 #IF THIS IS LEFT THE WAY IT IS, IT WILL ACCEPT PECKS TO BOTH TO SATISFY. UNACCEPTABLE. FIX
-            event.clearEvents()
-            if pecksOnTarget == nPecksToReward:
-                termVictoryFlag = True
-                break
-                
-        elif (mouse.getPressed()[0] == 1):
-            while(mouse.getPressed()[0] == 1): # waits for the mouse button to raise before counting another peck
-                if (mouse.getPressed()[0] == 0):
+        if termProbList1[terminalProbabilityCounter1] == 0:
+            if mouse.isPressedIn(termLinkACirc):
+                print("Clicked in target A") # TESTING ONLY
+                peckNum += 1
+                pecksOnTargetA += 1 #IF THIS IS LEFT THE WAY IT IS, IT WILL ACCEPT PECKS TO BOTH TO SATISFY. UNACCEPTABLE. FIX
+                event.clearEvents()
+                if pecksOnTargetA == nPecksToReward:
+                    termVictoryFlag = True
+                    termStimPecked = "A"
                     break
+
+            elif (mouse.getPressed()[0] == 1):
+                while(mouse.getPressed()[0] == 1): # waits for the mouse button to raise before counting another peck
+                    if (mouse.getPressed()[0] == 0):
+                        break
                 
-            peckNum += 1
-            event.clearEvents()
-            
-        if event.getKeys(["escape"]):
-            print("User pressed escape")
-            print(str(peckNum))
-            exit()
+                peckNum += 1
+                event.clearEvents()
+                
+            if event.getKeys(["escape"]):
+                print("User pressed escape")
+                print(str(peckNum))
+                exit()
+                
+        elif termProbList1[terminalProbabilityCounter1] == 1:
+            if mouse.isPressedIn(termLinkDCirc):
+                print("Clicked in target D") # TESTING ONLY
+                peckNum += 1
+                pecksOnTargetD += 1 #IF THIS IS LEFT THE WAY IT IS, IT WILL ACCEPT PECKS TO BOTH TO SATISFY. UNACCEPTABLE. FIX
+                event.clearEvents()
+                if pecksOnTargetD == nPecksToReward:
+                    termVictoryFlag = True
+                    termStimPecked = "D"
+                    break
 
-    return termVictoryFlag
+            elif (mouse.getPressed()[0] == 1):
+                while(mouse.getPressed()[0] == 1): # waits for the mouse button to raise before counting another peck
+                    if (mouse.getPressed()[0] == 0):
+                        break
+                    
+                peckNum += 1
+                event.clearEvents()
+                
+            if event.getKeys(["escape"]):
+                print("User pressed escape")
+                print(str(peckNum))
+                exit()
 
-def displayTLink2(interTrialInterval, timeout):
-    displayBlankPanel(interTrialInterval)
+    terminalProbabilityCounter1 += 1
+
+    return termVictoryFlag, termStimPecked
+
+
+def displayTLink2(interTrialInterval, timeout, nPecksToReward):
+    global peckNum, terminalProbabilityCounter2, termLinkBCirc, termLinkCCirc, termProbList2
+    #displayBlankPanel(interTrialInterval)
     print ("Presenting Terminal Link 2")
 
+    pecksOnTargetB = 0
+    pecksOnTargetC = 0
+    termVictoryFlag = False
+    termStimPecked = ""
+
+    if terminalProbabilityCounter2 == 10:
+        terminalProbabilityCounter2 = 0
+
+    if terminalProbabilityCounter2 == 0:
+        random.shuffle(termProbList2)
+
+    if termProbList2[terminalProbabilityCounter2] == 0:
+        #20% chance of getting term link B
+        drawtermLinkB()
+
+    elif termProbList2[terminalProbabilityCounter2] == 1:
+        #80% chance of getting term link C
+        drawtermLinkC()
+
+    termLinkTimer = core.CountdownTimer(timeout)
+    while (termLinkTimer.getTime() <= timeout):
+
+        event.clearEvents()
+        mouse.clickReset()
+        if termProbList2[terminalProbabilityCounter2] == 0: 
+            if mouse.isPressedIn(termLinkBCirc):
+                print("Clicked in target B") # TESTING ONLY
+                peckNum += 1
+                pecksOnTargetB += 1 #IF THIS IS LEFT THE WAY IT IS, IT WILL ACCEPT PECKS TO BOTH TO SATISFY. UNACCEPTABLE. FIX
+                event.clearEvents()
+                if pecksOnTargetB == nPecksToReward:
+                    termVictoryFlag = True
+                    termStimPecked = "B"
+                    break
+
+            elif (mouse.getPressed()[0] == 1):
+                while(mouse.getPressed()[0] == 1): # waits for the mouse button to raise before counting another peck
+                    if (mouse.getPressed()[0] == 0):
+                        break
+                    
+                peckNum += 1
+                event.clearEvents()
+                
+            if event.getKeys(["escape"]):
+                print("User pressed escape")
+                print(str(peckNum))
+                exit()
+
+        elif termProbList2[terminalProbabilityCounter2] == 1: 
+            if mouse.isPressedIn(termLinkCCirc):
+                print("Clicked in target C") # TESTING ONLY
+                peckNum += 1
+                pecksOnTargetC += 1 #IF THIS IS LEFT THE WAY IT IS, IT WILL ACCEPT PECKS TO BOTH TO SATISFY. UNACCEPTABLE. FIX
+                event.clearEvents()
+                if pecksOnTargetC == nPecksToReward:
+                    termVictoryFlag = True
+                    termStimPecked = "C"
+                    break
+                
+            elif (mouse.getPressed()[0] == 1):
+                while(mouse.getPressed()[0] == 1): # waits for the mouse button to raise before counting another peck
+                    if (mouse.getPressed()[0] == 0):
+                        break
+                    
+                peckNum += 1
+                event.clearEvents()
+                
+            if event.getKeys(["escape"]):
+                print("User pressed escape")
+                print(str(peckNum))
+                exit()
+
+    terminalProbabilityCounter2 += 1
+
+    return termVictoryFlag, termStimPecked
+
+def drawTermLinksBC():
+    global win, termLinkBCirc, termLinkCCirc
+
+    drawBlankLeftChoice()
+    drawBlankCentreChoice()
+    drawBlankRightChoice()
+
+    termLinkBCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = termLinkB.radius, pos = (termLinkB.x * -1, termLinkB.y), units = "pix", lineColor = termLinkB.outlineColour, fillColor = termLinkB.fillColour)
+    termLinkCCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = termLinkC.radius, pos = (termLinkC.x, termLinkC.y), units = "pix", lineColor = termLinkC.outlineColour, fillColor = termLinkC.fillColour)
+    termLinkBCirc.draw()
+    termLinkCCirc.draw()
+    win.flip()
+
+def drawTermLinksAD():
+    global win, termLinkACirc, termLinkDCirc
+
+    drawBlankLeftChoice()
+    drawBlankCentreChoice()
+    drawBlankRightChoice()
+
+    termLinkACirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = termLinkA.radius, pos = (termLinkA.x * -1, termLinkA.y), units = "pix", lineColor = termLinkA.outlineColour, fillColor = termLinkA.fillColour)
+    termLinkDCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = termLinkD.radius, pos = (termLinkD.x, termLinkD.y), units = "pix", lineColor = termLinkD.outlineColour, fillColor = termLinkD.fillColour)
+    termLinkACirc.draw()
+    termLinkDCirc.draw()
+    win.flip()
+
+def giveReward(probability):
+    print("Giving a reward, with the probability of reinforcement of " + str(probability))
+
+    birdAte = False
+
+    return birdAte
 
 def doExpPhase():
     print("PHASE 4")
