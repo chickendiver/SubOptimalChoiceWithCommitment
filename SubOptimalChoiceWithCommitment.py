@@ -140,11 +140,11 @@ def initializeStims():
     rightInitLink = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y, "blankR")
     
     #Choice trial initializations
-    termLinkA = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y, "termA")
+    termLinkA = InitialLinkStim((R_I_STIM_X), R_I_STIM_Y, "termA")
     termLinkA.set_fill("Orange")
     termLinkB = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y, "termB")
     termLinkB.set_fill("Green")
-    termLinkC = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y, "termC")
+    termLinkC = InitialLinkStim((R_I_STIM_X), R_I_STIM_Y, "termC")
     termLinkC.set_fill("Red")
     termLinkD = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y, "termLinkD")
     termLinkD.set_fill("Purple")
@@ -163,7 +163,7 @@ def drawBlankLeftChoice():
    
 def drawBlankCentreChoice():
     global win
-    rect = visual.Rect(win, lineWidth = LINE_WIDDTH, width = centreChoice.width, height = centreChoice.height, pos = (centreChoice.x, centreChoice.y), units = "pix", lineColor = centreChoice.outlineColour, fillColor = centreChoice.fillColour)
+    rect = visual.Rect(win, lineWidth = LINE_WIDTH, width = centreChoice.width, height = centreChoice.height, pos = (centreChoice.x, centreChoice.y), units = "pix", lineColor = centreChoice.outlineColour, fillColor = centreChoice.fillColour)
     rect.draw()
 
 def drawBlankRightChoice():
@@ -203,11 +203,11 @@ def drawtermLinkA():
     drawBlankCentreChoice()
     drawBlankRightChoice()
 
-    if termLinkA.x >= 0:
+    '''if termLinkA.x >= 0:
         drawBlankLeftIL()
 
     else:
-        drawBlankRightIL()
+        drawBlankRightIL()'''
 
     termLinkACirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = termLinkA.radius, pos = (termLinkA.x, termLinkA.y), units = "pix", lineColor = termLinkA.outlineColour, fillColor = termLinkA.fillColour)
     termLinkACirc.draw()
@@ -220,11 +220,11 @@ def drawtermLinkB():
     drawBlankCentreChoice()
     drawBlankRightChoice()
 
-    if termLinkB.x >= 0:
+    '''if termLinkB.x >= 0:
         drawBlankLeftIL()
 
     else:
-        drawBlankRightIL()
+        drawBlankRightIL()'''
 
     termLinkBCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = termLinkB.radius, pos = (termLinkB.x, termLinkB.y), units = "pix", lineColor = termLinkB.outlineColour, fillColor = termLinkB.fillColour)
     termLinkBCirc.draw()
@@ -237,11 +237,11 @@ def drawtermLinkC():
     drawBlankCentreChoice()
     drawBlankRightChoice()
 
-    if termLinkC.x >= 0:
+    '''if termLinkC.x >= 0:
         drawBlankLeftIL()
 
     else:
-        drawBlankRightIL()
+        drawBlankRightIL()'''
 
     termLinkCCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = termLinkC.radius, pos = (termLinkC.x, termLinkC.y), units = "pix", lineColor = termLinkC.outlineColour, fillColor = termLinkC.fillColour)
     termLinkCCirc.draw()
@@ -254,11 +254,11 @@ def drawtermLinkD():
     drawBlankCentreChoice()
     drawBlankRightChoice()
 
-    if termLinkD.x >= 0:
+    '''if termLinkD.x >= 0:
         drawBlankLeftIL()
 
     else:
-        drawBlankRightIL()
+        drawBlankRightIL()'''
 
     termLinkDCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = termLinkD.radius, pos = (termLinkD.x, termLinkD.y), units = "pix", lineColor = termLinkD.outlineColour, fillColor = termLinkD.fillColour)
     termLinkDCirc.draw()
@@ -885,7 +885,7 @@ def doTraining(interTrialInterval, peckRewardRatio, rewardForNoEffort, stimuli):
     
     
 def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, timeout):
-    global experimentParameters
+    global experimentParameters, stimDur, ITI, peckNum
     print("PHASE 3")
 
     # Start csv file
@@ -910,7 +910,7 @@ def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, 
 
         while (forcedChoiceCount < forcedChoiceTrialCount):
 
-            for i in range(0,1):
+            for i in range(0,len(initialLinks)):
 
                 ## HANDLE THE FIRST INITIAL LINK
                 if initialLinks[i][0].name == "A":
@@ -989,15 +989,22 @@ def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, 
                         InitB.x *= -1
 
                 if initVictoryFlag == True:
-                        pass
+
+                        # Present terminal links
 
                         if initialLinks[i][2] == "1":
-                            #Present Term link set 1
+                            termVictoryFlag = displayTLink1(ITI, timeout, nPecksToReward)
 
                         elif initialLinks[i][2] == "2":
-                            #Present Term link set 2
+                            termVictoryFlag = displayTLink2(ITI, timeout, nPecksToReward)
 
-                        # if pecked terminal link before timeout, give reward
+
+                        if termVictoryFlag == True:
+                            pass
+                            print ("Gave reward")
+
+                        # If the peck the terminal link before timeout, give reward based on probability
+
 
                 #write to csv file
                 pecksOnTarget = 0
@@ -1015,20 +1022,69 @@ def randomizeInit():
     initList = [InitA, InitB]
     sideList = ["L", "R"]
     termLinkList = ["1", "2"]
+    outputList = []
 
     random.shuffle(initList)
     random.shuffle(sideList)
     random.shuffle(termLinkList)
 
-    outputList = [[initList[0], sideList[0], termLinkList[0]], [initList[1], sideList[1], termLinkList[1]]]
+    init1List = [initList[0], sideList[0], termLinkList[0]] 
+    init2List = [initList[1], sideList[1], termLinkList[1]] 
+
+    tempCounter = 0
+    while (tempCounter < 20):
+
+        outputList.append(init1List)
+        outputList.append(init2List)
+        tempCounter += 1
+
+    random.shuffle(outputList)
 
     return outputList
 
-def displayTLink1():
-    pass
+def displayTLink1(interTrialInterval, timeout, nPecksToReward):
+    global peckNum
+    displayBlankPanel(interTrialInterval)
+    print("Presenting Terminal Link 1")
 
-def displayTLink2():
-    pass
+    drawtermLinkA() # DRAW THESE AT THE SAME TIME.
+    drawtermLinkD()
+
+    pecksOnTarget = 0
+    termVictoryFlag = False
+
+    termLinkTimer = core.CountdownTimer(timeout)
+    while (termLinkTimer.getTime() <= timeout):
+
+        event.clearEvents()
+        mouse.clickReset()
+        if mouse.isPressedIn(termLinkACirc) or mouse.isPressedIn(termLinkDCirc):
+            print("Clicked in target") # TESTING ONLY
+            peckNum += 1
+            pecksOnTarget += 1 #IF THIS IS LEFT THE WAY IT IS, IT WILL ACCEPT PECKS TO BOTH TO SATISFY. UNACCEPTABLE. FIX
+            event.clearEvents()
+            if pecksOnTarget == nPecksToReward:
+                termVictoryFlag = True
+                break
+                
+        elif (mouse.getPressed()[0] == 1):
+            while(mouse.getPressed()[0] == 1): # waits for the mouse button to raise before counting another peck
+                if (mouse.getPressed()[0] == 0):
+                    break
+                
+            peckNum += 1
+            event.clearEvents()
+            
+        if event.getKeys(["escape"]):
+            print("User pressed escape")
+            print(str(peckNum))
+            exit()
+
+    return termVictoryFlag
+
+def displayTLink2(interTrialInterval, timeout):
+    displayBlankPanel(interTrialInterval)
+    print ("Presenting Terminal Link 2")
 
 
 def doExpPhase():
@@ -1038,7 +1094,6 @@ def doExpPhaseReversal():
     print("PHASE 4 REVERSAL")
     
 def displayBlankPanel(duration):
-    global ITI
     drawInitialStims()
     core.wait(duration)
     pass
