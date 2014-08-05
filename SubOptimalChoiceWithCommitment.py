@@ -69,13 +69,14 @@ class InitialLinkStim :
     
 #Square Choice objects, of which there will be 3
 class ChoiceStim:
-    def __init__(self, xCoord, yCoord):
+    def __init__(self, xCoord, yCoord, name):
         self.height = 100
         self.width = 100
         self.x = xCoord
         self.y = yCoord
         self.fillColour = "Gray"
         self.outlineColour = "Silver"
+        self.name = name
    
     def set_fill (self, fillCol):
         self.fillColour = fillCol
@@ -132,9 +133,9 @@ def getUserInput():
 def initializeStims():
     #Create new stimulus objects
     global leftChoice, centreChoice, rightChoice, leftInitLink, centreInitLink, rightInitLink, termLinkA, termLinkB, termLinkC, termLinkD, CA, CB, CC, InitA, InitB, InitC
-    leftChoice = ChoiceStim(L_CHOICE_STIM_X, L_CHOICE_STIM_Y)
-    centreChoice = ChoiceStim(C_CHOICE_STIM_X, C_CHOICE_STIM_Y)
-    rightChoice = ChoiceStim(R_CHOICE_STIM_X, R_CHOICE_STIM_Y)
+    leftChoice = ChoiceStim(L_CHOICE_STIM_X, L_CHOICE_STIM_Y, "left blank")
+    centreChoice = ChoiceStim(C_CHOICE_STIM_X, C_CHOICE_STIM_Y, "middle blank")
+    rightChoice = ChoiceStim(R_CHOICE_STIM_X, R_CHOICE_STIM_Y, "right blank")
     leftInitLink =  InitialLinkStim(L_I_STIM_X, L_I_STIM_Y, "blankL")
     #Reserved for future use
     #centreInitLink = InitialLinkStim(C_I_STIM_X, C_I_STIM_Y)
@@ -149,9 +150,9 @@ def initializeStims():
     termLinkC.set_fill("Red")
     termLinkD = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y, "termLinkD")
     termLinkD.set_fill("Purple")
-    CA = ChoiceStim(R_CHOICE_STIM_X, R_CHOICE_STIM_Y)
-    CB = ChoiceStim(R_CHOICE_STIM_X, R_CHOICE_STIM_Y)
-    CC = ChoiceStim(R_CHOICE_STIM_X, R_CHOICE_STIM_Y)
+    CA = ChoiceStim(R_CHOICE_STIM_X, R_CHOICE_STIM_Y, "A")
+    CB = ChoiceStim(R_CHOICE_STIM_X, R_CHOICE_STIM_Y, "B")
+    CC = ChoiceStim(R_CHOICE_STIM_X, R_CHOICE_STIM_Y, "C")
     InitA = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y, "A")
     InitB = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y, "B")
     InitC = InitialLinkStim(R_I_STIM_X, R_I_STIM_Y, "C")
@@ -1055,7 +1056,7 @@ def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, 
                 termVictoryFlag = False
                 peckNum = 0
 
-            forcedChoiceCount += 2
+            trialCount += 1
 
 
     
@@ -1339,9 +1340,306 @@ def giveReward(probability):
     return birdAte
 
 def doExpPhase(Reversal, forcedChoiceTrialCount, choiceTrialCount):
+    global experimentParameters, stimDur, ITI, peckNum, terminalProbabilityCounter1, terminalProbabilityCounter2, termProbList1, termProbList2
     print("PHASE 4")
 
-    # Match choice stimuli with initial links
+    # Start csv file
+
+    if str(experimentParameters[5]) == "No":
+        rewardTime = experimentParameters[3]
+        stimDur = experimentParameters[4]
+        ITI = interTrialInterval
+
+    timeout = 5 ## TESTING
+
+    #80% is 1, 20% is 0
+    termProbList1 = [1,1,1,1,1,1,1,1,0,0]
+    termProbList2 = [1,1,1,1,1,1,1,1,0,0]
+
+    terminalProbabilityCounter1 = 0
+    terminalProbabilityCounter2 = 0
+    nPecksToReward = 1
+    choiceVictortFlag = False
+    initVictoryFlag = False
+    termVictoryFlag = False
+    peckNum = 0
+    pecksOnTarget = 0
+    trialCount = 0
+
+    choiceStims = randomizeChoiceStims(forcedChoiceTrialCount, choiceTrialCount)
+    initStims = randomizeInit(2,1)
+
+    setTimer = core.CountdownTimer(FORTYFIVE_MINUTES)
+    while(setTimer.getTime() > 0):
+
+        while (trialCount < (forcedChoiceTrialCount + choiceTrialCount)):
+
+            for i in range(0,len(choiceStims)):
+
+                ## HANDLE THE FIRST CHOICE STIM
+                if choiceStims[i][0].name == "A":
+                    if choiceStims[i][1] == "L":
+                        CA.x *= -1
+                    elif choiceStims[i][1] == "C":
+                        lastX = CA.x
+                        CA.x = 0
+                        
+
+                    drawCA()
+
+                    stimTimer = core.CountdownTimer(stimDur)
+                    while (stimTimer.getTime() > 0):
+                            
+                        event.clearEvents()
+                        mouse.clickReset()
+                        if mouse.isPressedIn(CARect):
+                            print("Clicked in target") # TESTING ONLY
+                            peckNum += 1
+                            pecksOnTarget += 1
+                            event.clearEvents()
+                            if pecksOnTarget == nPecksToReward:
+                                choiceVictoryFlag = True
+                                peckedChoice = "A"
+                                break
+                                
+                        elif (mouse.getPressed()[0] == 1):
+                            while(mouse.getPressed()[0] == 1): # waits for the mouse button to raise before counting another peck
+                                if (mouse.getPressed()[0] == 0):
+                                    break
+                                
+                            peckNum += 1
+                            event.clearEvents()
+                            
+                        if event.getKeys(["escape"]):
+                            print("User pressed escape")
+                            print(str(peckNum))
+                            exit()
+
+                    if choiceStims[i][1] == "L":
+                        CA.x *= -1
+                    elif choiceStims[i][1] == "C":
+                        CA.x = lastX
+
+                ## HANDLE THE SECOND CHOICE STIM
+                elif choiceStims[i][0].name == "B":
+                    if choiceStims[i][1] == "L":
+                        CB.x *= -1
+                    elif choiceStims[i][1] == "C":
+                        lastX = CB.x
+                        CB.x = 0
+                        
+
+                    drawCB()
+
+                    stimTimer = core.CountdownTimer(stimDur)
+                    while (stimTimer.getTime() > 0):
+                            
+                        event.clearEvents()
+                        mouse.clickReset()
+                        if mouse.isPressedIn(CBRect):
+                            print("Clicked in target") # TESTING ONLY
+                            peckNum += 1
+                            pecksOnTarget += 1
+                            event.clearEvents()
+                            if pecksOnTarget == nPecksToReward:
+                                choiceVictoryFlag = True
+                                peckedChoice = "B"
+                                break
+                                
+                        elif (mouse.getPressed()[0] == 1):
+                            while(mouse.getPressed()[0] == 1): # waits for the mouse button to raise before counting another peck
+                                if (mouse.getPressed()[0] == 0):
+                                    break
+                                
+                            peckNum += 1
+                            event.clearEvents()
+                            
+                        if event.getKeys(["escape"]):
+                            print("User pressed escape")
+                            print(str(peckNum))
+                            exit()
+
+                    if choiceStims[i][1] == "L":
+                        CB.x *= -1
+                    elif choiceStims[i][1] == "C":
+                        CB.x = lastX
+
+                ## HANDLE THE THIRD CHOICE STIM
+                elif choiceStims[i][0].name == "C":
+                    if choiceStims[i][1] == "L":
+                        CC.x *= -1
+                    elif choiceStims[i][1] == "C":
+                        lastX = CC.x
+                        CC.x = 0
+                        
+
+                    drawCC()
+
+                    stimTimer = core.CountdownTimer(stimDur)
+                    while (stimTimer.getTime() > 0):
+                            
+                        event.clearEvents()
+                        mouse.clickReset()
+                        if mouse.isPressedIn(CCRect):
+                            print("Clicked in target") # TESTING ONLY
+                            peckNum += 1
+                            pecksOnTarget += 1
+                            event.clearEvents()
+                            if pecksOnTarget == nPecksToReward:
+                                choiceVictoryFlag = True
+                                peckedChoice = "C"
+                                break
+                                
+                        elif (mouse.getPressed()[0] == 1):
+                            while(mouse.getPressed()[0] == 1): # waits for the mouse button to raise before counting another peck
+                                if (mouse.getPressed()[0] == 0):
+                                    break
+                                
+                            peckNum += 1
+                            event.clearEvents()
+                            
+                        if event.getKeys(["escape"]):
+                            print("User pressed escape")
+                            print(str(peckNum))
+                            exit()
+
+                    if choiceStims[i][1] == "L":
+                        CB.x *= -1
+                    elif choiceStims[i][1] == "C":
+                        CB.x = lastX
+
+                elif choiceStims[i][0].name == "choice":
+
+                    drawChoices(choiceStims[i][1][0].name, choiceStims[i][1][0].name) ##### Draw both initial links
+
+                    pecksOnChoiceA = 0
+                    pecksOnChoiceB = 0
+                    pecksOnChoiceC = 0
+                    stimTimer = core.CountdownTimer(stimDur)
+                    while (stimTimer.getTime() > 0):
+                            
+                        event.clearEvents()
+                        mouse.clickReset()
+
+                        if choiceStims[1][1][0].name == "A" or choiceStims[1][2][0].name == "A":
+
+                            if mouse.isPressedIn(CARect):
+                                print("Clicked in target A") # TESTING ONLY
+                                peckNum += 1
+                                pecksOnInitA += 1
+                                event.clearEvents()
+                                if pecksOnChoiceA == nPecksToReward:
+                                    choiceVictoryFlag = True
+                                    peckedChoice = "A"
+                                    break
+
+                            elif (mouse.getPressed()[0] == 1):
+                                while(mouse.getPressed()[0] == 1): # waits for the mouse button to raise before counting another peck
+                                    if (mouse.getPressed()[0] == 0):
+                                        break
+                                
+                                peckNum += 1
+                                event.clearEvents()
+                            
+                            if event.getKeys(["escape"]):
+                                print("User pressed escape")
+                                print(str(peckNum))
+                                exit()
+
+                        if choiceStims[1][1][0].name == "B" or choiceStims[1][2][0].name == "B":
+                            if mouse.isPressedIn(CBRect):
+                                print("Clicked in target B") # TESTING ONLY
+                                peckNum += 1
+                                pecksOnInitB += 1
+                                event.clearEvents()
+                                if pecksOnChoiceB == nPecksToReward:
+                                    choiceVictoryFlag = True
+                                    peckedChoice = "B"
+                                    break
+
+                            elif (mouse.getPressed()[0] == 1):
+                                while(mouse.getPressed()[0] == 1): # waits for the mouse button to raise before counting another peck
+                                    if (mouse.getPressed()[0] == 0):
+                                        break
+                                
+                                peckNum += 1
+                                event.clearEvents()
+                            
+                            if event.getKeys(["escape"]):
+                                print("User pressed escape")
+                                print(str(peckNum))
+                                exit()
+
+                        if choiceStims[1][1][0].name == "C" or choiceStims[1][2][0].name == "C":
+                            if mouse.isPressedIn(CCRect):
+                                print("Clicked in target C") # TESTING ONLY
+                                peckNum += 1
+                                pecksOnInitB += 1
+                                event.clearEvents()
+                                if pecksOnChoiceC == nPecksToReward:
+                                    choiceVictoryFlag = True
+                                    peckedChoice = "C"
+                                    break
+                                
+                            elif (mouse.getPressed()[0] == 1):
+                                while(mouse.getPressed()[0] == 1): # waits for the mouse button to raise before counting another peck
+                                    if (mouse.getPressed()[0] == 0):
+                                        break
+                                
+                                peckNum += 1
+                                event.clearEvents()
+                            
+                            if event.getKeys(["escape"]):
+                                print("User pressed escape")
+                                print(str(peckNum))
+                                exit()
+
+                if initVictoryFlag == True: ## HAVE NOT EDITED THIS METHOD PAST THIS POINT. CONTINUE LATER.
+
+                        # Present terminal links
+
+                        if initialLinks[i][0].name == "A" or initialLinks[i][0].name == "B":
+                            if initialLinks[i][2] == "1":
+                                termVictoryFlag, termStimPecked = displayTLink1(ITI, timeout, nPecksToReward)
+
+                            elif initialLinks[i][2] == "2":
+                                termVictoryFlag, termStimPecked = displayTLink2(ITI, timeout, nPecksToReward)
+
+                        elif initialLinks[i][0].name == "choice":
+                            for j in range (2,4):
+                                if pecked == initialLinks[i][j][0].name:
+
+                                    if initialLinks[i][j][2] == "1":
+                                        termVictoryFlag, termStimPecked = displayTLink1(ITI, timeout, nPecksToReward)
+
+                                    elif initialLinks[i][j][2] == "2":
+                                        termVictoryFlag, termStimPecked = displayTLink2(ITI, timeout, nPecksToReward)
+
+                        if termVictoryFlag == True:
+
+
+                            if termStimPecked == "A":
+                                birdAte = giveReward(1)
+                            elif termStimPecked == "D":
+                                birdAte = giveReward(0)
+                            elif termStimPecked == "B":
+                                bidAte = giveReward(.5)
+                            elif termStimPecked == "C":
+                                birdAte = giveReward(.5)
+
+                        # If the peck the terminal link before timeout, give reward based on probability
+
+                displayBlankPanel(ITI)
+
+                #write to csv file
+                pecksOnTarget = 0
+                pecksOnInitB = 0
+                pecksOnInitA = 0
+                initVictoryFlag = False
+                termVictoryFlag = False
+                peckNum = 0
+
+            trialCount += 1
 
     # Match initial links with terminal link sets
 
@@ -1351,6 +1649,49 @@ def doExpPhase(Reversal, forcedChoiceTrialCount, choiceTrialCount):
 
     # Present the matched terminal link based on probability
 
+def drawChoices(choice1, choice2):
+    pass
+
+def randomizeChoiceStims(forcedChoiceTrialCount, choiceTrialCount):
+    global CA, CB, CC
+    print("Randomizing Initial Links")
+
+    choiceTrialStim = ChoiceStim(0,0,"choice")
+    
+    choiceList = [CA, CB, CC]
+    sideList = ["L", "R", "C"]
+    initList = ["A", "B", "choice"]
+    outputList = []
+
+    random.shuffle(choiceList)
+    random.shuffle(sideList)
+    random.shuffle(initList)
+
+    choice1List = [choiceList[0], sideList[0], initList[0]] 
+    choice2List = [choiceList[1], sideList[1], initList[1]]
+    choice3List = [choiceList[2], sideList[2], initList[2]]
+    choice4List = [choiceTrialStim, choice1List, choice2List]
+    choice5List = [choiceTrialStim, choice1List, choice3List]
+    choice6List = [choiceTrialStim, choice2List, choice3List]
+
+    tempCounter = 0
+    while (tempCounter < (forcedChoiceTrialCount/3)):
+
+        outputList.append(choice1List)
+        outputList.append(choice2List)
+        outputList.append(choice3List)
+        tempCounter += 1
+    tempCounter = 0
+
+    while (tempCounter < choiceTrialCount/3):
+        outputList.append(choice4List)
+        outputList.append(choice5List)
+        outputList.append(choice6List)
+        tempCounter += 1
+
+    random.shuffle(outputList)
+
+    return outputList
     
 def displayBlankPanel(duration):
     drawInitialStims()
@@ -1440,7 +1781,7 @@ def main():
     elif str(experimentParameters[2]) == "Experimental Reversal":
         writer.writerow(['Trial Number', 'Total Pecks', 'Elapsed Time', 'Choice Stimulus Presented', 'Choice Stimulus Side', 'Initial Link Presented', 'Initial Link side', 'Terminal Link Presented',
                          'Terminal Link Side', 'Reaction Times'])
-        
+
         doExpPhase(True, 30, 30)
     
 
