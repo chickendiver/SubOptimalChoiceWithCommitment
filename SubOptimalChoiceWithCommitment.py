@@ -1,6 +1,6 @@
 from sys import platform as _platform
 from psychopy import visual, core, gui, event
-import time, csv, random
+import time, csv, random, datetime
 
 #Determine which OS is being used, and calculate the screen size
 if _platform == "linux" or _platform == "linux2":
@@ -112,13 +112,14 @@ def getUserInput():
     global experimentParameters
     global userCancelled
     userCancelled = False
-    myDlg = gui.Dlg(title="Sub-Optimal Choice with Commitment")
+    myDlg = gui.Dlg(title="Sub-Optimal Choice with Commitment", labelButtonOK=' START ')
     myDlg.addField('Subject number:', 0)
     myDlg.addField('Session number:', 0)
     myDlg.addField('Condition:', choices = ['Autoshaping (FR1)', 'Operant Training (FR1)', 'Operant Training (FR3)', 'Operant Training (FR5)', 'Stim Pairing', 'Experimental Phase', 'Experimental Reversal'])
     myDlg.addField('Reward Duration:', 10)
     myDlg.addField('Stimulus Timeout:', 60)
     myDlg.addField('Is this a test?:', choices = ['Yes', 'No'])
+    myDlg.addField('Research Assistant:', choices = ['Unlisted','Ariel','Jason', 'Jeff', 'Josh','Nuha'])
     myDlg.show()  # show dialog and wait for OK or Cancel
     
     if myDlg.OK:  # then the user pressed OK
@@ -382,20 +383,6 @@ def drawInitC():
     InitCCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = InitC.radius, pos = (InitC.x, InitC.y), units = "pix", lineColor = InitC.outlineColour, fillColor = InitC.fillColour)
     InitCCirc.draw()
     win.flip()
-
-def raiseHopper():
-    print("Hopper raised")
-    
-def giveReward(duration):
-    print("Reward Given for duration of " + str(duration) + " seconds")
-    raiseHopper()
-    drawBlankLeftChoice()
-    drawBlankCentreChoice()
-    drawBlankRightChoice()
-    drawBlankLeftIL()
-    drawBlankRightIL()
-    win.flip()
-    core.wait(duration)
     
 def doTraining(interTrialInterval, peckRewardRatio, rewardForNoEffort, stimuli):
     global nPecksToReward, ITI, allTrialsFinished, datafile, writer, peckNum, row, rewardTime, stimDur
@@ -858,7 +845,7 @@ def doTraining(interTrialInterval, peckRewardRatio, rewardForNoEffort, stimuli):
         if index >= len(stimuli):
             index = 0
         trialTime = time.time() - startTime
-        writer.writerow([row, str(experimentParameters[0]), row, peckNum, trialTime*60, stimType, 
+        writer.writerow([row, peckNum, trialTime*60, stimType, 
                                   stimSide, victoryFlag, pecksOnTarget, 'Accuracy'])
         
         peckNum = 0
@@ -880,7 +867,7 @@ def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, 
 
     timeout = 5 ## TESTING
 
-    initialLinks = randomizeInit()
+    initialLinks = randomizeInit(forcedChoiceTrialCount, choiceTrialCount)
 
     #80% is 1, 20% is 0
     termProbList1 = [1,1,1,1,1,1,1,1,0,0]
@@ -893,13 +880,12 @@ def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, 
     termVictoryFlag = False
     peckNum = 0
     pecksOnTarget = 0
-    forcedChoiceCount = 0
-    choiceCount = 0
+    trialCount = 0
 
     setTimer = core.CountdownTimer(FORTYFIVE_MINUTES)
     while(setTimer.getTime() > 0):
 
-        while (forcedChoiceCount < forcedChoiceTrialCount):
+        while (trialCount < (forcedChoiceTrialCount + choiceTrialCount)):
 
             for i in range(0,len(initialLinks)):
 
@@ -979,18 +965,74 @@ def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, 
                     if initialLinks[i][1] == "L":
                         InitB.x *= -1
 
+                elif initialLinks[i][0].name == "choice":
+
+                    drawInits() ##### Draw both initial links
+
+                    pecksOnInitA = 0
+                    pecksOnInitB = 0
+                    stimTimer = core.CountdownTimer(stimDur)
+                    while (stimTimer.getTime() > 0):
+                            
+                        event.clearEvents()
+                        mouse.clickReset()
+
+                        if mouse.isPressedIn(InitACirc):
+                            print("Clicked in target A") # TESTING ONLY
+                            peckNum += 1
+                            pecksOnInitA += 1
+                            event.clearEvents()
+                            if pecksOnInitA == nPecksToReward:
+                                initVictoryFlag = True
+                                pecked = "A"
+                                break
+
+                        elif mouse.isPressedIn(InitBCirc):
+                            print("Clicked in target B") # TESTING ONLY
+                            peckNum += 1
+                            pecksOnInitB += 1
+                            event.clearEvents()
+                            if pecksOnInitB == nPecksToReward:
+                                initVictoryFlag = True
+                                pecked = "B"
+                                break
+                                
+                        elif (mouse.getPressed()[0] == 1):
+                            while(mouse.getPressed()[0] == 1): # waits for the mouse button to raise before counting another peck
+                                if (mouse.getPressed()[0] == 0):
+                                    break
+                                
+                            peckNum += 1
+                            event.clearEvents()
+                            
+                        if event.getKeys(["escape"]):
+                            print("User pressed escape")
+                            print(str(peckNum))
+                            exit()
+
                 if initVictoryFlag == True:
 
                         # Present terminal links
 
-                        if initialLinks[i][2] == "1":
-                            termVictoryFlag, termStimPecked = displayTLink1(ITI, timeout, nPecksToReward)
+                        if initialLinks[i][0].name == "A" or initialLinks[i][0].name == "B":
+                            if initialLinks[i][2] == "1":
+                                termVictoryFlag, termStimPecked = displayTLink1(ITI, timeout, nPecksToReward)
 
-                        elif initialLinks[i][2] == "2":
-                            termVictoryFlag, termStimPecked = displayTLink2(ITI, timeout, nPecksToReward)
+                            elif initialLinks[i][2] == "2":
+                                termVictoryFlag, termStimPecked = displayTLink2(ITI, timeout, nPecksToReward)
 
+                        elif initialLinks[i][0].name == "choice":
+                            for j in range (2,4):
+                                if pecked == initialLinks[i][j][0].name:
+
+                                    if initialLinks[i][j][2] == "1":
+                                        termVictoryFlag, termStimPecked = displayTLink1(ITI, timeout, nPecksToReward)
+
+                                    elif initialLinks[i][j][2] == "2":
+                                        termVictoryFlag, termStimPecked = displayTLink2(ITI, timeout, nPecksToReward)
 
                         if termVictoryFlag == True:
+
 
                             if termStimPecked == "A":
                                 birdAte = giveReward(1)
@@ -1003,9 +1045,12 @@ def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, 
 
                         # If the peck the terminal link before timeout, give reward based on probability
 
+                displayBlankPanel(ITI)
 
                 #write to csv file
                 pecksOnTarget = 0
+                pecksOnInitB = 0
+                pecksOnInitA = 0
                 initVictoryFlag = False
                 termVictoryFlag = False
                 peckNum = 0
@@ -1014,9 +1059,11 @@ def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, 
 
 
     
-def randomizeInit():
+def randomizeInit(forcedChoiceTrialCount, choiceTrialCount):
     global InitA, InitB
     print("Randomizing Initial Links")
+
+    choiceInit = InitialLinkStim(0,0,"choice")
     initList = [InitA, InitB]
     sideList = ["L", "R"]
     termLinkList = ["1", "2"]
@@ -1028,12 +1075,18 @@ def randomizeInit():
 
     init1List = [initList[0], sideList[0], termLinkList[0]] 
     init2List = [initList[1], sideList[1], termLinkList[1]] 
+    init3List = [choiceInit, "C", init1List, init2List]
 
     tempCounter = 0
-    while (tempCounter < 20):
+    while (tempCounter < (forcedChoiceTrialCount/2)):
 
         outputList.append(init1List)
         outputList.append(init2List)
+        tempCounter += 1
+    tempCounter = 0
+
+    while (tempCounter < choiceTrialCount):
+        outputList.append(init3List)
         tempCounter += 1
 
     random.shuffle(outputList)
@@ -1044,6 +1097,8 @@ def displayTLink1(interTrialInterval, timeout, nPecksToReward):
     global peckNum, terminalProbabilityCounter1, termLinkACirc, termLinkDCirc, termProbList1
     #displayBlankPanel(interTrialInterval)
     print("Presenting Terminal Link 1")
+
+    displayBlankPanel(.25) # Make it so that the animal doesn't peck at the same thing too quickly
 
     pecksOnTargetA = 0
     pecksOnTargetD = 0
@@ -1058,7 +1113,9 @@ def displayTLink1(interTrialInterval, timeout, nPecksToReward):
 
     if termProbList1[terminalProbabilityCounter1] == 0:
         #20% chance of getting term link B
+        termLinkA.x *= -1
         drawtermLinkA()
+        termLinkA.x *= -1
 
     elif termProbList1[terminalProbabilityCounter1] == 1:
         #80% chance of getting term link C
@@ -1073,7 +1130,7 @@ def displayTLink1(interTrialInterval, timeout, nPecksToReward):
             if mouse.isPressedIn(termLinkACirc):
                 print("Clicked in target A") # TESTING ONLY
                 peckNum += 1
-                pecksOnTargetA += 1 #IF THIS IS LEFT THE WAY IT IS, IT WILL ACCEPT PECKS TO BOTH TO SATISFY. UNACCEPTABLE. FIX
+                pecksOnTargetA += 1 
                 event.clearEvents()
                 if pecksOnTargetA == nPecksToReward:
                     termVictoryFlag = True
@@ -1097,7 +1154,7 @@ def displayTLink1(interTrialInterval, timeout, nPecksToReward):
             if mouse.isPressedIn(termLinkDCirc):
                 print("Clicked in target D") # TESTING ONLY
                 peckNum += 1
-                pecksOnTargetD += 1 #IF THIS IS LEFT THE WAY IT IS, IT WILL ACCEPT PECKS TO BOTH TO SATISFY. UNACCEPTABLE. FIX
+                pecksOnTargetD += 1
                 event.clearEvents()
                 if pecksOnTargetD == nPecksToReward:
                     termVictoryFlag = True
@@ -1127,6 +1184,8 @@ def displayTLink2(interTrialInterval, timeout, nPecksToReward):
     #displayBlankPanel(interTrialInterval)
     print ("Presenting Terminal Link 2")
 
+    displayBlankPanel(.25) # Make it so that the animal doesn't peck at the same thing too quickly
+
     pecksOnTargetB = 0
     pecksOnTargetC = 0
     termVictoryFlag = False
@@ -1140,7 +1199,9 @@ def displayTLink2(interTrialInterval, timeout, nPecksToReward):
 
     if termProbList2[terminalProbabilityCounter2] == 0:
         #20% chance of getting term link B
+        termLinkB.x *= -1
         drawtermLinkB()
+        termLinkB.x *= -1
 
     elif termProbList2[terminalProbabilityCounter2] == 1:
         #80% chance of getting term link C
@@ -1155,7 +1216,7 @@ def displayTLink2(interTrialInterval, timeout, nPecksToReward):
             if mouse.isPressedIn(termLinkBCirc):
                 print("Clicked in target B") # TESTING ONLY
                 peckNum += 1
-                pecksOnTargetB += 1 #IF THIS IS LEFT THE WAY IT IS, IT WILL ACCEPT PECKS TO BOTH TO SATISFY. UNACCEPTABLE. FIX
+                pecksOnTargetB += 1
                 event.clearEvents()
                 if pecksOnTargetB == nPecksToReward:
                     termVictoryFlag = True
@@ -1163,7 +1224,7 @@ def displayTLink2(interTrialInterval, timeout, nPecksToReward):
                     break
 
             elif (mouse.getPressed()[0] == 1):
-                while(mouse.getPressed()[0] == 1): # waits for the mouse button to raise before counting another peck
+                while(mouse.getPressed()[0] == 1): 
                     if (mouse.getPressed()[0] == 0):
                         break
                     
@@ -1203,6 +1264,45 @@ def displayTLink2(interTrialInterval, timeout, nPecksToReward):
 
     return termVictoryFlag, termStimPecked
 
+def drawInits():
+    global win, InitACirc, InitBCirc
+
+    InitB.x *= -1
+
+    topStart = ((InitB.x - 35), (InitB.y + 20))
+    topEnd = ((InitB.x + 35), (InitB.y + 20))
+    midStart = ((InitB.x - InitB.radius), (InitB.y))
+    midEnd = ((InitB.x + InitB.radius), (InitB.y))
+    bottomStart = ((InitB.x - 35), (InitB.y - 20))
+    bottomEnd = ((InitB.x + 35), (InitB.y - 20))
+
+    drawBlankLeftChoice()
+    drawBlankCentreChoice()
+    drawBlankRightChoice()
+
+    #INIT A
+
+    InitACirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = InitA.radius, pos = (InitA.x, InitA.y), units = "pix", lineColor = InitA.outlineColour, fillColor = "White")
+    InitAVertLine = visual.Line(win, start = (InitA.x, (InitA.y + InitA.radius)), end = (InitA.x, (InitA.y - InitA.radius)), lineWidth = LINE_WIDTH, units = "pix", lineColor = "Black")
+
+    #INITB
+
+    InitBCirc = visual.Circle(win, lineWidth = LINE_WIDTH, radius = InitB.radius, pos = (InitB.x, InitB.y), units = "pix", lineColor = InitB.outlineColour, fillColor = "White")
+    InitBTopLine = visual.Line(win, start = (topStart), end = (topEnd), lineWidth = LINE_WIDTH, units = "pix", lineColor = "Black")
+    InitBMidLine = visual.Line(win, start = (midStart), end = (midEnd), lineWidth = LINE_WIDTH, units = "pix", lineColor = "Black")
+    InitBBottomLine = visual.Line(win, start = (bottomStart), end = (bottomEnd), lineWidth = LINE_WIDTH, units = "pix", lineColor = "Black")
+    
+    InitACirc.draw()
+    InitAVertLine.draw()
+    InitBCirc.draw()
+    InitBTopLine.draw()
+    InitBMidLine.draw()
+    InitBBottomLine.draw()
+
+    InitB.x *= -1
+
+    win.flip()
+
 def drawTermLinksBC():
     global win, termLinkBCirc, termLinkCCirc
 
@@ -1232,15 +1332,25 @@ def drawTermLinksAD():
 def giveReward(probability):
     print("Giving a reward, with the probability of reinforcement of " + str(probability))
 
+    #drawBlankPanel(ITI)
+
     birdAte = False
 
     return birdAte
 
-def doExpPhase():
+def doExpPhase(Reversal, forcedChoiceTrialCount, choiceTrialCount):
     print("PHASE 4")
-    
-def doExpPhaseReversal():
-    print("PHASE 4 REVERSAL")
+
+    # Match choice stimuli with initial links
+
+    # Match initial links with terminal link sets
+
+    # Present choice stimuli randomly, accoring to spec
+
+    # Present the matched initial link
+
+    # Present the matched terminal link based on probability
+
     
 def displayBlankPanel(duration):
     drawInitialStims()
@@ -1249,7 +1359,7 @@ def displayBlankPanel(duration):
     
     
 def main():
-    global datafile, filename, writer, stimDur, rewardTime, ITI
+    global datafile, filename, writer, stimDur, rewardTime, ITI, experimentParameters
     initializeStims()
     getUserInput()
     
@@ -1258,8 +1368,14 @@ def main():
         
     setup()
 
-    writer.writerow(['Subject Number', 'Trial Number', 'Total Pecks', 'Elapsed Time', 'Stimulus Presented', 
-                          'Stimulus Side', 'Satisfied No. Pecks', 'No. Pecks on Target', 'Accuracy'])
+    now = datetime.datetime.now()
+    dateAndTime = str(now.year) + "/" + str(now.month) + "/" + str(now.day) + " at " + str(now.hour) + ":" + str(now.minute)
+    print(dateAndTime)
+
+    writer.writerow(['Subject Number', 'Date and Time Run', 'Session Number', 'Research Assistant'])
+    writer.writerow([str(experimentParameters[0]), dateAndTime, str(experimentParameters[1]), experimentParameters[6]])
+
+    writer.writerow([])
 
     if str(experimentParameters[5]) == "Yes":
         rewardTime = 0
@@ -1273,30 +1389,60 @@ def main():
                ["L","InitA"], ["R","InitA"], ["L","InitB"], ["R","InitB"], ["C", "CA"], ["C", "CB"], ["C", "CC"]]#, ["L","InitC"], ["R","InitC"]]
 
     if str(experimentParameters[2]) == "Autoshaping (FR1)":
+        writer.writerow(['Trial Number', 'Total Pecks', 'Elapsed Time', 'Stimulus Presented', 
+                          'Stimulus Side', 'Satisfied No. Pecks', 'No. Pecks on Target', 'Accuracy', 'Reaction Times'])
+
         doTraining(240, 1, True, stimuli)
         
     elif str(experimentParameters[2])[0:16] == "Operant Training":
+
         if str(experimentParameters[2])[17:] == "(FR1)":
             print("FIXED RATIO 1 OT")
+
+            writer.writerow(["FR 1"])
+            writer.writerow([])
+            writer.writerow(['Trial Number', 'Total Pecks', 'Elapsed Time', 'Stimulus Presented', 
+                          'Stimulus Side', 'Satisfied No. Pecks', 'No. Pecks on Target', 'Accuracy', 'Reaction Times'])
+
             doTraining(60, 1, False, stimuli)
         elif str(experimentParameters[2])[17:] == "(FR3)":
             print("FIXED RATIO 3 OT")
+
+            writer.writerow(["FR 3"])
+            writer.writerow([])
+            writer.writerow(['Trial Number', 'Total Pecks', 'Elapsed Time', 'Stimulus Presented', 
+                          'Stimulus Side', 'Satisfied No. Pecks', 'No. Pecks on Target', 'Accuracy', 'Reaction Times'])
+
             doTraining(60, 3, False, stimuli)
         elif str(experimentParameters[2])[17:] == "(FR5)":
             print("FIXED RATIO 5 OT")
+
+            writer.writerow(["FR 5"])
+            writer.writerow([])
+            writer.writerow(['Trial Number', 'Total Pecks', 'Elapsed Time', 'Stimulus Presented', 
+                          'Stimulus Side', 'Satisfied No. Pecks', 'No. Pecks on Target', 'Accuracy', 'Reaction Times'])
+
             doTraining(60, 5, False, stimuli)
         
     elif str(experimentParameters[2]) == "Stim Pairing":
+
+        writer.writerow(['Trial Number', 'Total Pecks', 'Elapsed Time', 'Initial Link Presented', 'Initial Link side', 'Terminal Link Presented',
+                         'Terminal Link Side', 'Reaction Times'])
+
         doStimPairing(60, 40, 20, 30)
         
     elif str(experimentParameters[2]) == "Experimental Phase":
-        doExpPhase()
+        writer.writerow(['Trial Number', 'Total Pecks', 'Elapsed Time', 'Choice Stimulus Presented', 'Choice Stimulus Side', 'Initial Link Presented', 'Initial Link side', 'Terminal Link Presented',
+                         'Terminal Link Side', 'Reaction Times'])
+
+        doExpPhase(False, 30, 30)
         
     elif str(experimentParameters[2]) == "Experimental Reversal":
-        doExpPhaseReversal()
+        writer.writerow(['Trial Number', 'Total Pecks', 'Elapsed Time', 'Choice Stimulus Presented', 'Choice Stimulus Side', 'Initial Link Presented', 'Initial Link side', 'Terminal Link Presented',
+                         'Terminal Link Side', 'Reaction Times'])
+        
+        doExpPhase(True, 30, 30)
     
-    
-    #testScrn()
 
 if __name__ == "__main__":
     main()
