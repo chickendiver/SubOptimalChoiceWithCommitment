@@ -1505,9 +1505,9 @@ def doExpPhase(Reversal, forcedChoiceTrialCount, choiceTrialCount):
                             exit()
 
                     if choiceStims[i][1] == "L":
-                        CB.x *= -1
+                        CC.x *= -1
                     elif choiceStims[i][1] == "C":
-                        CB.x = lastX
+                        CC.x = lastX
 
                 elif choiceStims[i][0].name == "choice":
 
@@ -1607,31 +1607,31 @@ def doExpPhase(Reversal, forcedChoiceTrialCount, choiceTrialCount):
 
                         if choiceStims[i][0].name == "A" or choiceStims[i][0].name == "B" or choiceStims[i][0].name == "C":
                             if choiceStims[i][2] == "A":
-                                pass
+                                
                                 pecked, initVictoryFlag = presentInitialLinkForChoice("A", initStims)
 
                             elif choiceStims[i][2] == "B":
-                                pass
+                                
                                 pecked, initVictoryFlag = presentInitialLinkForChoice("B", initStims)
 
                             elif choiceStims[i][2] == "choice":
-                                pass
+                                
                                 pecked, initVictoryFlag = presentInitialLinkForChoice("choice", initStims)
 
                         elif choiceStims[i][0].name == "choice":
                             for j in range (3,5):
-                                if pecked == choiceStims[i][j][0].name:
+                                if peckedChoice == choiceStims[i][j][0].name:
 
                                     if choiceStims[i][j][2] == "A":
-                                        pass
+                                        
                                         pecked, initVictoryFlag = presentInitialLinkForChoice("A", initStims)
 
                                     elif choiceStims[i][j][2] == "B":
-                                        pass
+                                        
                                         pecked, initVictoryFlag = presentInitialLinkForChoice("B", initStims)
 
                                     elif choiceStims[i][j][2] == "choice":
-                                        pass
+                                        
                                         pecked, initVictoryFlag = presentInitialLinkForChoice("choice", initStims)
 
                         if initVictoryFlag == True:
@@ -1672,7 +1672,6 @@ def doExpPhase(Reversal, forcedChoiceTrialCount, choiceTrialCount):
                                     elif termStimPecked == "C":
                                         birdAte = giveReward(0)
 
-                            # If the peck the terminal link before timeout, give reward based on probability
 
                 displayBlankPanel(ITI)
 
@@ -1861,15 +1860,15 @@ def drawChoices(choice1, choice1Side, choice2, choice2Side):
         if choice1 == "A":
 
             if choice1Side == "L":
-                CA.x *= 1
+                CA.x *= -1
             elif choice1Side == "C":
                 lastX = CA.x
                 CA.x = 0
 
-        if choice2 == "A":
+        elif choice2 == "A":
 
             if choice2Side == "L":
-                CA.x *= 1
+                CA.x *= -1
             elif choice2Side == "C":
                 lastX = CA.x
                 CA.x = 0
@@ -1889,14 +1888,14 @@ def drawChoices(choice1, choice1Side, choice2, choice2Side):
         if choice1 == "A":
 
             if choice1Side == "L":
-                CA.x *= 1
+                CA.x *= -1
             elif choice1Side == "C":
                 CA.x = lastX
 
-        if choice2 == "A":
+        elif choice2 == "A":
 
             if choice2Side == "L":
-                CA.x *= 1
+                CA.x *= -1
             elif choice2Side == "C":
                 CA.x = lastX
 
@@ -1907,15 +1906,15 @@ def drawChoices(choice1, choice1Side, choice2, choice2Side):
         if choice1 == "B":
 
             if choice1Side == "L":
-                CB.x *= 1
+                CB.x *= -1
             elif choice1Side == "C":
                 lastX = CB.x
                 CB.x = 0
 
-        if choice2 == "B":
+        elif choice2 == "B":
 
             if choice2Side == "L":
-                CB.x *= 1
+                CB.x *= -1
             elif choice2Side == "C":
                 lastX = CB.x
                 CB.x = 0
@@ -1928,14 +1927,14 @@ def drawChoices(choice1, choice1Side, choice2, choice2Side):
         if choice1 == "B":
 
             if choice1Side == "L":
-                CB.x *= 1
+                CB.x *= -1
             elif choice1Side == "C":
                 CB.x = lastX
 
-        if choice2 == "B":
+        elif choice2 == "B":
 
             if choice2Side == "L":
-                CB.x *= 1
+                CB.x *= -1
             elif choice2Side == "C":
                 CB.x = lastX
 
@@ -1948,15 +1947,15 @@ def drawChoices(choice1, choice1Side, choice2, choice2Side):
         if choice1 == "C":
 
             if choice1Side == "L":
-                CC.x *= 1
+                CC.x *= -1
             elif choice1Side == "C":
                 lastX = CC.x
                 CC.x = 0
 
-        if choice2 == "C":
+        elif choice2 == "C":
 
             if choice2Side == "L":
-                CC.x *= 1
+                CC.x *= -1
             elif choice2Side == "C":
                 lastX = CC.x
                 CC.x = 0
@@ -1969,14 +1968,14 @@ def drawChoices(choice1, choice1Side, choice2, choice2Side):
         if choice1 == "C":
 
             if choice1Side == "L":
-                CC.x *= 1
+                CC.x *= -1
             elif choice1Side == "C":
                 CC.x = lastX
 
-        if choice2 == "C":
+        elif choice2 == "C":
 
             if choice2Side == "L":
-                CC.x *= 1
+                CC.x *= -1
             elif choice2Side == "C":
                 CC.x = lastX
         
