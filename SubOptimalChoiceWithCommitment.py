@@ -886,7 +886,7 @@ def doStimPairing(interTrialInterval, forcedChoiceTrialCount, choiceTrialCount, 
     setTimer = core.CountdownTimer(FORTYFIVE_MINUTES)
     while(setTimer.getTime() > 0):
 
-        while (trialCount < (forcedChoiceTrialCount + choiceTrialCount)):
+        while (trialCount < (forcedChoiceTrialCount + choiceTrialCount)): ## NOT SURE IF THIS IS A FUNCTIONAL LOOP... FIX
 
             for i in range(0,len(initialLinks)):
 
@@ -1372,7 +1372,7 @@ def doExpPhase(Reversal, forcedChoiceTrialCount, choiceTrialCount):
     setTimer = core.CountdownTimer(FORTYFIVE_MINUTES)
     while(setTimer.getTime() > 0):
 
-        while (trialCount < (forcedChoiceTrialCount + choiceTrialCount)):
+        while (trialCount < (forcedChoiceTrialCount + choiceTrialCount)):  ## NOT SURE IF THIS IS A FUNCTIONAL LOOP... FIX
 
             for i in range(0,len(choiceStims)):
 
@@ -1521,7 +1521,7 @@ def doExpPhase(Reversal, forcedChoiceTrialCount, choiceTrialCount):
                         event.clearEvents()
                         mouse.clickReset()
 
-                        if choiceStims[1][1][0].name == "A" or choiceStims[1][2][0].name == "A":
+                        if choiceStims[1][3][0].name == "A" or choiceStims[1][4][0].name == "A":
 
                             if mouse.isPressedIn(CARect):
                                 print("Clicked in target A") # TESTING ONLY
@@ -1546,7 +1546,7 @@ def doExpPhase(Reversal, forcedChoiceTrialCount, choiceTrialCount):
                                 print(str(peckNum))
                                 exit()
 
-                        if choiceStims[1][1][0].name == "B" or choiceStims[1][2][0].name == "B":
+                        if choiceStims[1][3][0].name == "B" or choiceStims[1][4][0].name == "B":
                             if mouse.isPressedIn(CBRect):
                                 print("Clicked in target B") # TESTING ONLY
                                 peckNum += 1
@@ -1570,7 +1570,7 @@ def doExpPhase(Reversal, forcedChoiceTrialCount, choiceTrialCount):
                                 print(str(peckNum))
                                 exit()
 
-                        if choiceStims[1][1][0].name == "C" or choiceStims[1][2][0].name == "C":
+                        if choiceStims[1][3][0].name == "C" or choiceStims[1][4][0].name == "C":
                             if mouse.isPressedIn(CCRect):
                                 print("Clicked in target C") # TESTING ONLY
                                 peckNum += 1
@@ -1593,6 +1593,12 @@ def doExpPhase(Reversal, forcedChoiceTrialCount, choiceTrialCount):
                                 print("User pressed escape")
                                 print(str(peckNum))
                                 exit()
+
+                                
+
+                #############################################################################################
+
+
 
                 if initVictoryFlag == True: ## HAVE NOT EDITED THIS METHOD PAST THIS POINT. CONTINUE LATER.
 
@@ -1670,9 +1676,9 @@ def randomizeChoiceStims(forcedChoiceTrialCount, choiceTrialCount):
     choice1List = [choiceList[0], sideList[0], initList[0]] 
     choice2List = [choiceList[1], sideList[1], initList[1]]
     choice3List = [choiceList[2], sideList[2], initList[2]]
-    choice4List = [choiceTrialStim, choice1List, choice2List]
-    choice5List = [choiceTrialStim, choice1List, choice3List]
-    choice6List = [choiceTrialStim, choice2List, choice3List]
+    choice4List = [choiceTrialStim, "D", "D", choice1List, choice2List]
+    choice5List = [choiceTrialStim, "D", "D", choice1List, choice3List]
+    choice6List = [choiceTrialStim, "D", "D", choice2List, choice3List]
 
     tempCounter = 0
     while (tempCounter < (forcedChoiceTrialCount/3)):
