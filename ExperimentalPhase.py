@@ -1,5 +1,5 @@
 from sys import platform as _platform
-from psychopy import visual, core, gui, event
+from psychopy import visual, core, gui, event, parallel
 import time, csv, random, datetime
 
 #Determine which OS is being used, and calculate the screen size
@@ -162,11 +162,6 @@ class InitialLinkStim:
 
           return termStimShown
 
-
-
-
-          
-
 class TerminalLinkStim:
   def __init__(self, name):
           self.x = 0
@@ -269,7 +264,7 @@ def rollDiceForFiftyFifty():
 
 
 def setup():
-    global win, mouse, rolledBefore
+    global win, mouse, rolledBefore, parallelPort
 
     print("\nSetting up...")
     
@@ -279,6 +274,8 @@ def setup():
     #setup input from the mouse
     mouse = event.Mouse(visible = True)
     core.checkPygletDuringWait = True
+
+    parallelPort = parallel.ParallelPort(address=0x0378)
 
     rolledBefore = False
     rolledFFBefore = False
@@ -537,10 +534,40 @@ def waitForClicks(stimuli):
 
 def displayEndScreen():
   print("Displaying end screen")
-  pass
+  #FIX: Display "EXPERIMENT HAS FINISHED, 45 MINUTES HAVE ELAPSED"
+  
 
 def giveReward(probability):
   print("Reward given")
+
+def dropLeftHopper():
+  parallelPort.setPin(16, 1) #Drops hopper
+  parallelPort.setPin(4, 1) #Turns on hopper light
+
+def raiseLeftHopper():
+  parallelPort.setPin(16, 0) #Raises hopper
+  parallelPort.setPin(4, 0) #Turns off hopper light
+
+def dropRightHopper():
+  parallelPort.setPin(32, 1) #Drops hopper
+  parallelPort.setPin(8, 1) #Turns on hopper light
+
+def raiseRightHopper():
+  parallelPort.setPin(32, 0) #Raises hopper
+  parallelPort.setPin(8, 0) #Turns off hopper light
+
+def turnOnHouseLight():
+  parallelPort.setPin(1, 1)
+
+def turnOffHouseLight():
+  parallelPort.setPin(1, 0)
+
+def turnOnFan():
+  parallelPort.setPin(2, 1)
+
+def turnOffFan():
+  parallelPort.setPin(2, 0)
+
 
 def doExperimentalPhase():
     print("Starting experimental phase...")
@@ -694,9 +721,33 @@ def doTraining(ITI, pecksToReward, rewardIfNotPecked):
     drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
     core.wait(ITI)
 
+def getUserInput():
+    userCancelled = False
+    myDlg = gui.Dlg(title="Sub-Optimal Choice with Commitment", labelButtonOK=' START ')
+    myDlg.addField('Subject number:', 0)
+    myDlg.addField('Session number:', 0)
+    myDlg.addField('Condition:', choices = ['Autoshaping (FR1)', 'Operant Training (FR1)', 'Operant Training (FR3)', 'Operant Training (FR5)', 'Stim Pairing', 'Experimental Phase', 'Experimental Reversal'])
+    myDlg.addField(myDlg.addField('Condition:', choices = ['1', '2', '3', '4']))
+    myDlg.addField('Reward Duration:', 10)
+    myDlg.addField('Stimulus Timeout:', 60)
+    myDlg.addField('Is this a test?:', choices = ['Yes', 'No'])
+    myDlg.addField('Research Assistant:', choices = ['Unlisted','Ariel','Jason', 'Jeff', 'Josh','Nuha'])
+    myDlg.show()  # show dialog and wait for OK or Cancel
+    
+    if myDlg.OK:  # then the user pressed OK
+        experimentParameters = myDlg.data
+        print experimentParameters
+    else:
+        print 'user cancelled'
+        userCancelled = True
+
+    return experimentParameters, userCancelled
+
 
 def main():
     global ITI, stimDur, contingency, reversal, termDur
+
+    userResponses, userCancelled = getUserInput()
 
     termDur = 5
     reversal = False
