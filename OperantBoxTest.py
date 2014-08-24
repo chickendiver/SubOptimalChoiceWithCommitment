@@ -171,25 +171,74 @@ def dealWithButtonPress(targetPecked):
     message = visual.TextStim(win, text='TOP RIGHT')
     message.setAutoDraw(True)  # automatically draw every frame
     win.flip()
+    dropRightHopper()
+    core.wait(2.0)
+    raiseRightHopper()
     core.wait(2.0)
 
   elif targetPecked == "TL":
     message = visual.TextStim(win, text='TOP LEFT')
     message.setAutoDraw(True)  # automatically draw every frame
     win.flip()
+    dropLeftHopper()
+    core.wait(2.0)
+    raiseLeftHopper()
     core.wait(2.0)
 
   elif targetPecked == "BL":
     message = visual.TextStim(win, text='BOTTOM LEFT')
     message.setAutoDraw(True)  # automatically draw every frame
     win.flip()
+    turnOnFan()
+    core.wait(10)
+    turnOffFan()
     core.wait(2.0)
 
   elif targetPecked == "BR":
     message = visual.TextStim(win, text='BOTTOM RIGHT')
     message.setAutoDraw(True)  # automatically draw every frame
     win.flip()
+    turnOnHouseLight()
     core.wait(2.0)
+    turnOffHouseLight()
+    core.wait(2.0)
+
+
+def dropLeftHopper():
+  parallelPort.setPin(16, 1) #Drops hopper
+  parallelPort.setPin(4, 1) #Turns on hopper light
+
+def raiseLeftHopper():
+  parallelPort.setPin(16, 0) #Raises hopper
+  parallelPort.setPin(4, 0) #Turns off hopper light
+
+def dropRightHopper():
+  parallelPort.setPin(32, 1) #Drops hopper
+  parallelPort.setPin(8, 1) #Turns on hopper light
+
+def raiseRightHopper():
+  parallelPort.setPin(32, 0) #Raises hopper
+  parallelPort.setPin(8, 0) #Turns off hopper light
+
+def turnOnHouseLight():
+  parallelPort.setPin(1, 1)
+
+def turnOffHouseLight():
+  parallelPort.setPin(1, 0)
+
+def turnOnFan():
+  parallelPort.setPin(2, 1)
+
+def turnOffFan():
+  parallelPort.setPin(2, 0)
+
+def readLeftHopperBeam():
+  #return if beam broken
+  pass
+
+def readRightHopperBeam():
+  #return if beam broken
+  pass
 
 
 def main():

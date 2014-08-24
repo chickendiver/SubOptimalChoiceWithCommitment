@@ -568,6 +568,14 @@ def turnOnFan():
 def turnOffFan():
   parallelPort.setPin(2, 0)
 
+def readLeftHopperBeam():
+  #return if beam broken
+  pass
+
+def readRightHopperBeam():
+  #return if beam broken
+  pass
+
 
 def doExperimentalPhase():
     print("Starting experimental phase...")
@@ -699,7 +707,7 @@ def generateListOfAllStims():
               LChoiceB, CChoiceB, RChoiceB,
               LChoiceC, CChoiceC, RChoiceC,
               LinitA, RinitA,
-              LinitB, RinitB
+              LinitB, RinitB,
               LtermLinkA, RtermLinkA,
               LtermLinkB, RtermLinkB,
               LtermLinkC, RtermLinkC,
