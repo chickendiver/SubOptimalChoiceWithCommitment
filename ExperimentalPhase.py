@@ -153,6 +153,9 @@ class InitialLinkStim:
   def drawTermLinks(self):
           result = rollForTermResult(self)
 
+          # FIX/TEST: IS DRAWING BLANKS HERE NECESSARY?
+          drawBlanksNoFlip(listOfBlanks)
+
           if result == 0:
             termStimShown = self.termStims[0]
             self.termStims[0].draw()
@@ -275,7 +278,7 @@ def setup():
     mouse = event.Mouse(visible = True)
     core.checkPygletDuringWait = True
 
-    parallelPort = parallel.ParallelPort(address=0x0378)
+    #parallelPort = parallel.ParallelPort(address=0x0378)
 
     rolledBefore = False
     rolledFFBefore = False
@@ -484,8 +487,15 @@ def makeChoiceStimList():
 
     return choiceList
 
+def drawBlanksNoFlip(stimuli):
+    for i in range(0,len(stimuli)):
+        stimuli[i].draw()
+
 def drawStims(stimuli):
     print("Drawing stimuli...")
+
+    if len(stimuli) != len(listOfBlanks):
+        drawBlanksNoFlip(listOfBlanks)
 
     for i in range(0,len(stimuli)):
       stimuli[i].draw()
@@ -735,7 +745,7 @@ def getUserInput():
     myDlg.addField('Subject number:', 0)
     myDlg.addField('Session number:', 0)
     myDlg.addField('Condition:', choices = ['Autoshaping (FR1)', 'Operant Training (FR1)', 'Operant Training (FR3)', 'Operant Training (FR5)', 'Stim Pairing', 'Experimental Phase', 'Experimental Reversal'])
-    myDlg.addField(myDlg.addField('Condition:', choices = ['1', '2', '3', '4']))
+    #myDlg.addField('Condition:', choices = ['1', '2', '3', '4'])
     myDlg.addField('Reward Duration:', 10)
     myDlg.addField('Stimulus Timeout:', 60)
     myDlg.addField('Is this a test?:', choices = ['Yes', 'No'])
