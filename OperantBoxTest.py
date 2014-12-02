@@ -234,11 +234,14 @@ def turnOffFan():
 
 def readLeftHopperBeam():
   #return if beam broken
-  pass
+  value = readPort.readPort(0x0201) & 0x10 ## FIX: ENSURE THIS MASK IS CORRECT
+  return value
 
 def readRightHopperBeam():
   #return if beam broken
-  pass
+  value = readPort.readPort(0x0201) & 0x20 ## FIX: ENSURE THIS MASK IS CORRECT
+  return value
+
 
 
 def main():

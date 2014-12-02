@@ -1,6 +1,7 @@
 from sys import platform as _platform
 from psychopy import visual, core, gui, event, parallel
 import time, csv, random, datetime
+#import readPort
 
 #Determine which OS is being used, and calculate the screen size
 if _platform == "linux" or _platform == "linux2":
@@ -580,11 +581,13 @@ def turnOffFan():
 
 def readLeftHopperBeam():
   #return if beam broken
-  pass
+  value = readPort.readPort(0x0201) & 0x10 ## FIX: ENSURE THIS MASK IS CORRECT
+  return value
 
 def readRightHopperBeam():
   #return if beam broken
-  pass
+  value = readPort.readPort(0x0201) & 0x20 ## FIX: ENSURE THIS MASK IS CORRECT
+  return value
 
 
 def doExperimentalPhase():
