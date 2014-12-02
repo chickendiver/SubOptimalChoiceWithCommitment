@@ -745,11 +745,11 @@ def getUserInput():
     myDlg.addField('Subject number:', 0)
     myDlg.addField('Session number:', 0)
     myDlg.addField('Condition:', choices = ['Autoshaping (FR1)', 'Operant Training (FR1)', 'Operant Training (FR3)', 'Operant Training (FR5)', 'Stim Pairing', 'Experimental Phase', 'Experimental Reversal'])
-    #myDlg.addField('Condition:', choices = ['1', '2', '3', '4'])
+    #myDlg.addField('Contingency:', choices = ['1', '2', '3', '4'])
     myDlg.addField('Reward Duration:', 10)
     myDlg.addField('Stimulus Timeout:', 60)
     myDlg.addField('Is this a test?:', choices = ['Yes', 'No'])
-    myDlg.addField('Research Assistant:', choices = ['Unlisted','Ariel','Jason', 'Jeff', 'Josh','Nuha'])
+    myDlg.addField('Research Assistant:')#, choices = ['Unlisted','Ariel','Jason', 'Jeff', 'Josh','Nuha'])
     myDlg.show()  # show dialog and wait for OK or Cancel
     
     if myDlg.OK:  # then the user pressed OK
