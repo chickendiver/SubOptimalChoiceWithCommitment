@@ -715,24 +715,25 @@ def generateListOfAllStims():
   RtermLinkD = TerminalLinkStim("TermD")
   RtermLinkD.set_x(R_X)
 
-  stimList = [LChoiceA, CChoiceA, RChoiceA, # FIX: ADD MORE TRIALS TO THIS LIST ACCORDING TO THE SPEC
-              LChoiceB, CChoiceB, RChoiceB,
-              LChoiceC, CChoiceC, RChoiceC,
-              LinitA, RinitA,
-              LinitB, RinitB,
-              LtermLinkA, RtermLinkA,
-              LtermLinkB, RtermLinkB,
-              LtermLinkC, RtermLinkC,
-              LtermLinkD, RtermLinkD]
+  stimList = [[LChoiceA], [CChoiceA], [RChoiceA], # FIX: ADD MORE TRIALS TO THIS LIST ACCORDING TO THE SPEC
+              [LChoiceB], [CChoiceB], [RChoiceB],
+              [LChoiceC], [CChoiceC], [RChoiceC],
+              [LinitA], [RinitA],
+              [LinitB], [RinitB],
+              [LtermLinkA], [RtermLinkA],
+              [LtermLinkB], [RtermLinkB],
+              [LtermLinkC], [RtermLinkC],
+              [LtermLinkD], [RtermLinkD]]
 
   random.shuffle(stimList)
   return stimList
 
 def doTraining(ITI, pecksToReward, rewardIfNotPecked):
+  createStimuli()
   stimList = generateListOfAllStims()
 
   for i in range(0, len(stimList)):
-    stimList[i].draw()
+    drawStims(stimList[i])
     stimPecked, clickFlag = waitForClicks(pecksToReward, stimList[i])
 
     if rewardIfNotPecked or clickFlag:
@@ -771,8 +772,8 @@ def main():
 
     termDur = 5
     contingency = "4"
-    #stimDur = 5
-    #ITI = 5
+    stimDur = 5
+    ITI = 5
 
     setup()
 
