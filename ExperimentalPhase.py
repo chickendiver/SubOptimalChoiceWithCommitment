@@ -11,7 +11,7 @@ if _platform == "linux" or _platform == "linux2":
     root = Tkinter.Tk()
 
     screen_width = root.winfo_screenwidth()
-    screen_height = root.winfo_screenheight() 
+    screen_height = root.winfo_screenheight()
     
     print("_width: " + str(screen_width) + "\n" + "height: " + str(screen_height))
     
@@ -503,12 +503,11 @@ def drawStims(stimuli):
 
     win.flip()
 
-def waitForClicks(stimuli):
+def waitForClicks(targetPeckRequired, stimuli):
 
     print("Waiting for clicks...")
     peckNum = 0
     targetPeckNum = 0
-    targetPeckRequired = 1 #FIX: MAKE ADJUSTABLE
     targetPecked = ""
 
     targetFlag = False
@@ -604,10 +603,10 @@ def doExperimentalPhase():
         if (expTimer.getTime <= 0):
           break
         drawStims(stimList[i])
-        cStimPecked, cClickFlag = waitForClicks(stimList[i])
+        cStimPecked, cClickFlag = waitForClicks(1, stimList[i])
         if cClickFlag == True:
           drawStims(cStimPecked.initStims)
-          iStimPecked, iClickFlag = waitForClicks(cStimPecked.initStims)
+          iStimPecked, iClickFlag = waitForClicks(1, cStimPecked.initStims)
           if iClickFlag == True:
             termStimShown = iStimPecked.drawTermLinks()
             win.flip()
@@ -654,7 +653,7 @@ def doStimPairing():
         if (expTimer.getTime <= 0):
           break
         drawStims(stimList[i])
-        iStimPecked, iClickFlag = waitForClicks(stimList[i])
+        iStimPecked, iClickFlag = waitForClicks(1, stimList[i])
         if iClickFlag == True:
           termStimShown = iStimPecked.drawTermLinks()
           win.flip()
@@ -732,9 +731,9 @@ def generateListOfAllStims():
 def doTraining(ITI, pecksToReward, rewardIfNotPecked):
   stimList = generateListOfAllStims()
 
-  for i in range(0, let(stimList)):
+  for i in range(0, len(stimList)):
     stimList[i].draw()
-    stimPecked, clickFlag = waitForClicks(stimList[i])
+    stimPecked, clickFlag = waitForClicks(pecksToReward, stimList[i])
 
     if rewardIfNotPecked or clickFlag:
       giveReward(1)
@@ -771,20 +770,32 @@ def main():
     userResponses, userCancelled = getUserInput()
 
     termDur = 5
-    reversal = False
     contingency = "4"
-    stimDur = 5
-    ITI = 5
+    #stimDur = 5
+    #ITI = 5
+
+    if userResponses[2] == 'Autoshaping (FR1)':
+        doTraining(240, 1, True)
+    elif userResponses[2] == 'Operant Training (FR1)':
+        doTraining(60, 1, False)
+    elif userResponses[2] == 'Operant Training (FR3)':
+        doTraining(60, 3, False)
+    elif userResponses[2] == 'Operant Training (FR5)':
+        doTraining(60, 5, False)
+    elif userResponses[2] == 'Stim Pairing':
+        doStimPairing()
+    elif userResponses[2] == 'Experimental Phase':
+        reversal = False
+        doExperimentalPhase()
+    elif userResponses[2] == 'Experimental Reversal':
+        reversal = True
+        doExperimentalPhase()
+
 
     #FIX: ADD A GUI INPUT HERE
 
     setup()
     doExperimentalPhase()
-    doStimPairing()
-    doTraining(240, 1, True)
-    doTraining(60, 1, False)
-    doTraining(60, 3, False)
-    doTraining(60, 5, False)
 
 if __name__ == "__main__":
     main()
