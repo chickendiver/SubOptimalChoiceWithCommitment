@@ -774,6 +774,8 @@ def main():
     #stimDur = 5
     #ITI = 5
 
+    setup()
+
     if userResponses[2] == 'Autoshaping (FR1)':
         doTraining(240, 1, True)
     elif userResponses[2] == 'Operant Training (FR1)':
@@ -790,12 +792,6 @@ def main():
     elif userResponses[2] == 'Experimental Reversal':
         reversal = True
         doExperimentalPhase()
-
-
-    #FIX: ADD A GUI INPUT HERE
-
-    setup()
-    doExperimentalPhase()
 
 if __name__ == "__main__":
     main()
