@@ -1,5 +1,5 @@
 from sys import platform as _platform
-from psychopy import visual, core, gui, event, parallel
+from psychopy import visual, core, parallel, gui, event
 import time, csv, random, datetime
 #import readPort
 
@@ -279,7 +279,7 @@ def setup():
     mouse = event.Mouse(visible = True)
     core.checkPygletDuringWait = True
 
-    parallelPort = parallel.setPortAddress(address=0x0378)
+    parallelPort = parallel.ParallelPort(address=0x0378)
 
     rolledBefore = False
     rolledFFBefore = False
