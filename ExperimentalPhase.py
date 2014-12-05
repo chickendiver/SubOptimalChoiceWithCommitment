@@ -279,7 +279,7 @@ def setup():
     mouse = event.Mouse(visible = True)
     core.checkPygletDuringWait = True
 
-    #parallelPort = parallel.ParallelPort(address=0x0378)
+    parallelPort = parallel.setPortAddress(address=0x0378)
 
     rolledBefore = False
     rolledFFBefore = False
@@ -549,6 +549,11 @@ def displayEndScreen():
 
 def giveReward(probability):
   print("Reward given")
+  dropLeftHopper()
+  dropRightHopper()
+  core.wait(2)
+  raiseLeftHopper()
+  raiseRightHopper()
 
 def dropLeftHopper():
   parallelPort.setPin(16, 1) #Drops hopper
