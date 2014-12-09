@@ -268,7 +268,7 @@ def rollDiceForFiftyFifty():
 
 
 def setup():
-    global win, mouse, rolledBefore, parallelPort
+    global win, mouse, rolledBefore, parallelPort, portValue
 
     print("\nSetting up...")
     
@@ -280,6 +280,10 @@ def setup():
     core.checkPygletDuringWait = True
 
     parallelPort = parallel.ParallelPort(address=0x0378)
+
+    portValue = 0x0000
+    turnOnFan()
+    turnOnHouseLight()
 
     rolledBefore = False
     rolledFFBefore = False
@@ -548,40 +552,80 @@ def displayEndScreen():
   
 
 def giveReward(probability):
-  print("Reward given")
-  dropLeftHopper()
-  dropRightHopper()
-  core.wait(2)
-  raiseLeftHopper()
-  raiseRightHopper()
+  global fiftyFifty, fiftyFiftyIndex
+  global rolledFiftyFiftyBefore = False
+  print("Reward given with probability of: ", probability)
+
+  if probability == 1:
+    dropHoppersAtRandom()
+  else if probability == 0.5:
+    if not rolledFiftyFiftyBefore:
+      fiftyFifty = [0,0,0,0,0,0,0,0,0,0,
+                    0,0,0,0,0,0,0,0,0,0,
+                    1,1,1,1,1,1,1,1,1,1,
+                    1,1,1,1,1,1,1,1,1,1]
+
+      random.shuffle(fiftyFifty)
+      rolledFiftyFiftyBefore = True
+      fiftyFiftyIndex = -1
+    
+    fiftyFiftyIndex += 1
+    if fiftyFify[fiftyFiftyIndex] == 1:
+      dropHoppersAtRandom()
+  else:
+    pass
+
+  if probability > 0:
+
+    # Read IR beam
+    raiseLeftHopper()
+    raiseRightHopper()
+
+def dropHoppersAtRandom():
+  pass
 
 def dropLeftHopper():
-  parallelPort.setPin(16, 1) #Drops hopper
-  parallelPort.setPin(4, 1) #Turns on hopper light
+  portValue = portValue or 0x10
+  portValue = portValue or 0x04
 
+  parallelPort.setData(portValue)
 def raiseLeftHopper():
-  parallelPort.setPin(16, 0) #Raises hopper
-  parallelPort.setPin(4, 0) #Turns off hopper light
+  portValue = portValue or not 0x10
+  portValue = portValue or not 0x04
+
+  parallelPort.setData(portValue)
 
 def dropRightHopper():
-  parallelPort.setPin(32, 1) #Drops hopper
-  parallelPort.setPin(8, 1) #Turns on hopper light
+  portValue = portValue or 0x20
+  portValue = portValue or 0x08
+
+  parallelPort.setData(portValue)
 
 def raiseRightHopper():
-  parallelPort.setPin(32, 0) #Raises hopper
-  parallelPort.setPin(8, 0) #Turns off hopper light
+  portValue = portValue or not 0x20
+  portValue = portValue or not 0x08
+
+  parallelPort.setData(portValue)
 
 def turnOnHouseLight():
-  parallelPort.setPin(1, 1)
+  portValue = portValue or 0x01
+
+  parallelPort.setData(portValue)
 
 def turnOffHouseLight():
-  parallelPort.setPin(1, 0)
+  portValue = portValue or not 0x01
+
+  parallelPort.setData(portValue)
 
 def turnOnFan():
-  parallelPort.setPin(2, 1)
+  portValue = portValue or 0x02
+
+  parallelPort.setData(portValue)
 
 def turnOffFan():
-  parallelPort.setPin(2, 0)
+  portValue = portValue or not 0x02
+
+  parallelPort.setData(portValue)
 
 def readLeftHopperBeam():
   #return if beam broken
