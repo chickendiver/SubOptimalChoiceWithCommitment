@@ -554,10 +554,10 @@ def displayEndScreen():
 def giveReward(probability):
   global fiftyFifty, fiftyFiftyIndex
   global rolledFiftyFiftyBefore = False
-  print("Reward given with probability of: ", probability)
 
   if probability == 1:
-    dropHoppersAtRandom()
+    print("Reward given with probability of: ", probability)
+    hopperDropped = dropHoppersAtRandom()
   else if probability == 0.5:
     if not rolledFiftyFiftyBefore:
       fiftyFifty = [0,0,0,0,0,0,0,0,0,0,
@@ -571,18 +571,41 @@ def giveReward(probability):
     
     fiftyFiftyIndex += 1
     if fiftyFify[fiftyFiftyIndex] == 1:
-      dropHoppersAtRandom()
+      hopperDropped = dropHoppersAtRandom()
+      print("Reward given with probability of: ", probability)
   else:
-    pass
+    print("Reward not given")
 
   if probability > 0:
 
     # Read IR beam
-    raiseLeftHopper()
-    raiseRightHopper()
+    ## FIX: Make this depend on either a timer or the bird eating.
+    if hopperDropped == "L":
+      while readLeftHopperBeam > 0:
+        pass
+       ## Fix: Set timer for bird to eat 
+      raiseLeftHopper()
+    else:
+    # Assume right hopper was dropped
+      while readRightHopperBeam > 0:
+        pass
+
+      ## Fix: Set timer for bird to eat
+      raiseRightHopper()
 
 def dropHoppersAtRandom():
-  pass
+  chanceArray = [0,1]
+  random.shuffle(chanceArray)
+  if chanceArray[0] == 1:
+    dropLeftHopper()
+    hopperDropped = "L"
+  else:
+    dropRightHopper()
+    hopperDropped = "R"
+
+  print("Hopper dropped: ", hopperDropped)
+  return hopperDropped
+
 
 def dropLeftHopper():
   portValue = portValue or 0x10
