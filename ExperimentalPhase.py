@@ -268,7 +268,7 @@ def rollDiceForFiftyFifty():
 
 
 def setup():
-    global win, mouse, rolledBefore, parallelPort, portValue
+    global win, mouse, rolledBefore, parallelPort, portValue, rolledFiftyFiftyBefore
 
     print("\nSetting up...")
     
@@ -287,6 +287,7 @@ def setup():
 
     rolledBefore = False
     rolledFFBefore = False
+    rolledFiftyFiftyBefore = False
 
 def createStimuli():
     global blankLeftChoiceStim, blankCentreChoiceStim, blankRightChoiceStim
@@ -519,7 +520,7 @@ def waitForClicks(targetPeckRequired, stimuli):
     
     while ((stimTimer.getTime > 0) and (targetFlag == False)):
 
-      event.clearEvents('mouse')
+      #event.clearEvents('mouse')
       #mouse.clickReset()
 
       if (mouse.getPressed()[0] == 1):
@@ -553,12 +554,13 @@ def displayEndScreen():
 
 def giveReward(probability):
   global fiftyFifty, fiftyFiftyIndex
-  global rolledFiftyFiftyBefore = False
+
+
 
   if probability == 1:
     print("Reward given with probability of: ", probability)
     hopperDropped = dropHoppersAtRandom()
-  else if probability == 0.5:
+  elif probability == 0.5:
     if not rolledFiftyFiftyBefore:
       fiftyFifty = [0,0,0,0,0,0,0,0,0,0,
                     0,0,0,0,0,0,0,0,0,0,
@@ -575,22 +577,28 @@ def giveReward(probability):
       print("Reward given with probability of: ", probability)
   else:
     print("Reward not given")
+    # In place of 1 second of hopper access
+    core.wait(1)
 
   if probability > 0:
 
     # Read IR beam
     ## FIX: Make this depend on either a timer or the bird eating.
     if hopperDropped == "L":
-      while readLeftHopperBeam > 0:
+      while readLeftHopperBeam() > 0:
         pass
-       ## Fix: Set timer for bird to eat 
+      
+      ## 1 second of hopper access
+      core.wait(1)
       raiseLeftHopper()
+
     else:
     # Assume right hopper was dropped
-      while readRightHopperBeam > 0:
+      while readRightHopperBeam() > 0:
         pass
 
-      ## Fix: Set timer for bird to eat
+      ## 1 second of hopper access
+      core.wait(1)
       raiseRightHopper()
 
 def dropHoppersAtRandom():
@@ -608,56 +616,70 @@ def dropHoppersAtRandom():
 
 
 def dropLeftHopper():
+  global portValue
   portValue = portValue or 0x10
   portValue = portValue or 0x04
 
   parallelPort.setData(portValue)
 def raiseLeftHopper():
+  global portValue
   portValue = portValue or not 0x10
   portValue = portValue or not 0x04
 
   parallelPort.setData(portValue)
 
 def dropRightHopper():
+  global portValue
   portValue = portValue or 0x20
   portValue = portValue or 0x08
 
   parallelPort.setData(portValue)
 
 def raiseRightHopper():
+  global portValue
   portValue = portValue or not 0x20
   portValue = portValue or not 0x08
 
   parallelPort.setData(portValue)
 
 def turnOnHouseLight():
+  global portValue
   portValue = portValue or 0x01
 
   parallelPort.setData(portValue)
 
 def turnOffHouseLight():
+  global portValue
   portValue = portValue or not 0x01
 
   parallelPort.setData(portValue)
 
 def turnOnFan():
+  global portValue
   portValue = portValue or 0x02
 
   parallelPort.setData(portValue)
 
 def turnOffFan():
+  global portValue
   portValue = portValue or not 0x02
 
   parallelPort.setData(portValue)
 
 def readLeftHopperBeam():
   #return if beam broken
-  value = readPort.readPort(0x0201) & 0x10
+  #value = readPort.readPort(0x0201) & 0x10
+  value = 1
+  core.wait(1)
+  value = 0
   return value
 
 def readRightHopperBeam():
   #return if beam broken
-  value = readPort.readPort(0x0201) & 0x20
+  #value = readPort.readPort(0x0201) & 0x20
+  value = 1
+  core.wait(1)
+  value = 0
   return value
 
 
@@ -812,7 +834,11 @@ def doTraining(ITI, pecksToReward, rewardIfNotPecked):
       giveReward(1)
 
     drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
-    core.wait(ITI)
+    core.wait(ITI, hogCPUperiod = ITI)
+    ## FIX: TAKE INPUT FOR TERMINATION
+    if psychopy.event.getKeys(keyList=["escape"]):
+        print("User pressed escape")
+        exit()
 
 def getUserInput():
     userCancelled = False
@@ -820,7 +846,7 @@ def getUserInput():
     myDlg.addField('Subject number:', 0)
     myDlg.addField('Session number:', 0)
     myDlg.addField('Condition:', choices = ['Autoshaping (FR1)', 'Operant Training (FR1)', 'Operant Training (FR3)', 'Operant Training (FR5)', 'Stim Pairing', 'Experimental Phase', 'Experimental Reversal'])
-    #myDlg.addField('Contingency:', choices = ['1', '2', '3', '4'])
+    myDlg.addField('Contingency:', choices = ['1', '2', '3', '4'])
     myDlg.addField('Reward Duration:', 10)
     myDlg.addField('Stimulus Timeout:', 60)
     myDlg.addField('Is this a test?:', choices = ['Yes', 'No'])
