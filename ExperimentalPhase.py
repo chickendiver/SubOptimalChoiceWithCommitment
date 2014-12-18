@@ -268,7 +268,7 @@ def rollDiceForFiftyFifty():
 
 
 def setup():
-    global win, mouse, rolledBefore, parallelPort, portValue, rolledFiftyFiftyBefore
+    global win, mouse, rolledBefore, subjectNumber, parallelPort, portValue, rolledFiftyFiftyBefore
 
     print("\nSetting up...")
     
@@ -289,6 +289,28 @@ def setup():
     rolledFFBefore = False
     rolledFiftyFiftyBefore = False
 
+    filename = (time.strftime("%d_%m_%Y")) + '_' + (time.strftime("%H:%M")) + '_' + 'Subject_' + str(subjectNumber) + '_data.csv'
+    datafile = open(filename, 'wb')
+    writer = csv.writer(datafile, delimiter=',')
+
+    writer.writerow(['Research Assistant', 'Subject Number', 'Set Number', 
+                     'Session Number', 'Date and Time Run', 'Contingency', 
+                     'Condition', 'Number of Pecks Required', 'Program Name', 
+                     'Trial Number', 'Program Load Time', 'Bird In Box Time', 
+                     'Experiment Start Time', 'Experiment End Time', 
+                     'Apparatus Present', 'Timeout Period', 'Reward Time', 
+                     'Choice Stimulus', 'Initial-Link', 'Terminal-Link', 
+                     'Choice Stimulus Side Pecked', 'Initial-Link Side Pecked', 
+                     'Choice Stimulus Pecked', 'Initial-Link Side Pecked', 
+                     'Choice Stimulus Reaction Time', 'Initial-Link Reaction Time', 
+                     'Terminal-Link Peck Log', 'Terminal Link Latency', 
+                     'Terminal Link Final Response', 'Terminal Link Duration', 
+                     'Inter-Trial Interval (ITI)', 
+                     'Choice Stimulus Screen Peck Count', 
+                     'Initial Link Screen Peck Count', 
+                     'Terminal-Link Screen Peck Count', 'Sub-Optimal Link Chosen'])
+
+  writer.writerow([])
 def createStimuli():
     global blankLeftChoiceStim, blankCentreChoiceStim, blankRightChoiceStim
     global blankLeftTermStim, blankRightTermStim, choiceA, choiceB, choiceC
@@ -547,9 +569,17 @@ def waitForClicks(targetPeckRequired, stimuli):
 
     return targetPecked, targetFlag
 
+def waitForExitPress():
+  print("Waiting for exit key to be pressed")
+  while True:
+    if event.getKeys(["escape"]):
+          print("User pressed escape")
+          exit()
+
 def displayEndScreen():
   print("Displaying end screen")
-  #FIX: Display "EXPERIMENT HAS FINISHED, 45 MINUTES HAVE ELAPSED"
+  drawStims(listOfBlanks)
+  waitForExitPress()
   
 
 def giveReward(probability):
@@ -560,6 +590,7 @@ def giveReward(probability):
   if probability == 1:
     print("Reward given with probability of: ", probability)
     hopperDropped = dropHoppersAtRandom()
+
   elif probability == 0.5:
     if not rolledFiftyFiftyBefore:
       fiftyFifty = [0,0,0,0,0,0,0,0,0,0,
@@ -716,7 +747,7 @@ def doExperimentalPhase():
     while (expTimer.getTime > 0):
       drawStims(listOfBlanks)
 
-    displayEndScreen() #FIX: NEEDS TO BE WRITTEN
+    displayEndScreen()
 
 def makeInitStimList():
     print("Randomizing init stimuli...")
@@ -763,7 +794,7 @@ def doStimPairing():
     while (expTimer.getTime > 0):
       drawStims(listOfBlanks)
 
-    displayEndScreen() #FIX: NEEDS TO BE WRITTEN
+    displayEndScreen()
 
 def generateListOfAllStims():
 
@@ -850,7 +881,7 @@ def getUserInput():
     myDlg.addField('Reward Duration:', 10)
     myDlg.addField('Stimulus Timeout:', 60)
     myDlg.addField('Is this a test?:', choices = ['Yes', 'No'])
-    myDlg.addField('Research Assistant:')#, choices = ['Unlisted','Ariel','Jason', 'Jeff', 'Josh','Nuha'])
+    myDlg.addField('Research Assistant:')
     myDlg.show()  # show dialog and wait for OK or Cancel
     
     if myDlg.OK:  # then the user pressed OK
@@ -864,31 +895,60 @@ def getUserInput():
 
 
 def main():
-    global ITI, stimDur, contingency, reversal, termDur
+    global ITI, stimDur, contingency, reversal, termDur, subjectNumber,
+           subjectNumber, sessionNumber, condition, contingency, 
+           rewardDuration, stimulusTimeout, testRunFlag, researchAssistant
 
     userResponses, userCancelled = getUserInput()
 
+    subjectNumber = userResponses[0]
+    sessionNumber = userResponse[1]
+    condition = userResponse[2]
+    contingency = userResponse[3]
+    rewardDuration = userResponse[4]
+    stimulusTimeout = userResponse[5]
+    testRunFlag = userResponse[6]
+    researchAssistant = userResponse[7]
+
+    #Timestamp of when program is run
+    dateStarted = time.strftime("%d_%m_%Y") 
+    timeStarted = time.strftime("%H:%M")
+
     termDur = 5
-    contingency = "4"
     stimDur = 5
-    ITI = 5
+    if testRunFlag == "Yes":
+      ITI = 5
+    else:
+      ITI = 10
 
     setup()
 
-    if userResponses[2] == 'Autoshaping (FR1)':
+    if condition == 'Autoshaping (FR1)':
+      if testRunFlag == "Yes":
+        doTraining(5, 1, True)
+      else:
         doTraining(240, 1, True)
-    elif userResponses[2] == 'Operant Training (FR1)':
+    elif condition == 'Operant Training (FR1)':
+      if testRunFlag == "Yes":
+        doTraining(5, 1, False)
+      else:
         doTraining(60, 1, False)
-    elif userResponses[2] == 'Operant Training (FR3)':
+    elif condition == 'Operant Training (FR3)':
+      if testRunFlag == "Yes":
+        doTraining(5, 3, False)
+      else:
         doTraining(60, 3, False)
-    elif userResponses[2] == 'Operant Training (FR5)':
+    elif condition == 'Operant Training (FR5)':
+      if testRunFlag == "Yes":
+        doTraining(5, 5, False)
+      else:
         doTraining(60, 5, False)
-    elif userResponses[2] == 'Stim Pairing':
+    elif condition == 'Stim Pairing':
         doStimPairing()
-    elif userResponses[2] == 'Experimental Phase':
+    elif condition == 'Experimental Phase':
         reversal = False
         doExperimentalPhase()
-    elif userResponses[2] == 'Experimental Reversal':
+    elif condition == 'Experimental Reversal':
         reversal = True
         doExperimentalPhase()
 
