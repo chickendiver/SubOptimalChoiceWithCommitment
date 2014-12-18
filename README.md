@@ -1,4 +1,4 @@
-==Sub Optimal Choice With Commitment==
+**Sub Optimal Choice With Commitment**
 
 The first Python program being used in a study for the Spetch Lab.
 
