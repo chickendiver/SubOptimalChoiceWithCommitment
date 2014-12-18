@@ -1,6 +1,6 @@
 from sys import platform as _platform
 from psychopy import visual, core, parallel, gui, event
-import time, csv, random, datetime
+import time, csv, random, datetime, os
 #import readPort
 
 #Determine which OS is being used, and calculate the screen size
@@ -289,7 +289,13 @@ def setup():
     rolledFFBefore = False
     rolledFiftyFiftyBefore = False
 
-    filename = (time.strftime("%d_%m_%Y")) + '_' + (time.strftime("%H:%M")) + '_' + 'Subject_' + str(subjectNumber) + '_data.csv'
+    dataFolderPath = os.getcwd() + "\SubOptimal_Data_Logs"
+    print (dataFolderPath)
+    if not os.path.exists(dataFolderPath):
+      os.makedirs(dataFolderPath)
+
+
+    filename = dataFolderPath + '/' + (time.strftime("%d_%m_%Y")) + '_' + (time.strftime("%H_%M")) + '_' + 'Subject_' + str(subjectNumber) + '_data.csv'
     datafile = open(filename, 'wb')
     writer = csv.writer(datafile, delimiter=',')
 
@@ -310,7 +316,7 @@ def setup():
                      'Initial Link Screen Peck Count', 
                      'Terminal-Link Screen Peck Count', 'Sub-Optimal Link Chosen'])
 
-  writer.writerow([])
+    writer.writerow([])
 def createStimuli():
     global blankLeftChoiceStim, blankCentreChoiceStim, blankRightChoiceStim
     global blankLeftTermStim, blankRightTermStim, choiceA, choiceB, choiceC
@@ -889,26 +895,30 @@ def getUserInput():
         print experimentParameters
     else:
         print 'user cancelled'
+        experimentParameters = []
         userCancelled = True
 
     return experimentParameters, userCancelled
 
 
 def main():
-    global ITI, stimDur, contingency, reversal, termDur, subjectNumber,
-           subjectNumber, sessionNumber, condition, contingency, 
-           rewardDuration, stimulusTimeout, testRunFlag, researchAssistant
+    global ITI, stimDur, contingency, reversal, termDur, subjectNumber
+    global subjectNumber, sessionNumber, condition, contingency
+    global rewardDuration, stimulusTimeout, testRunFlag, researchAssistant
 
     userResponses, userCancelled = getUserInput()
 
+    if userCancelled == True:
+      exit()
+
     subjectNumber = userResponses[0]
-    sessionNumber = userResponse[1]
-    condition = userResponse[2]
-    contingency = userResponse[3]
-    rewardDuration = userResponse[4]
-    stimulusTimeout = userResponse[5]
-    testRunFlag = userResponse[6]
-    researchAssistant = userResponse[7]
+    sessionNumber = userResponses[1]
+    condition = userResponses[2]
+    contingency = userResponses[3]
+    rewardDuration = userResponses[4]
+    stimulusTimeout = userResponses[5]
+    testRunFlag = userResponses[6]
+    researchAssistant = userResponses[7]
 
     #Timestamp of when program is run
     dateStarted = time.strftime("%d_%m_%Y") 
