@@ -13,3 +13,4 @@ Priority 1:
 Priority 2:
 
 1. Add data input functionality for running birds without using a gui
+2. Add email notifications for when birds are run
