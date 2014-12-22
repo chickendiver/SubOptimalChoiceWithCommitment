@@ -542,6 +542,7 @@ def waitForClicks(targetPeckRequired, stimuli):
     peckNum = 0
     targetPeckNum = 0
     targetPecked = ""
+    oldMouseIsDown = False
 
     targetFlag = False
     stimTimer = core.CountdownTimer(stimDur)
@@ -551,8 +552,13 @@ def waitForClicks(targetPeckRequired, stimuli):
       #event.clearEvents('mouse')
       #mouse.clickReset()
 
-      if (mouse.getPressed()[0] == 1):
+      mouseIsDown = mouse.getPressed()[0]
+      mouse.clickReset()
+
+      #if (mouse.getPressed()[0] == 1):
+      if mouseIsDown and not oldMouseIsDown:
           pos = mouse.getPos()
+          print (pos)
 
           for i in range (0,len(stimuli)):
             if stimuli[i].boundingBox.contains(pos):
@@ -561,12 +567,14 @@ def waitForClicks(targetPeckRequired, stimuli):
                 targetFlag = True
                 targetPecked = stimuli[i]
                 break
-          
-      while (mouse.getPressed()[0] == 1):
-        if (mouse.getPressed()[0] == 0):
-          break
 
-      peckNum += 1
+          peckNum += 1
+       
+      oldMouseIsDown = mouseIsDown
+          
+      '''while (mouse.getPressed()[0] == 1):
+        if (mouse.getPressed()[0] == 0):
+          break'''
 
       if event.getKeys(["escape"]):
         print("User pressed escape")
@@ -615,7 +623,7 @@ def giveReward(probability):
   else:
     print("Reward not given")
     # In place of 1 second of hopper access
-    core.wait(1)
+    #core.wait(1)
 
   if probability > 0:
 
@@ -626,7 +634,7 @@ def giveReward(probability):
         pass
       
       ## 1 second of hopper access
-      core.wait(1)
+      #core.wait(1)
       raiseLeftHopper()
 
     else:
@@ -635,7 +643,7 @@ def giveReward(probability):
         pass
 
       ## 1 second of hopper access
-      core.wait(1)
+      #core.wait(1)
       raiseRightHopper()
 
 def dropHoppersAtRandom():
@@ -707,7 +715,7 @@ def readLeftHopperBeam():
   #return if beam broken
   #value = readPort.readPort(0x0201) & 0x10
   value = 1
-  core.wait(1)
+  #core.wait(1)
   value = 0
   return value
 
@@ -715,7 +723,7 @@ def readRightHopperBeam():
   #return if beam broken
   #value = readPort.readPort(0x0201) & 0x20
   value = 1
-  core.wait(1)
+  #core.wait(1)
   value = 0
   return value
 
@@ -873,7 +881,7 @@ def doTraining(ITI, pecksToReward, rewardIfNotPecked):
     drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
     core.wait(ITI, hogCPUperiod = ITI)
     ## FIX: TAKE INPUT FOR TERMINATION
-    if psychopy.event.getKeys(keyList=["escape"]):
+    if event.getKeys(keyList=["escape"]):
         print("User pressed escape")
         exit()
 
@@ -954,6 +962,7 @@ def main():
       else:
         doTraining(60, 5, False)
     elif condition == 'Stim Pairing':
+        reversal = False
         doStimPairing()
     elif condition == 'Experimental Phase':
         reversal = False
