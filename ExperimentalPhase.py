@@ -268,7 +268,7 @@ def rollDiceForFiftyFifty():
 
 
 def setup():
-    global win, mouse, rolledBefore, subjectNumber, parallelPort, portValue, rolledFiftyFiftyBefore
+    global win, mouse, rolledBefore, subjectNumber, parallelPort, portValue, rolledFiftyFiftyBefore, trialNumber
 
     print("\nSetting up...")
     
@@ -288,6 +288,7 @@ def setup():
     rolledBefore = False
     rolledFFBefore = False
     rolledFiftyFiftyBefore = False
+    trialNumber = 0
 
     dataFolderPath = os.getcwd() + "\SubOptimal_Data_Logs"
     print (dataFolderPath)
@@ -307,7 +308,7 @@ def setup():
                      'Apparatus Present', 'Timeout Period', 'Reward Time', 
                      'Choice Stimulus', 'Initial-Link', 'Terminal-Link', 
                      'Choice Stimulus Side Pecked', 'Initial-Link Side Pecked', 
-                     'Choice Stimulus Pecked', 'Initial-Link Side Pecked', 
+                     'Choice Stimulus Pecked',
                      'Choice Stimulus Reaction Time', 'Initial-Link Reaction Time', 
                      'Terminal-Link Peck Log', 'Terminal Link Latency', 
                      'Terminal Link Final Response', 'Terminal Link Duration', 
@@ -581,7 +582,7 @@ def waitForClicks(targetPeckRequired, stimuli):
         exit()
 
 
-    return targetPecked, targetFlag
+    return targetPecked, targetFlag, peckNum
 
 def waitForExitPress():
   print("Waiting for exit key to be pressed")
@@ -739,13 +740,14 @@ def doExperimentalPhase():
     expTimer = core.CountdownTimer(EXPERIMENT_TIME)
 
     for i in range(0,len(stimList)):
+        trialNumber += 1
         if (expTimer.getTime <= 0):
           break
         drawStims(stimList[i])
-        cStimPecked, cClickFlag = waitForClicks(1, stimList[i])
+        cStimPecked, cClickFlag, peckNum = waitForClicks(1, stimList[i])
         if cClickFlag == True:
           drawStims(cStimPecked.initStims)
-          iStimPecked, iClickFlag = waitForClicks(1, cStimPecked.initStims)
+          iStimPecked, iClickFlag, peckNum = waitForClicks(1, cStimPecked.initStims)
           if iClickFlag == True:
             termStimShown = iStimPecked.drawTermLinks()
             win.flip()
@@ -789,10 +791,11 @@ def doStimPairing():
     expTimer = core.CountdownTimer(EXPERIMENT_TIME)
 
     for i in range(0,len(stimList)):
+        trialNumber += 1
         if (expTimer.getTime <= 0):
           break
         drawStims(stimList[i])
-        iStimPecked, iClickFlag = waitForClicks(1, stimList[i])
+        iStimPecked, iClickFlag, peckNum = waitForClicks(1, stimList[i])
         if iClickFlag == True:
           termStimShown = iStimPecked.drawTermLinks()
           win.flip()
@@ -872,8 +875,9 @@ def doTraining(ITI, pecksToReward, rewardIfNotPecked):
   stimList = generateListOfAllStims()
 
   for i in range(0, len(stimList)):
+    trialNumber += 1
     drawStims(stimList[i])
-    stimPecked, clickFlag = waitForClicks(pecksToReward, stimList[i])
+    stimPecked, clickFlag, peckNum = waitForClicks(pecksToReward, stimList[i])
 
     if rewardIfNotPecked or clickFlag:
       giveReward(1)
@@ -890,6 +894,7 @@ def getUserInput():
     myDlg = gui.Dlg(title="Sub-Optimal Choice with Commitment", labelButtonOK=' START ')
     myDlg.addField('Subject number:', 0)
     myDlg.addField('Session number:', 0)
+    myDlg.addField('Set number:', 0)
     myDlg.addField('Condition:', choices = ['Autoshaping (FR1)', 'Operant Training (FR1)', 'Operant Training (FR3)', 'Operant Training (FR5)', 'Stim Pairing', 'Experimental Phase', 'Experimental Reversal'])
     myDlg.addField('Contingency:', choices = ['1', '2', '3', '4'])
     myDlg.addField('Reward Duration:', 10)
@@ -913,6 +918,7 @@ def main():
     global ITI, stimDur, contingency, reversal, termDur, subjectNumber
     global subjectNumber, sessionNumber, condition, contingency
     global rewardDuration, stimulusTimeout, testRunFlag, researchAssistant
+    global dateStarted, timeStarted
 
     userResponses, userCancelled = getUserInput()
 
@@ -921,12 +927,19 @@ def main():
 
     subjectNumber = userResponses[0]
     sessionNumber = userResponses[1]
-    condition = userResponses[2]
-    contingency = userResponses[3]
-    rewardDuration = userResponses[4]
-    stimulusTimeout = userResponses[5]
-    testRunFlag = userResponses[6]
-    researchAssistant = userResponses[7]
+    setNumber = userResponses[2]
+    condition = userResponses[3]
+    contingency = userResponses[4]
+    rewardDuration = userResponses[5]
+    stimulusTimeout = userResponses[6]
+    testRunFlag = userResponses[7]
+    researchAssistant = userResponses[8]
+
+    programName = "SubOptimalChoiceWithCommitment.py"
+
+    #FIX: Make dependent on a read from GamePort
+    #1 for yes, 0 for no
+    apparatusPresent = 1
 
     #Timestamp of when program is run
     dateStarted = time.strftime("%d_%m_%Y") 
@@ -934,6 +947,7 @@ def main():
 
     termDur = 5
     stimDur = 5
+
     if testRunFlag == "Yes":
       ITI = 5
     else:
@@ -941,6 +955,7 @@ def main():
 
     setup()
 
+    experimentStartTime = time.strftime("%H:%M")
     if condition == 'Autoshaping (FR1)':
       if testRunFlag == "Yes":
         doTraining(5, 1, True)
@@ -970,6 +985,7 @@ def main():
     elif condition == 'Experimental Reversal':
         reversal = True
         doExperimentalPhase()
+    experimentEndTime = time.strftime("%H:%M")
 
 if __name__ == "__main__":
     main()

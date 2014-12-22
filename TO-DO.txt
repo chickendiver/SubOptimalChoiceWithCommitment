@@ -2,13 +2,14 @@ TO-DO:
 
 Priority 1:
 
-1. Fix buggy click detection code
+[DONE] 1. Fix buggy click detection code
 2. Add variable data output for each trial
-3. Comment code for readability
+3. Add more trials to stimList in generateListOfAllStims
 4. Add exception handling for closing data file
-5. Add more trials to stimList in generateListOfAllStims
+5. Comment code for readability
 6. Add functionality for program termination during ITI
 7. Figure out what termDur and stimDur should be in main()
+8. Test code on operant boxes
 
 Priority 2:
 

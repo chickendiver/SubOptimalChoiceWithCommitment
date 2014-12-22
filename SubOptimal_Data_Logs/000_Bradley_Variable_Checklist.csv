@@ -1,0 +1,13 @@
+Research Assistant,Subject Number,Set Number,Session Number,Date and Time Run,Contingency
+x,x,x,x,x,x
+Condition,Number of Pecks Required,Program Name,Trial Number,Program Load Time,Bird In Box Time
+x,x,x,x,,
+Experiment Start Time,Experiment End Time,Apparatus Present,Timeout Period,Reward Time,Choice Stimulus
+x,x,x,,x,x
+Initial-Link,Terminal-Link,Choice Stimulus Side Pecked,Initial-Link Side Pecked,Choice Stimulus Pecked,
+x,x,,XXXXXXX,x,
+Initial-Link Side Pecked,Choice Stimulus Reaction Time,Initial-Link Reaction Time,Terminal-Link Peck Log,,
+,,,,,
+Terminal Link Latency,Terminal Link Final Response,Terminal Link Duration,Inter-Trial Interval (ITI),,
+,,,x,,
+Choice Stimulus Screen Peck Count,Initial Link Screen Peck Count,Terminal-Link Screen Peck Count,Sub-Optimal Link Chosen,,
