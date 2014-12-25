@@ -55,6 +55,12 @@ class ChoiceStim:
 
   def set_y (self, y):
         self.y = y
+
+  def get_x():
+        return self.x
+
+  def get_y():
+        return self.y
         
   def set_outline (self, outlineCol):
         self.outlineColour = outlineCol
@@ -120,6 +126,12 @@ class InitialLinkStim:
 
   def set_y (self, y):
         self.y = y
+
+  def get_x():
+        return self.x
+
+  def get_y():
+        return self.y
 
   def draw(self):
         global win
@@ -191,6 +203,12 @@ class TerminalLinkStim:
 
   def set_y (self, y):
         self.y = y
+
+  def get_x():
+        return self.x
+
+  def get_y():
+        return self.y
 
   def draw(self):
         global win
@@ -658,6 +676,7 @@ def giveReward(probability):
 
     # Read IR beam
     ## FIX: Make this depend on either a timer or the bird eating.
+    # timeoutPeriod should be the time for this timer.
     if hopperDropped == "L":
       while readLeftHopperBeam() > 0:
         pass
@@ -747,6 +766,7 @@ def turnOffFan():
 # Reads from left IR beam. Called after hopper is dropped
 def readLeftHopperBeam():
   #return if beam broken
+
   #value = readPort.readPort(0x0201) & 0x10
   value = 1
   #core.wait(1)
@@ -774,22 +794,26 @@ def doExperimentalPhase():
     expTimer = core.CountdownTimer(EXPERIMENT_TIME)
 
     for i in range(0,len(stimList)):
+        choicePeckNum = 0
+        initPeckNum = 0
+
         trialNumber += 1
         if (expTimer.getTime() <= 0):
           break
         drawStims(stimList[i])
-        cStimPecked, cClickFlag, peckNum = waitForClicks(1, stimList[i])
+        cStimPecked, cClickFlag, choicePeckNum = waitForClicks(1, stimList[i])
         if cClickFlag == True:
           drawStims(cStimPecked.initStims)
-          iStimPecked, iClickFlag, peckNum = waitForClicks(1, cStimPecked.initStims)
+          iStimPecked, iClickFlag, initPeckNum = waitForClicks(1, cStimPecked.initStims)
           if iClickFlag == True:
             termStimShown = iStimPecked.drawTermLinks()
             win.flip()
-            #core.wait(termDur)
+            core.wait(termDur)
             
             giveReward(termStimShown.chanceOfReinforcement)
 
             drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
+            ## FIX: Add data output. Side pecked will be cStimPecked, iStimPecked .get_x == L_X or R_X
             waitForExitPress(ITI)
 
     endTime = time.time()
@@ -835,7 +859,7 @@ def doStimPairing():
         if iClickFlag == True:
           termStimShown = iStimPecked.drawTermLinks()
           win.flip()
-          #core.wait(termDur)
+          core.wait(termDur)
           
           giveReward(termStimShown.chanceOfReinforcement)
 
@@ -973,7 +997,8 @@ def main():
     global ITI, stimDur, contingency, reversal, termDur, subjectNumber
     global subjectNumber, sessionNumber, condition, contingency
     global rewardDuration, stimulusTimeout, testRunFlag, researchAssistant
-    global dateStarted, timeStarted
+    global dateStarted, timeStarted, programStartTime, birdInBoxTime
+    global programLoadTime, timeoutPeriod
 
     userResponses, userCancelled = getUserInput()
 
@@ -1000,12 +1025,15 @@ def main():
     dateStarted = time.strftime("%d_%m_%Y") 
     timeStarted = time.strftime("%H:%M")
 
-    # Time waiting before reward is given
-    #termDur = 5
+    # Time  terminal link is presented before reward is given
+    termDur = 5
 
     # duration stimulus stays on screen
     # test to make sure this is the actual duration
     stimDur = 10
+
+    # Time (in seconds) the hopper will stay up if the beam is not broken.
+    timeoutPeriod = 10
 
     if testRunFlag == "Yes":
       ITI = 5
@@ -1035,7 +1063,7 @@ def main():
         if testRunFlag == "Yes":
           doTraining(5, 1, True)
         else:
-          doTraining(240, 1, True)
+          doTraining(240, 1, True)time.strftime("%H:%M")
       elif condition == 'Operant Training (FR1)':
         if testRunFlag == "Yes":
           doTraining(5, 1, False)
