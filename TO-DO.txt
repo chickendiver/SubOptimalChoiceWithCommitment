@@ -8,7 +8,7 @@ Priority 1:
 [DONE] 4. Add exception handling for closing data file
 [DONE] 5. Comment code for readability
 [DONE] 6. Add functionality for program termination during ITI
-[DONE] 7. Figure ot what termDur and stimDur should be in main()
+[DONE] 7. Figure out what termDur and stimDur should be in main()
 8. Test code on operant boxes
 
 Priority 2:
