@@ -4,10 +4,11 @@ Condition,Number of Pecks Required,Program Name,Trial Number,Program Load Time,B
 x,x,x,x,x,x
 Experiment Start Time,Experiment End Time,Apparatus Present,Timeout Period,Reward Time,Choice Stimulus
 x,x,x,x,x,x
-Initial-Link,Terminal-Link,Choice Stimulus Side Pecked,Initial-Link Side Pecked,Choice Stimulus Pecked,
-x,x,,XXXXXXX,x,
+Initial-Link,Terminal-Link,Choice Stimulus Side Pecked,Choice Stimulus Pecked,,
+x,x,x,x,,
 Initial-Link Side Pecked,Choice Stimulus Reaction Time,Initial-Link Reaction Time,Terminal-Link Peck Log,,
-,,,,,
+x,x,x,x,,
 Terminal Link Latency,Terminal Link Final Response,Terminal Link Duration,Inter-Trial Interval (ITI),,
 ,,x,x,,
 Choice Stimulus Screen Peck Count,Initial Link Screen Peck Count,Terminal-Link Screen Peck Count,Sub-Optimal Link Chosen,,
+x,x,x,,,

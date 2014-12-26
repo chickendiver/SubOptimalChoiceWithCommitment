@@ -166,7 +166,6 @@ class InitialLinkStim:
   def drawTermLinks(self):
           result = rollForTermResult(self)
 
-          # FIX/TEST: IS DRAWING BLANKS HERE NECESSARY?
           drawBlanksNoFlip(listOfBlanks)
 
           if result == 0:
@@ -320,22 +319,35 @@ def setup():
     datafile = open(filename, 'wb')
     writer = csv.writer(datafile, delimiter=',')
 
-    writer.writerow(['Research Assistant', 'Subject Number', 'Set Number', 
-                     'Session Number', 'Date and Time Run', 'Contingency', 
-                     'Condition', 'Number of Pecks Required', 'Program Name', 
-                     'Trial Number', 'Program Load Time', 'Bird In Box Time', 
-                     'Experiment Start Time', 'Experiment End Time', 
-                     'Apparatus Present', 'Timeout Period', 'Reward Time', 
-                     'Choice Stimulus', 'Initial-Link', 'Terminal-Link', 
-                     'Choice Stimulus Side Pecked', 'Initial-Link Side Pecked', 
-                     'Choice Stimulus Pecked',
-                     'Choice Stimulus Reaction Time', 'Initial-Link Reaction Time', 
-                     'Terminal-Link Peck Log', 'Terminal Link Latency', 
-                     'Terminal Link Final Response', 'Terminal Link Duration', 
-                     'Inter-Trial Interval (ITI)', 
-                     'Choice Stimulus Screen Peck Count', 
-                     'Initial Link Screen Peck Count', 
-                     'Terminal-Link Screen Peck Count', 'Sub-Optimal Link Chosen'])
+    if condition == "Autoshaping (FR1)" or condition == "Operant Training (FR1)" or
+       condition == "Operant Training (FR3)" or condition == "Operant Training (FR5)":
+
+       writer.writerow(["researchAssistant", "subjectNumber", "setNumber",
+                      "sessionNumber", "dateStarted", "contingency",
+                      "condition", "pecksToReward", "programName", "trialNumber",
+                      "programLoadTime", "birdInBoxTime", "startTime", 
+                      "N/A", "apparatusPresent",
+                      "timeoutPeriod", "rewardDuration", "stimPresented", 
+                      "stimSide", "reactionTimes", "peckNum", 
+                      "ITI"])
+
+    else:
+        writer.writerow(['Research Assistant', 'Subject Number', 'Set Number', 
+                         'Session Number', 'Date and Time Run', 'Contingency', 
+                         'Condition', 'Number of Pecks Required', 'Program Name', 
+                         'Trial Number', 'Program Load Time', 'Bird In Box Time', 
+                         'Experiment Start Time', 'Experiment End Time', 
+                         'Apparatus Present', 'Timeout Period', 'Reward Time', 
+                         'Choice Stimulus', 'Initial-Link', 'Terminal-Link', 
+                         'Choice Stimulus Side Pecked', 'Initial-Link Side Pecked', 
+                         'Choice Stimulus Pecked',
+                         'Choice Stimulus Reaction Time', 'Initial-Link Reaction Time', 
+                         'Terminal-Link Peck Log', 'Terminal Link Latency', 
+                         'Terminal Link Final Response', 'Terminal Link Duration', 
+                         'Inter-Trial Interval (ITI)', 
+                         'Choice Stimulus Screen Peck Count', 
+                         'Initial Link Screen Peck Count', 
+                         'Terminal-Link Screen Peck Count', 'Sub-Optimal Link Chosen'])
 
     writer.writerow([])
 
@@ -579,18 +591,21 @@ def waitForClicks(targetPeckRequired, stimuli):
     oldMouseIsDown = False
 
     targetFlag = False
+    reactionTimes = []
+    reactionTimer = core.Clock()
     stimTimer = core.CountdownTimer(stimDur)
     
     while ((stimTimer.getTime() > 0) and (targetFlag == False)):
-
       #event.clearEvents('mouse')
       #mouse.clickReset()
 
       mouseIsDown = mouse.getPressed()[0]
       mouse.clickReset()
 
-      #if (mouse.getPressed()[0] == 1):
       if mouseIsDown and not oldMouseIsDown:
+
+          # Add click reaction times to list.
+          reactionTimes.append(reactionTimer.getTime())
           pos = mouse.getPos()
           print (pos)
 
@@ -602,6 +617,7 @@ def waitForClicks(targetPeckRequired, stimuli):
                 targetPecked = stimuli[i]
                 break
 
+          reactionTimer.reset()
           peckNum += 1
        
       oldMouseIsDown = mouseIsDown
@@ -615,7 +631,7 @@ def waitForClicks(targetPeckRequired, stimuli):
         exit()
 
 
-    return targetPecked, targetFlag, peckNum
+    return targetPecked, targetFlag, peckNum, reactionTimes
 
 # Waits for the user to press the escape key
 # Used for ITI waiting
@@ -638,7 +654,10 @@ def waitForExitPress(time = 0):
 # Displays a blank screen and waits for the escape key
 def displayEndScreen():
   print("Displaying end screen")
-  drawStims(listOfBlanks)
+  drawBlanksNoFlip(listOfBlanks)
+  spacebarText = visual.TextStim(win, text='Experiment Ended. Press ESC to exit.', alignHoriz = 'center', alignVert = 'bottom')
+  spacebarText.draw()
+  win.flip()
   waitForExitPress()
   
 # Probabilities: 
@@ -782,6 +801,41 @@ def readRightHopperBeam():
   value = 0
   return value
 
+def waitForTermLinks():
+
+  print("Waiting for terminal clicks...")
+  peckNum = 0
+  oldMouseIsDown = False
+
+  reactionTimes = []
+  reactionTimer = core.Clock()
+  stimTimer = core.CountdownTimer(termDur)
+  
+  while (stimTimer.getTime() > 0):
+
+    mouseIsDown = mouse.getPressed()[0]
+    mouse.clickReset()
+
+    if mouseIsDown and not oldMouseIsDown:
+
+        # Add click reaction times to list.
+        reactionTimes.append(reactionTimer.getTime())
+        reactionTimer.reset()
+        pos = mouse.getPos()
+        print (pos)
+
+        peckNum += 1
+     
+    oldMouseIsDown = mouseIsDown
+
+    if event.getKeys(["escape"]):
+      print("User pressed escape")
+      exit()
+
+
+  return peckNum, reactionTimes
+
+
 # Main experimental phase. Reversal changes chance of reinforcement.
 def doExperimentalPhase():
     print("Starting experimental phase...")
@@ -801,20 +855,24 @@ def doExperimentalPhase():
         if (expTimer.getTime() <= 0):
           break
         drawStims(stimList[i])
-        cStimPecked, cClickFlag, choicePeckNum = waitForClicks(1, stimList[i])
+        cStimPecked, cClickFlag, choicePeckNum, cReactionTimes = waitForClicks(1, stimList[i])
         if cClickFlag == True:
           drawStims(cStimPecked.initStims)
-          iStimPecked, iClickFlag, initPeckNum = waitForClicks(1, cStimPecked.initStims)
+          iStimPecked, iClickFlag, initPeckNum, iReactionTimes = waitForClicks(1, cStimPecked.initStims)
           if iClickFlag == True:
             termStimShown = iStimPecked.drawTermLinks()
             win.flip()
-            core.wait(termDur)
+
+            tPeckNum, tReactionTimes = waitForTermLink()
+            #core.wait(termDur)
             
             giveReward(termStimShown.chanceOfReinforcement)
 
             drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
             ## FIX: Add data output. Side pecked will be cStimPecked, iStimPecked .get_x == L_X or R_X
             waitForExitPress(ITI)
+
+        writer.writerow([])
 
     endTime = time.time()
 
@@ -855,7 +913,7 @@ def doStimPairing():
         if (expTimer.getTime() <= 0):
           break
         drawStims(stimList[i])
-        iStimPecked, iClickFlag, peckNum = waitForClicks(1, stimList[i])
+        iStimPecked, iClickFlag, peckNum, iReactionTimes = waitForClicks(1, stimList[i])
         if iClickFlag == True:
           termStimShown = iStimPecked.drawTermLinks()
           win.flip()
@@ -865,6 +923,8 @@ def doStimPairing():
 
           drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
           waitForExitPress(ITI)
+
+        writer.writerow([])
 
     endTime = time.time()
 
@@ -943,19 +1003,48 @@ def doTraining(ITI, pecksToReward, rewardIfNotPecked):
   for i in range(0, len(stimList)):
     trialNumber += 1
     drawStims(stimList[i])
-    stimPecked, clickFlag, peckNum = waitForClicks(pecksToReward, stimList[i])
+    stimPecked, clickFlag, peckNum, reactionTimes = waitForClicks(pecksToReward, stimList[i])
 
     if rewardIfNotPecked or clickFlag:
       giveReward(1)
 
     drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
-    
+
+    if stimPecked.get_x == L_X:
+      stimSide = "LEFT"
+    elif stimPecked.get_X == R_X:
+      stimSide = "RIGHT"
+    elif stimPecked.get_X == 0:
+      stimSide = "CENTRE"
+
+    writer.writerow([researchAssistant, subjectNumber, setNumber,
+                      sessionNumber, dateStarted + " " + timeStarted, contingency,
+                      condition, pecksToReward, programName, trialNumber,
+                      programLoadTime, birdInBoxTime, experimentStartTime, 
+                      "N/A", apparatusPresent,
+                      timeoutPeriod, rewardDuration, '; '.join(stimList[i]), 
+                      stimSide, '; '.join(reactionTimes), peckNum, 
+                      ITI])
+
     waitForExitPress(ITI)
-    #core.wait(ITI, hogCPUperiod = ITI)
+
     ## FIX: TAKE INPUT FOR TERMINATION
     if event.getKeys(keyList=["escape"]):
         print("User pressed escape")
         exit()
+
+  endTime = time.time()
+  writer.writerow([researchAssistant, subjectNumber, setNumber.
+                      sessionNumber, dateStarted + " " + timeStarted, contingency,
+                      condition, pecksToReward, programName, trialNumber,
+                      programLoadTime, birdInBoxTime, experimentStartTime, 
+                      endTime, apparatusPresent,
+                      timeoutPeriod, rewardDuration, "N/A", 
+                      "N/A", "N/A", "N/A", 
+                      ITI])
+
+  displayEndScreen()
+
 
 
 # Creates GUI for experiment details
@@ -1047,7 +1136,7 @@ def main():
       raise
 
     try:
-      programStartTime = time.strftime("%H:%M")
+      programLoadTime = time.strftime("%H:%M")
       spacebarText =visual.TextStim(win, text='Press spacebar to begin', alignHoriz = 'center', alignVert = 'center')
       spacebarText.draw()
       win.flip()
