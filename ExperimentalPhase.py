@@ -605,7 +605,7 @@ def waitForClicks(targetPeckRequired, stimuli):
     peckNum = 0
     targetPeckNum = 0
     targetPecked = ""
-    oldMouseIsDown = False
+    oldMouseIsDown = True
 
     targetFlag = False
     reactionTimes = []
@@ -864,6 +864,8 @@ def doExperimentalPhase():
     startTime = time.time()
     expTimer = core.CountdownTimer(EXPERIMENT_TIME)
 
+    trialNumber = 0
+
     for i in range(0,len(stimList)):
         choicePeckNum = 0
         initPeckNum = 0
@@ -893,38 +895,42 @@ def doExperimentalPhase():
         if cStimPecked.get_x() == L_X:
           cStimSide = "LEFT"
         elif cStimPecked.get_x() == R_X:
-          cStimSide == "RIGHT"
+          cStimSide = "RIGHT"
         elif cStimPecked.get_x() == 0:
-          cStimSide == "CENTRE"
+          cStimSide = "CENTRE"
 
         if iStimPecked.get_x() == L_X:
           iStimSide = "LEFT"
         elif iStimPecked.get_x() == R_X:
-          iStimSide == "RIGHT"
+          iStimSide = "RIGHT"
         elif iStimPecked.get_x() == 0:
-          iStimSide == "CENTRE"
+          iStimSide = "CENTRE"
         
         # FIX: Verify this value
         subOptChosen = termStimShown.chanceOfReinforcement == 0.5
 
         # FIX: '; '.join(stimList[i])
 
-        stimPresented = ""
+        cStimPresented = ""
         for j in range(0, len(stimList[i])):
-          stimPresented += stimList[i][j].name + " "
+          cStimPresented += stimList[i][j].name + " "
+
+        iStimPresented = ""
+        for h in range(0, len(cStimPecked.initStims)):
+          iStimPresented += cStimPecked.initStims[h].name + " "
 
         if len(tReactionTimes) == 0:
           tReactionTimes.append("N/A")
 
         writer.writerow([researchAssistant, subjectNumber, setNumber,
                       sessionNumber, dateStarted + " " + timeStarted, contingency,
-                      condition, pecksToReward, programName, trialNumber,
+                      condition, "1", programName, trialNumber,
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       "N/A", apparatusPresent,
-                      TIMEOUT_PERIOD, rewardDuration, stimPresented,
-                      cStimPecked.initStims, termStimShown, 
-                      cStimSide, cStimPecked,
-                      iStimSide, cReactionTimes, iReactionTimes, str(tReactionTimes),
+                      TIMEOUT_PERIOD, rewardDuration, cStimPresented,
+                      iStimPresented, termStimShown.name, 
+                      cStimSide, iStimSide,
+                      cStimPecked.name, cReactionTimes, iReactionTimes, str(tReactionTimes),
                       tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], TERM_DUR,
                       ITI, cPeckNum, iPeckNum, tPeckNum, subOptChosen])
 
@@ -934,7 +940,7 @@ def doExperimentalPhase():
 
     writer.writerow([researchAssistant, subjectNumber, setNumber,
                       sessionNumber, dateStarted + " " + timeStarted, contingency,
-                      condition, pecksToReward, programName, "N/A",
+                      condition, "1", programName, "N/A",
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       endTime, apparatusPresent,
                       TIMEOUT_PERIOD, rewardDuration, "N/A",
@@ -993,38 +999,39 @@ def doStimPairing():
           giveReward(termStimShown.chanceOfReinforcement)
 
           drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
+          
+          if iStimPecked.get_x() == L_X:
+            iStimSide = "LEFT"
+          elif iStimPecked.get_x() == R_X:
+            iStimSide = "RIGHT"
+          elif iStimPecked.get_x() == 0:
+            iStimSide = "CENTRE"
+          
+          # FIX: Verify this value
+          subOptChosen = termStimShown.chanceOfReinforcement == 0.5
+
+          stimPresented = ""
+          for j in range(0, len(stimList[i])):
+            stimPresented += stimList[i][j].name + " "
+
+          termStimPresented = termStimShown.name
+
+          if len(tReactionTimes) == 0:
+            tReactionTimes.append("N/A")
+
+          writer.writerow([researchAssistant, subjectNumber, setNumber,
+                        sessionNumber, dateStarted + " " + timeStarted, contingency,
+                        condition, "1", programName, trialNumber,
+                        programLoadTime, birdInBoxTime, experimentStartTime, 
+                        "N/A", apparatusPresent,
+                        TIMEOUT_PERIOD, rewardDuration, "N/A",
+                        stimPresented, termStimPresented, 
+                        "N/A", iStimSide,
+                        "N/A", "N/A", iReactionTimes, str(tReactionTimes),
+                        tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], TERM_DUR,
+                        ITI, "N/A", iPeckNum, tPeckNum, subOptChosen])
+
           waitForExitPress(ITI)
-
-        if iStimPecked.get_x() == L_X:
-          iStimSide = "LEFT"
-        elif iStimPecked.get_x() == R_X:
-          iStimSide = "RIGHT"
-        elif iStimPecked.get_x() == 0:
-          iStimSide = "CENTRE"
-        
-        # FIX: Verify this value
-        subOptChosen = termStimShown.chanceOfReinforcement == 0.5
-
-        stimPresented = ""
-        for j in range(0, len(stimList[i])):
-          stimPresented += stimList[i][j].name + " "
-
-        termStimPresented = termStimShown.name
-
-        if len(tReactionTimes) == 0:
-          tReactionTimes.append("N/A")
-
-        writer.writerow([researchAssistant, subjectNumber, setNumber,
-                      sessionNumber, dateStarted + " " + timeStarted, contingency,
-                      condition, "1", programName, trialNumber,
-                      programLoadTime, birdInBoxTime, experimentStartTime, 
-                      "N/A", apparatusPresent,
-                      TIMEOUT_PERIOD, rewardDuration, "N/A",
-                      stimPresented, termStimPresented, 
-                      "N/A", iStimSide,
-                      "N/A", "N/A", iReactionTimes, str(tReactionTimes),
-                      tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], TERM_DUR,
-                      ITI, "N/A", iPeckNum, tPeckNum, subOptChosen])
 
     endTime = time.strftime("%H:%M")
 
@@ -1233,16 +1240,18 @@ def main():
     dateStarted = time.strftime("%d_%m_%Y") 
     timeStarted = time.strftime("%H:%M")
 
-    if testRunFlag == "Yes":
-      ITI = 5
-    else:
-      ITI = 10
-
     try: 
       setup()
     except:
       print("Setup error")
       raise
+
+    if testRunFlag == "Yes":
+      ITI = 5
+      mouse.setVisible(1)
+    else:
+      ITI = 10
+      mouse.setVisible(0)
 
     try:
       programLoadTime = time.strftime("%H:%M")
