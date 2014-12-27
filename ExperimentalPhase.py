@@ -32,6 +32,17 @@ R_X = (screen_width/3)
 I_STIM_Y = (-1*(screen_width/16))
 CHOICE_Y = (screen_width/16)
 
+# Time  terminal link is presented before rewar is given
+# FIX: Check this value
+TERM_DUR = 5
+
+# duration stimulus stays on screen
+# test to make sure this is the actual duration
+STIM_DUR = 10
+
+# Time (in seconds) the hopper will stay up if the beam is not broken.
+TIMEOUT_PERIOD = 10
+
 LINE_WIDTH = 4
 
 EXPERIMENT_TIME = 2700 #seconds = 45min
@@ -328,13 +339,13 @@ def setup():
 
     if condition == "Autoshaping (FR1)" or condition == "Operant Training (FR1)" or condition == "Operant Training (FR3)" or condition == "Operant Training (FR5)":
 
-       writer.writerow(["researchAssistant", "subjectNumber", "setNumber",
-                      "sessionNumber", "dateStarted", "contingency",
-                      "condition", "pecksToReward", "programName", "trialNumber",
-                      "programLoadTime", "birdInBoxTime", "startTime", 
-                      "N/A", "apparatusPresent",
-                      "timeoutPeriod", "rewardDuration", "stimPresented", 
-                      "stimSide", "reactionTimes", "peckNum", 
+       writer.writerow(["Research Assistant", "Subject Number", "Set Number",
+                      "Session Number", "Date Started", "Contingency",
+                      "Condition", "Pecks to Reward", "Program Name", "Trial Number",
+                      "Program Load Time", "Bird In Box Time", "Start Time", 
+                      "N/A", "Apparatus Present",
+                      "Timeout Period", "Reward Duration", "Stimulus Presented", 
+                      "Stimulus Side", "Reaction Times", "Peck Num", 
                       "ITI"])
 
     else:
@@ -599,7 +610,7 @@ def waitForClicks(targetPeckRequired, stimuli):
     targetFlag = False
     reactionTimes = []
     reactionTimer = core.Clock()
-    stimTimer = core.CountdownTimer(stimDur)
+    stimTimer = core.CountdownTimer(STIM_DUR)
     
     while ((stimTimer.getTime() > 0) and (targetFlag == False)):
       #event.clearEvents('mouse')
@@ -702,10 +713,10 @@ def giveReward(probability):
 
     # Read IR beam
     ## FIX: Make this depend on either a timer or the bird eating.
-    # timeoutPeriod should be the time for this timer.
+    # TIMEOUT_PERIOD should be the time for this timer.
     if hopperDropped == "L":
 
-      hopperTimer = core.CountdownTimer(timeoutPeriod)
+      hopperTimer = core.CountdownTimer(TIMEOUT_PERIOD)
 
       while (hopperTimer.getTime() > 0):
         if readLeftHopperBeam() > 0:
@@ -821,7 +832,7 @@ def waitForTermLinks():
 
   reactionTimes = []
   reactionTimer = core.Clock()
-  stimTimer = core.CountdownTimer(termDur)
+  stimTimer = core.CountdownTimer(TERM_DUR)
   
   while (stimTimer.getTime() > 0):
 
@@ -876,7 +887,7 @@ def doExperimentalPhase():
             win.flip()
 
             tPeckNum, tReactionTimes = waitForTermLink()
-            #core.wait(termDur)
+            #core.wait(TERM_DUR)
             
             giveReward(termStimShown.chanceOfReinforcement)
 
@@ -907,11 +918,11 @@ def doExperimentalPhase():
                       condition, pecksToReward, programName, trialNumber,
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       "N/A", apparatusPresent,
-                      timeoutPeriod, rewardDuration, '; '.join(stimList[i]),
+                      TIMEOUT_PERIOD, rewardDuration, '; '.join(stimList[i]),
                       cStimPecked.initStims, termStimShown, 
                       cStimSide, cStimPecked,
                       iStimSide, cReactionTimes, iReactionTimes, ';'.join(tReactionTimes),
-                      tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], termDur,
+                      tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], TERM_DUR,
                       ITI, cPeckNum, iPeckNum, tPeckNum, subOptChosen])
 
         waitForExitPress(ITI)
@@ -923,11 +934,11 @@ def doExperimentalPhase():
                       condition, pecksToReward, programName, "N/A",
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       endTime, apparatusPresent,
-                      timeoutPeriod, rewardDuration, "N/A",
+                      TIMEOUT_PERIOD, rewardDuration, "N/A",
                       "N/A", "N/A", 
                       "N/A", "N/A",
                       "N/A", "N/A", "N/A", "N/A",
-                      "N/A", "N/A", termDur,
+                      "N/A", "N/A", TERM_DUR,
                       ITI, "N/A", "N/A", "N/A", "N/A"])
 
     while (expTimer.getTime() > 0):
@@ -973,7 +984,7 @@ def doStimPairing():
           win.flip()
 
           tPeckNum, tReactionTimes = waitForTermLink()
-          #core.wait(termDur)
+          #core.wait(TERM_DUR)
           
           giveReward(termStimShown.chanceOfReinforcement)
 
@@ -995,11 +1006,11 @@ def doStimPairing():
                       condition, pecksToReward, programName, trialNumber,
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       "N/A", apparatusPresent,
-                      timeoutPeriod, rewardDuration, "N/A",
+                      TIMEOUT_PERIOD, rewardDuration, "N/A",
                       stimList[i], termStimShown, 
                       "N/A", "N/A",
                       iStimSide, "N/A", iReactionTimes, ';'.join(tReactionTimes),
-                      tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], termDur,
+                      tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], TERM_DUR,
                       ITI, "N/A", iPeckNum, tPeckNum, subOptChosen])
 
     endTime = time.time()
@@ -1009,11 +1020,11 @@ def doStimPairing():
                       condition, pecksToReward, programName, "N/A",
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       endTime, apparatusPresent,
-                      timeoutPeriod, rewardDuration, "N/A",
+                      TIMEOUT_PERIOD, rewardDuration, "N/A",
                       "N/A", "N/A", 
                       "N/A", "N/A",
                       "N/A", "N/A", "N/A", "N/A",
-                      "N/A", "N/A", termDur,
+                      "N/A", "N/A", TERM_DUR,
                       ITI, "N/A", "N/A", "N/A", "N/A"])
 
     while (expTimer.getTime() > 0):
@@ -1110,7 +1121,7 @@ def doTraining(ITI, pecksToReward, rewardIfNotPecked):
                       condition, pecksToReward, programName, "N/A",
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       "N/A", apparatusPresent,
-                      timeoutPeriod, rewardDuration, '; '.join(stimList[i]), 
+                      TIMEOUT_PERIOD, rewardDuration, '; '.join(stimList[i]), 
                       stimSide, '; '.join(reactionTimes), peckNum, 
                       ITI])
 
@@ -1127,7 +1138,7 @@ def doTraining(ITI, pecksToReward, rewardIfNotPecked):
                       condition, pecksToReward, programName, trialNumber,
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       endTime, apparatusPresent,
-                      timeoutPeriod, rewardDuration, "N/A", 
+                      TIMEOUT_PERIOD, rewardDuration, "N/A", 
                       "N/A", "N/A", "N/A", 
                       ITI])
 
@@ -1171,11 +1182,11 @@ def waitForSpacebar():
 # Turns all inputs into global variables, sets up experiment, and decides
 # which experimental phase to call.
 def main():
-    global ITI, stimDur, contingency, reversal, termDur, subjectNumber
+    global ITI, contingency, reversal, subjectNumber
     global subjectNumber, sessionNumber, condition, contingency
     global rewardDuration, stimulusTimeout, testRunFlag, researchAssistant
     global dateStarted, timeStarted, programStartTime, birdInBoxTime
-    global programLoadTime, timeoutPeriod
+    global programLoadTime
 
     userResponses, userCancelled = getUserInput()
 
@@ -1201,16 +1212,6 @@ def main():
     #Timestamp of when program is run
     dateStarted = time.strftime("%d_%m_%Y") 
     timeStarted = time.strftime("%H:%M")
-
-    # Time  terminal link is presented before reward is given
-    termDur = 5
-
-    # duration stimulus stays on screen
-    # test to make sure this is the actual duration
-    stimDur = 10
-
-    # Time (in seconds) the hopper will stay up if the beam is not broken.
-    timeoutPeriod = 10
 
     if testRunFlag == "Yes":
       ITI = 5

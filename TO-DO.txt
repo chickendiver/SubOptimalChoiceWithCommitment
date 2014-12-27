@@ -3,7 +3,7 @@ TO-DO:
 Priority 1:
 
 [DONE] 1. Fix buggy click detection code
-2. Add variable data output for each trial
+[DONE] 2. Add variable data output for each trial
 [DONE] 3. Add more trials to stimList in generateListOfAllStims
 [DONE] 4. Add exception handling for closing data file
 [DONE] 5. Comment code for readability
