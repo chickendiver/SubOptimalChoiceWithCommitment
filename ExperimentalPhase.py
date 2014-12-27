@@ -1,7 +1,7 @@
 from sys import platform as _platform
 from psychopy import visual, core, parallel, gui, event
 import time, csv, random, datetime, os
-#import readPort
+import readPort
 
 #Determine which OS is being used, and calculate the screen size
 if _platform == "linux" or _platform == "linux2":
@@ -111,6 +111,13 @@ class InitialLinkStim:
           self.outlineColour = "Silver"
           self.name = name
           self.termStims = []
+          self.subOpt = False
+
+  def set_subOpt(self, value):
+        self.subOpt = value
+
+  def get_subOpt():
+         return self.subOpt
 
   def set_fill (self, fillCol):
         self.fillColour = fillCol
@@ -855,10 +862,10 @@ def doExperimentalPhase():
         if (expTimer.getTime() <= 0):
           break
         drawStims(stimList[i])
-        cStimPecked, cClickFlag, choicePeckNum, cReactionTimes = waitForClicks(1, stimList[i])
+        cStimPecked, cClickFlag, cPeckNum, cReactionTimes = waitForClicks(1, stimList[i])
         if cClickFlag == True:
           drawStims(cStimPecked.initStims)
-          iStimPecked, iClickFlag, initPeckNum, iReactionTimes = waitForClicks(1, cStimPecked.initStims)
+          iStimPecked, iClickFlag, iPeckNum, iReactionTimes = waitForClicks(1, cStimPecked.initStims)
           if iClickFlag == True:
             termStimShown = iStimPecked.drawTermLinks()
             win.flip()
@@ -870,11 +877,53 @@ def doExperimentalPhase():
 
             drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
             ## FIX: Add data output. Side pecked will be cStimPecked, iStimPecked .get_x == L_X or R_X
-            waitForExitPress(ITI)
+          
+        cStimSide = ""
+        iStimSide = ""
+        if cStimPecked.get_x() == L_X:
+          cStimSide = "LEFT"
+        elif cStimPecked.get_x() == R_X:
+          cStimSide == "RIGHT"
+        elif cStimPecked.get_x() == 0:
+          cStimSide == "CENTRE"
 
-        writer.writerow([])
+        if iStimPecked.get_x() == L_X:
+          iStimSide = "LEFT"
+        elif iStimPecked.get_x() == R_X:
+          iStimSide == "RIGHT"
+        elif iStimPecked.get_x() == 0:
+          iStimSide == "CENTRE"
+        
+        # FIX: Verify this value
+        subOptChosen = termStimShown.chanceOfReinforcement == 0.5
+
+        writer.writerow([researchAssistant, subjectNumber, setNumber,
+                      sessionNumber, dateStarted + " " + timeStarted, contingency,
+                      condition, pecksToReward, programName, trialNumber,
+                      programLoadTime, birdInBoxTime, experimentStartTime, 
+                      "N/A", apparatusPresent,
+                      timeoutPeriod, rewardDuration, '; '.join(stimList[i]),
+                      cStimPecked.initStims, termStimShown, 
+                      cStimSide, cStimPecked,
+                      iStimSide, cReactionTimes, iReactionTimes, ';'.join(tReactionTimes),
+                      tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], termDur,
+                      ITI, cPeckNum, iPeckNum, tPeckNum, subOptChosen])
+
+        waitForExitPress(ITI)
 
     endTime = time.time()
+
+    writer.writerow([researchAssistant, subjectNumber, setNumber,
+                      sessionNumber, dateStarted + " " + timeStarted, contingency,
+                      condition, pecksToReward, programName, "N/A",
+                      programLoadTime, birdInBoxTime, experimentStartTime, 
+                      endTime, apparatusPresent,
+                      timeoutPeriod, rewardDuration, "N/A",
+                      "N/A", "N/A", 
+                      "N/A", "N/A",
+                      "N/A", "N/A", "N/A", "N/A",
+                      "N/A", "N/A", termDur,
+                      ITI, "N/A", "N/A", "N/A", "N/A"])
 
     while (expTimer.getTime() > 0):
       drawStims(listOfBlanks)
@@ -917,16 +966,50 @@ def doStimPairing():
         if iClickFlag == True:
           termStimShown = iStimPecked.drawTermLinks()
           win.flip()
-          core.wait(termDur)
+
+          tPeckNum, tReactionTimes = waitForTermLink()
+          #core.wait(termDur)
           
           giveReward(termStimShown.chanceOfReinforcement)
 
           drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
           waitForExitPress(ITI)
 
-        writer.writerow([])
+        if iStimPecked.get_x() == L_X:
+          iStimSide = "LEFT"
+        elif iStimPecked.get_x() == R_X:
+          iStimSide == "RIGHT"
+        elif iStimPecked.get_x() == 0:
+          iStimSide == "CENTRE"
+        
+        # FIX: Verify this value
+        subOptChosen = termStimShown.chanceOfReinforcement == 0.5
+
+        writer.writerow([researchAssistant, subjectNumber, setNumber,
+                      sessionNumber, dateStarted + " " + timeStarted, contingency,
+                      condition, pecksToReward, programName, trialNumber,
+                      programLoadTime, birdInBoxTime, experimentStartTime, 
+                      "N/A", apparatusPresent,
+                      timeoutPeriod, rewardDuration, "N/A",
+                      stimList[i], termStimShown, 
+                      "N/A", "N/A",
+                      iStimSide, "N/A", iReactionTimes, ';'.join(tReactionTimes),
+                      tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], termDur,
+                      ITI, "N/A", iPeckNum, tPeckNum, subOptChosen])
 
     endTime = time.time()
+
+    writer.writerow([researchAssistant, subjectNumber, setNumber,
+                      sessionNumber, dateStarted + " " + timeStarted, contingency,
+                      condition, pecksToReward, programName, "N/A",
+                      programLoadTime, birdInBoxTime, experimentStartTime, 
+                      endTime, apparatusPresent,
+                      timeoutPeriod, rewardDuration, "N/A",
+                      "N/A", "N/A", 
+                      "N/A", "N/A",
+                      "N/A", "N/A", "N/A", "N/A",
+                      "N/A", "N/A", termDur,
+                      ITI, "N/A", "N/A", "N/A", "N/A"])
 
     while (expTimer.getTime() > 0):
       drawStims(listOfBlanks)
@@ -1019,7 +1102,7 @@ def doTraining(ITI, pecksToReward, rewardIfNotPecked):
 
     writer.writerow([researchAssistant, subjectNumber, setNumber,
                       sessionNumber, dateStarted + " " + timeStarted, contingency,
-                      condition, pecksToReward, programName, trialNumber,
+                      condition, pecksToReward, programName, "N/A",
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       "N/A", apparatusPresent,
                       timeoutPeriod, rewardDuration, '; '.join(stimList[i]), 

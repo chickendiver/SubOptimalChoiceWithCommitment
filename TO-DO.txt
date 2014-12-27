@@ -11,6 +11,7 @@ Priority 1:
 [DONE] 7. Figure out what termDur and stimDur should be in main()
 8. Test code on operant boxes
 9. Make termDur, stimDur, and timeoutPeriod all CONST.
+10. Add functionality for program to be run without opening PsychoPy
 
 Priority 2:
 
