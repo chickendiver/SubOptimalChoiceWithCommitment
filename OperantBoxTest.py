@@ -1,5 +1,4 @@
 from sys import platform as _platform
-from psychopy import visual, core, gui, event
 import time, csv, random, datetime
 import readPort
 
