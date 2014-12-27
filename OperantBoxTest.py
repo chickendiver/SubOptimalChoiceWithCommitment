@@ -1,5 +1,6 @@
 from sys import platform as _platform
 import time, csv, random, datetime
+from psychopy import visual, core, parallel, gui, event
 import readPort
 
 #Determine which OS is being used, and calculate the screen size

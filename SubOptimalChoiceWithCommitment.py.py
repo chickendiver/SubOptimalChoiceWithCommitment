@@ -714,7 +714,7 @@ def giveReward(probability):
     if hopperDropped == "L":
 
       while (hopperTimer.getTime() > 0):
-        if readLeftHopperBeam() > 0:
+        if readLeftHopperBeam() == 0:
           break
       
       ## 1 second of hopper access
@@ -724,7 +724,7 @@ def giveReward(probability):
     else:
     # Assume right hopper was dropped
       while (hopperTimer.getTime() > 0):
-        if readRightHopperBeam() > 0:
+        if readRightHopperBeam() == 0:
           break
 
       ## 1 second of hopper access
@@ -747,56 +747,56 @@ def dropHoppersAtRandom():
   return hopperDropped
 
 # Raises the hopper and turns the light on.
-def dropLeftHopper():
+def raiseLeftHopper():
   global portValue
-  portValue = portValue or 0x10
-  portValue = portValue or 0x04
+  portValue = portValue or 0x0010
+  portValue = portValue or 0x0004
 
   parallelPort.setData(portValue)
 
 # Raises the hopper and turns the light on.
-def raiseLeftHopper():
+def dropLeftHopper():
   global portValue
-  portValue = portValue or not 0x10
-  portValue = portValue or not 0x04
-
-  parallelPort.setData(portValue)
-
-def dropRightHopper():
-  global portValue
-  portValue = portValue or 0x20
-  portValue = portValue or 0x08
+  portValue = portValue & ~(0x0010)
+  portValue = portValue & ~(0x0004)
 
   parallelPort.setData(portValue)
 
 def raiseRightHopper():
   global portValue
-  portValue = portValue or not 0x20
-  portValue = portValue or not 0x08
+  portValue = portValue or 0x0020
+  portValue = portValue or 0x0008
+
+  parallelPort.setData(portValue)
+
+def dropRightHopper():
+  global portValue
+  portValue = portValue & ~(0x0020)
+  portValue = portValue & ~(0x0008)
 
   parallelPort.setData(portValue)
 
 def turnOnHouseLight():
   global portValue
-  portValue = portValue or 0x01
+  portValue = portValue or 0x0001
 
   parallelPort.setData(portValue)
 
 def turnOffHouseLight():
   global portValue
-  portValue = portValue or not 0x01
+  portValue = portValue & ~(0x0001)
 
   parallelPort.setData(portValue)
 
 def turnOnFan():
   global portValue
-  portValue = portValue or 0x02
+  portValue = portValue or 0x0002
 
   parallelPort.setData(portValue)
 
 def turnOffFan():
   global portValue
-  portValue = portValue or not 0x02
+  portValue = portValue & ~ (0x0002)
 
   parallelPort.setData(portValue)
 
@@ -807,16 +807,20 @@ def readLeftHopperBeam():
   if testRunFlag == "Yes":
     value = 0
   else:
-    value = readPort.readPort(0x0201) & 0x10
+    value = 0
+    #value = readPort.readPort(0x0201) & 0x10
   return value
 
 # Reads from right IR beam. Called after hopper is dropped
 def readRightHopperBeam():
   #return if beam broken
   if testRunFlag == "Yes":
+    core.wait(0.5)
     value = 0
   else:
-    value = readPort.readPort(0x0201) & 0x20
+    core.wait(0.5)
+    value = 0
+    #value = readPort.readPort(0x0201) & 0x20
   return value
 
 def waitForTermLinks():
