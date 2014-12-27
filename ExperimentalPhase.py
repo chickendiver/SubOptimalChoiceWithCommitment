@@ -1263,6 +1263,13 @@ def main():
       experimentEndTime = time.strftime("%H:%M")
     except:
       print("Experiment error")
+      endTime = time.time()
+
+      writer.writerow(["N/A", "N/A", "N/A",
+                        "N/A", "N/A", "N/A",
+                        "N/A", "N/A", "N/A", "N/A",
+                        "N/A", "N/A", "N/A", 
+                        endTime)]
       datafile.close()
       raise
     else:
