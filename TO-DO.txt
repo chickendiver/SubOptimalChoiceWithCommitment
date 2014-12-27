@@ -19,5 +19,6 @@ Priority 2:
 2. Add email notifications for when birds are run
 3. Make data files save to the lab server, and to the current directory if not available
 4. Make apparatusPresent depend on read from GamePort
+5. Make ResearchAssistant default to "unlisted"
 
 NOTE: Are the training phases done by timer, or stimulus count?

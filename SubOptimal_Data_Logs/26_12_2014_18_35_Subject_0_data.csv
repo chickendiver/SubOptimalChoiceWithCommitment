@@ -1,0 +1,6 @@
+Research Assistant,Subject Number,Set Number,Session Number,Date and Time Run,Contingency,Condition,Number of Pecks Required,Program Name,Trial Number,Program Load Time,Bird In Box Time,Experiment Start Time,Experiment End Time,Apparatus Present,Timeout Period,Reward Time,Choice Stimulus,Initial-Link,Terminal-Link,Choice Stimulus Side Pecked,Initial-Link Side Pecked,Choice Stimulus Pecked,Choice Stimulus Reaction Time,Initial-Link Reaction Time,Terminal-Link Peck Log,Terminal Link Latency,Terminal Link Final Response,Terminal Link Duration,Inter-Trial Interval (ITI),Choice Stimulus Screen Peck Count,Initial Link Screen Peck Count,Terminal-Link Screen Peck Count,Sub-Optimal Link Chosen
+
+,0,0,0,26_12_2014 18:35,1,Stim Pairing,1,SubOptimalChoiceWithCommitment.py,1,18:35,18:35,18:35,N/A,Yes,10,10,N/A,InitB ,TermC,N/A,RIGHT,N/A,N/A,[0.8798423426924273],['N/A'],N/A,N/A,5,5,N/A,1,0,False
+,0,0,0,26_12_2014 18:35,1,Stim Pairing,1,SubOptimalChoiceWithCommitment.py,2,18:35,18:35,18:35,N/A,Yes,10,10,N/A,InitA InitB ,TermB,N/A,LEFT,N/A,N/A,[1.1145951208891347],['N/A'],N/A,N/A,5,5,N/A,1,0,True
+N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,18:36
+
