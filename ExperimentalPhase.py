@@ -326,8 +326,7 @@ def setup():
     datafile = open(filename, 'wb')
     writer = csv.writer(datafile, delimiter=',')
 
-    if condition == "Autoshaping (FR1)" or condition == "Operant Training (FR1)" or
-       condition == "Operant Training (FR3)" or condition == "Operant Training (FR5)":
+    if condition == "Autoshaping (FR1)" or condition == "Operant Training (FR1)" or condition == "Operant Training (FR3)" or condition == "Operant Training (FR5)":
 
        writer.writerow(["researchAssistant", "subjectNumber", "setNumber",
                       "sessionNumber", "dateStarted", "contingency",
@@ -700,24 +699,30 @@ def giveReward(probability):
 
   if probability > 0:
 
+
     # Read IR beam
     ## FIX: Make this depend on either a timer or the bird eating.
     # timeoutPeriod should be the time for this timer.
     if hopperDropped == "L":
-      while readLeftHopperBeam() > 0:
-        pass
+
+      hopperTimer = core.CountdownTimer(timeoutPeriod)
+
+      while (hopperTimer.getTime() > 0):
+        if readLeftHopperBeam() > 0:
+          break
       
       ## 1 second of hopper access
-      #core.wait(1)
+      core.wait(1)
       raiseLeftHopper()
 
     else:
     # Assume right hopper was dropped
-      while readRightHopperBeam() > 0:
-        pass
+      while (hopperTimer.getTime() > 0):
+        if readRightHopperBeam() > 0:
+          break
 
       ## 1 second of hopper access
-      #core.wait(1)
+      core.wait(1)
       raiseRightHopper()
 
 # Randomly chooses a hopper to drop.
@@ -793,19 +798,19 @@ def turnOffFan():
 def readLeftHopperBeam():
   #return if beam broken
 
-  #value = readPort.readPort(0x0201) & 0x10
-  value = 1
+  value = readPort.readPort(0x0201) & 0x10
+  #value = 1
   #core.wait(1)
-  value = 0
+  #value = 0
   return value
 
 # Reads from right IR beam. Called after hopper is dropped
 def readRightHopperBeam():
   #return if beam broken
-  #value = readPort.readPort(0x0201) & 0x20
-  value = 1
+  value = readPort.readPort(0x0201) & 0x20
+  #value = 1
   #core.wait(1)
-  value = 0
+  #value = 0
   return value
 
 def waitForTermLinks():
@@ -1235,7 +1240,7 @@ def main():
         if testRunFlag == "Yes":
           doTraining(5, 1, True)
         else:
-          doTraining(240, 1, True)time.strftime("%H:%M")
+          doTraining(240, 1, True)
       elif condition == 'Operant Training (FR1)':
         if testRunFlag == "Yes":
           doTraining(5, 1, False)
@@ -1269,7 +1274,8 @@ def main():
                         "N/A", "N/A", "N/A",
                         "N/A", "N/A", "N/A", "N/A",
                         "N/A", "N/A", "N/A", 
-                        endTime)]
+                        endTime])
+      writer.writerow([])
       datafile.close()
       raise
     else:
