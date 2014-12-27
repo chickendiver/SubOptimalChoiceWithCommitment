@@ -695,7 +695,7 @@ def giveReward(probability):
   else:
     print("Reward not given")
     # In place of 1 second of hopper access
-    #core.wait(1)
+    core.wait(1)
 
   if probability > 0:
 
