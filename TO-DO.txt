@@ -10,7 +10,7 @@ Priority 1:
 [DONE] 6. Add functionality for program termination during ITI
 [DONE] 7. Figure out what termDur and stimDur should be in main()
 8. Test code on operant boxes
-9. Make termDur, stimDur, and timeoutPeriod all CONST.
+[DONE] 9. Make termDur, stimDur, and timeoutPeriod all CONST.
 10. Add functionality for program to be run without opening PsychoPy
 
 Priority 2:
@@ -18,5 +18,6 @@ Priority 2:
 1. Add data input functionality for running birds without using a gui
 2. Add email notifications for when birds are run
 3. Make data files save to the lab server, and to the current directory if not available
+4. Make apparatusPresent depend on read from GamePort
 
 NOTE: Are the training phases done by timer, or stimulus count?

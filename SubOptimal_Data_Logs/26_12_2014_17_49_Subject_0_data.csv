@@ -1,0 +1,7 @@
+Research Assistant,Subject Number,Set Number,Session Number,Date Started,Contingency,Condition,Pecks to Reward,Program Name,Trial Number,Program Load Time,Bird In Box Time,Start Time,Experiment End Time,Apparatus Present,Timeout Period,Reward Duration,Stimulus Presented,Stimulus Side,Reaction Times,Peck Num,ITI
+
+,0,0,0,26_12_2014 17:49,1,Autoshaping (FR1),1,SubOptimalChoiceWithCommitment.py,N/A,17:49,17:49,17:49,N/A,Yes,10,10,[<__main__.TerminalLinkStim instance at 0x044B5350>],UNKOWN,[0.8600985960802063],1,5
+,0,0,0,26_12_2014 17:49,1,Autoshaping (FR1),1,SubOptimalChoiceWithCommitment.py,N/A,17:49,17:49,17:49,N/A,Yes,10,10,[<__main__.TerminalLinkStim instance at 0x044B52B0>],UNKOWN,[1.2522417922737077],1,5
+,0,0,0,26_12_2014 17:49,1,Autoshaping (FR1),1,SubOptimalChoiceWithCommitment.py,N/A,17:49,17:49,17:49,N/A,Yes,10,10,[<__main__.ChoiceStim instance at 0x044B5058>],UNKOWN,[1.4798002199968323],1,5
+N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,17:49
+
