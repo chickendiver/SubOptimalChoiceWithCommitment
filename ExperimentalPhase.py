@@ -343,7 +343,7 @@ def setup():
                       "Session Number", "Date Started", "Contingency",
                       "Condition", "Pecks to Reward", "Program Name", "Trial Number",
                       "Program Load Time", "Bird In Box Time", "Start Time", 
-                      "N/A", "Apparatus Present",
+                      "Experiment End Time", "Apparatus Present",
                       "Timeout Period", "Reward Duration", "Stimulus Presented", 
                       "Stimulus Side", "Reaction Times", "Peck Num", 
                       "ITI"])
@@ -927,7 +927,7 @@ def doExperimentalPhase():
 
         waitForExitPress(ITI)
 
-    endTime = time.time()
+    endTime = time.strftime("%H:%M")
 
     writer.writerow([researchAssistant, subjectNumber, setNumber,
                       sessionNumber, dateStarted + " " + timeStarted, contingency,
@@ -1013,7 +1013,7 @@ def doStimPairing():
                       tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], TERM_DUR,
                       ITI, "N/A", iPeckNum, tPeckNum, subOptChosen])
 
-    endTime = time.time()
+    endTime = time.strftime("%H:%M")
 
     writer.writerow([researchAssistant, subjectNumber, setNumber,
                       sessionNumber, dateStarted + " " + timeStarted, contingency,
@@ -1132,7 +1132,8 @@ def doTraining(ITI, pecksToReward, rewardIfNotPecked):
         print("User pressed escape")
         exit()
 
-  endTime = time.time()
+  endTime = time.strftime("%H:%M")
+  
   writer.writerow([researchAssistant, subjectNumber, setNumber.
                       sessionNumber, dateStarted + " " + timeStarted, contingency,
                       condition, pecksToReward, programName, trialNumber,
@@ -1269,7 +1270,7 @@ def main():
       experimentEndTime = time.strftime("%H:%M")
     except:
       print("Experiment error")
-      endTime = time.time()
+      endTime = time.strftime("%H:%M")
 
       writer.writerow(["N/A", "N/A", "N/A",
                         "N/A", "N/A", "N/A",
