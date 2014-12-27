@@ -97,7 +97,7 @@ def readRightHopperBeam():
   return value
 
 def main():
-    hopperTimer = core.CountdownTimer(TIMEOUT_PERIOD)
+    hopperTimer = core.CountdownTimer(10)
 
     turnOnHouseLight()
     turnOnFan()
