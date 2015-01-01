@@ -366,8 +366,6 @@ def setup():
                          'InitialLinkScreenPeckCount', 
                          'Terminal-LinkScreenPeckCount', 'Sub-OptimalLinkChosen'])
 
-    writer.writerow([])
-
 # Creates all stimuli required, and sets them as global values
 def createStimuli():
     global blankLeftChoiceStim, blankCentreChoiceStim, blankRightChoiceStim
@@ -599,7 +597,7 @@ def drawStims(stimuli):
 # Waits for input on any object provided in "Stimuli"
 # Returns after "targetPeckRequired" number of clicks on
 # stimuli is reached.
-def waitForClicks(targetPeckRequired, stimuli):
+def waitForClicks(targetPeckRequired, stimuli, duration):
 
     print("Waiting for clicks...")
     peckNum = 0
@@ -610,7 +608,7 @@ def waitForClicks(targetPeckRequired, stimuli):
     targetFlag = False
     reactionTimes = []
     reactionTimer = core.Clock()
-    stimTimer = core.CountdownTimer(STIM_DUR)
+    stimTimer = core.CountdownTimer(duration)
     
     while ((stimTimer.getTime() > 0) and (targetFlag == False)):
       #event.clearEvents('mouse')
@@ -878,10 +876,10 @@ def doExperimentalPhase():
         if (expTimer.getTime() <= 0):
           break
         drawStims(stimList[i])
-        cStimPecked, cClickFlag, cPeckNum, cReactionTimes = waitForClicks(1, stimList[i])
+        cStimPecked, cClickFlag, cPeckNum, cReactionTimes = waitForClicks(1, stimList[i], EXPERIMENT_TIME)
         if cClickFlag == True:
           drawStims(cStimPecked.initStims)
-          iStimPecked, iClickFlag, iPeckNum, iReactionTimes = waitForClicks(1, cStimPecked.initStims)
+          iStimPecked, iClickFlag, iPeckNum, iReactionTimes = waitForClicks(1, cStimPecked.initStims, EXPERIMENT_TIME)
           if iClickFlag == True:
             termStimShown = iStimPecked.drawTermLinks()
             win.flip()
@@ -896,19 +894,25 @@ def doExperimentalPhase():
           
         cStimSide = ""
         iStimSide = ""
-        if cStimPecked.get_x() == L_X:
-          cStimSide = "LEFT"
-        elif cStimPecked.get_x() == R_X:
-          cStimSide = "RIGHT"
-        elif cStimPecked.get_x() == 0:
-          cStimSide = "CENTRE"
+        if cPeckNum == True:
+          if cStimPecked.get_x() == L_X:
+            cStimSide = "LEFT"
+          elif cStimPecked.get_x() == R_X:
+            cStimSide = "RIGHT"
+          elif cStimPecked.get_x() == 0:
+            cStimSide = "CENTRE"
+        else:
+          cStimSide = "NO STIM PECKED"
 
-        if iStimPecked.get_x() == L_X:
-          iStimSide = "LEFT"
-        elif iStimPecked.get_x() == R_X:
-          iStimSide = "RIGHT"
-        elif iStimPecked.get_x() == 0:
-          iStimSide = "CENTRE"
+        if iPeckNum == True:
+          if iStimPecked.get_x() == L_X:
+            iStimSide = "LEFT"
+          elif iStimPecked.get_x() == R_X:
+            iStimSide = "RIGHT"
+          elif iStimPecked.get_x() == 0:
+            iStimSide = "CENTRE"
+        else:
+          iStimSide = "NO STIM PECKED"
         
         # FIX: Verify this value
         subOptChosen = termStimShown.chanceOfReinforcement == 0.5
@@ -992,7 +996,7 @@ def doStimPairing():
         if (expTimer.getTime() <= 0):
           break
         drawStims(stimList[i])
-        iStimPecked, iClickFlag, iPeckNum, iReactionTimes = waitForClicks(1, stimList[i])
+        iStimPecked, iClickFlag, iPeckNum, iReactionTimes = waitForClicks(1, stimList[i], EXPERIMENT_TIME)
         if iClickFlag == True:
           termStimShown = iStimPecked.drawTermLinks()
           win.flip()
@@ -1004,12 +1008,15 @@ def doStimPairing():
 
           drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
           
-          if iStimPecked.get_x() == L_X:
-            iStimSide = "LEFT"
-          elif iStimPecked.get_x() == R_X:
-            iStimSide = "RIGHT"
-          elif iStimPecked.get_x() == 0:
-            iStimSide = "CENTRE"
+          if iClickFlag == True:
+            if iStimPecked.get_x() == L_X:
+              iStimSide = "LEFT"
+            elif iStimPecked.get_x() == R_X:
+              iStimSide = "RIGHT"
+            elif iStimPecked.get_x() == 0:
+              iStimSide = "CENTRE"
+          else:
+            iStimSide = "NO STIM PECKED"
           
           # FIX: Verify this value
           subOptChosen = termStimShown.chanceOfReinforcement == 0.5
@@ -1126,22 +1133,25 @@ def doTraining(ITI, pecksToReward, rewardIfNotPecked):
   for i in range(0, len(stimList)):
     trialNumber += 1
     drawStims(stimList[i])
-    stimPecked, clickFlag, peckNum, reactionTimes = waitForClicks(pecksToReward, stimList[i])
+    stimPecked, clickFlag, peckNum, reactionTimes = waitForClicks(pecksToReward, stimList[i], STIM_DUR)
 
     if rewardIfNotPecked or clickFlag:
       giveReward(1)
 
     drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
 
-    print ("STIM POS: ", )
-    if stimPecked.get_x() == L_X:
-      stimSide = "LEFT"
-    elif stimPecked.get_x() == R_X:
-      stimSide = "RIGHT"
-    elif stimPecked.get_x() == 0:
-      stimSide = "CENTRE"
+    if clickFlag == True:
+      print ("STIM POS: ", )
+      if stimPecked.get_x() == L_X:
+        stimSide = "LEFT"
+      elif stimPecked.get_x() == R_X:
+        stimSide = "RIGHT"
+      elif stimPecked.get_x() == 0:
+        stimSide = "CENTRE"
+      else:
+        stimSide = "UNKOWN"
     else:
-      stimSide = "UNKOWN"
+        stimSide = "NO STIM PECKED"
 
     stimPresented = ""
     for j in range(0, len(stimList[i])):
