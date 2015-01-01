@@ -38,7 +38,7 @@ TERM_DUR = 5
 
 # duration stimulus stays on screen
 # test to make sure this is the actual duration
-STIM_DUR = 10
+STIM_DUR = 60
 
 # Time (in seconds) the hopper will stay up if the beam is not broken.
 TIMEOUT_PERIOD = 10
@@ -339,32 +339,32 @@ def setup():
 
     if condition == "Autoshaping (FR1)" or condition == "Operant Training (FR1)" or condition == "Operant Training (FR3)" or condition == "Operant Training (FR5)":
 
-       writer.writerow(["Research Assistant", "Subject Number", "Set Number",
-                      "Session Number", "Date Started", "Contingency",
-                      "Condition", "Pecks to Reward", "Program Name", "Trial Number",
-                      "Program Load Time", "Bird In Box Time", "Start Time", 
-                      "Experiment End Time", "Apparatus Present",
-                      "Timeout Period", "Reward Duration", "Stimulus Presented", 
-                      "Stimulus Side", "Reaction Times", "Peck Num", 
+       writer.writerow(["ResearchAssistant", "SubjectNumber", "SetNumber",
+                      "SessionNumber", "DateStarted", "Contingency",
+                      "Condition", "PeckstoReward", "ProgramName", "TrialNumber",
+                      "ProgramLoadTime", "BirdInBoxTime", "StartTime", 
+                      "ExperimentEndTime", "ApparatusPresent",
+                      "TimeoutPeriod", "RewardDuration", "StimulusPresented", 
+                      "StimulusSide", "ReactionTimes", "PeckNum", 
                       "ITI"])
 
     else:
-        writer.writerow(['Research Assistant', 'Subject Number', 'Set Number', 
-                         'Session Number', 'Date and Time Run', 'Contingency', 
-                         'Condition', 'Number of Pecks Required', 'Program Name', 
-                         'Trial Number', 'Program Load Time', 'Bird In Box Time', 
-                         'Experiment Start Time', 'Experiment End Time', 
-                         'Apparatus Present', 'Timeout Period', 'Reward Time', 
-                         'Choice Stimulus', 'Initial-Link', 'Terminal-Link', 
-                         'Choice Stimulus Side Pecked', 'Initial-Link Side Pecked', 
-                         'Choice Stimulus Pecked',
-                         'Choice Stimulus Reaction Time', 'Initial-Link Reaction Time', 
-                         'Terminal-Link Peck Log', 'Terminal Link Latency', 
-                         'Terminal Link Final Response', 'Terminal Link Duration', 
-                         'Inter-Trial Interval (ITI)', 
-                         'Choice Stimulus Screen Peck Count', 
-                         'Initial Link Screen Peck Count', 
-                         'Terminal-Link Screen Peck Count', 'Sub-Optimal Link Chosen'])
+        writer.writerow(['ResearchAssistant', 'SubjectNumber', 'SetNumber', 
+                         'SessionNumber', 'DateandTimeRun', 'Contingency', 
+                         'Condition', 'NumberofPecksRequired', 'ProgramName', 
+                         'TrialNumber', 'ProgramLoadTime', 'BirdInBoxTime', 
+                         'ExperimentStartTime', 'ExperimentEndTime', 
+                         'ApparatusPresent', 'TimeoutPeriod', 'RewardTime', 
+                         'ChoiceStimulus', 'Initial-Link', 'Terminal-Link', 
+                         'ChoiceStimulusSidePecked', 'Initial-LinkSidePecked', 
+                         'ChoiceStimulusPecked',
+                         'ChoiceStimulusReactionTime', 'Initial-LinkReactionTime', 
+                         'Terminal-LinkPeckLog', 'TerminalLinkLatency', 
+                         'Terminal-LinkFinalResponse', 'Terminal-LinkDuration', 
+                         'Inter-TrialInterval(ITI)', 
+                         'ChoiceStimulusScreenPeckCount', 
+                         'InitialLinkScreenPeckCount', 
+                         'Terminal-LinkScreenPeckCount', 'Sub-OptimalLinkChosen'])
 
     writer.writerow([])
 
@@ -1231,7 +1231,7 @@ def main():
     condition = userResponses[3]
     contingency = userResponses[4]
     rewardDuration = userResponses[5]
-    stimulusTimeout = userResponses[6]
+    STIM_DUR = userResponses[6]
     testRunFlag = userResponses[7]
     researchAssistant = userResponses[8]
 
