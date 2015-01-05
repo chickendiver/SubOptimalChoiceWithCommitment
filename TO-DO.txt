@@ -18,8 +18,8 @@ Priority 2:
 
 1. Add data input functionality for running birds without using a gui
 2. Add email notifications for when birds are run
-3. Make data files save to the lab server, and to the current directory if not available
-4. Make apparatusPresent depend on read from GamePort
-5. Make ResearchAssistant default to "unlisted"
+[WILL NOT FIX] 3. Make data files save to the lab server, and to the current directory if not available
+[DONE] 4. Make apparatusPresent depend on read from GamePort
+[DONE] 5. Make ResearchAssistant default to "unlisted"
 
 NOTE: Are the training phases done by timer, or stimulus count?

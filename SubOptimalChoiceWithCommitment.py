@@ -1254,6 +1254,9 @@ def main():
 
     programName = "SubOptimalChoiceWithCommitment.py"
 
+    if len(researchAssistant) == 0:
+      researchAssistant = "Unlisted"
+
     if checkForApparatus() == True:
       apparatusPresent = True
     else:
