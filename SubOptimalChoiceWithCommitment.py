@@ -37,7 +37,10 @@ CHOICE_Y = (screen_width/16)
 TERM_DUR = 5
 
 # Time (in seconds) the hopper will stay up if the beam is not broken.
-TIMEOUT_PERIOD = 10
+TIMEOUT_PERIOD = 60
+
+#Time (in seconds) the hopper will stay up when the beam is broken
+REWARD_TIME = 1
 
 LINE_WIDTH = 4
 
@@ -340,7 +343,7 @@ def setup():
                       "Condition", "PeckstoReward", "ProgramName", "TrialNumber",
                       "ProgramLoadTime", "BirdInBoxTime", "StartTime", 
                       "ExperimentEndTime", "ApparatusPresent",
-                      "TimeoutPeriod", "RewardDuration", "StimulusPresented", 
+                      "TimeoutPeriod", "RewardTime", "StimulusPresented", 
                       "StimulusSide", "ReactionTimes", "PeckNum", 
                       "ITI"])
 
@@ -697,7 +700,7 @@ def giveReward(probability):
     else:
       print("Reward not given")
       # In place of 1 second of hopper access
-      core.wait(1)
+      core.wait(REWARD_TIME)
 
     if probability > 0:
 
@@ -713,7 +716,7 @@ def giveReward(probability):
               break
         
         ## 1 second of hopper access
-        core.wait(1)
+        core.wait(REWARD_TIME)
         dropLeftHopper()
 
       else:
@@ -725,7 +728,7 @@ def giveReward(probability):
               break
 
         ## 1 second of hopper access
-        core.wait(1)
+        core.wait(REWARD_TIME)
         dropRightHopper()
  
   else:
@@ -940,7 +943,7 @@ def doExperimentalPhase():
                       condition, "1", programName, trialNumber,
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       "N/A", apparatusPresent,
-                      TIMEOUT_PERIOD, rewardDuration, cStimPresented,
+                      TIMEOUT_PERIOD, REWARD_TIME, cStimPresented,
                       iStimPresented, termStimShown.name, 
                       cStimSide, iStimSide,
                       cStimPecked.name, cReactionTimes, iReactionTimes, str(tReactionTimes),
@@ -956,7 +959,7 @@ def doExperimentalPhase():
                       condition, "1", programName, "N/A",
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       endTime, apparatusPresent,
-                      TIMEOUT_PERIOD, rewardDuration, "N/A",
+                      TIMEOUT_PERIOD, REWARD_TIME, "N/A",
                       "N/A", "N/A", 
                       "N/A", "N/A",
                       "N/A", "N/A", "N/A", "N/A",
@@ -1042,7 +1045,7 @@ def doStimPairing():
                         condition, "1", programName, trialNumber,
                         programLoadTime, birdInBoxTime, experimentStartTime, 
                         "N/A", apparatusPresent,
-                        TIMEOUT_PERIOD, rewardDuration, "N/A",
+                        TIMEOUT_PERIOD, REWARD_TIME, "N/A",
                         stimPresented, termStimPresented, 
                         "N/A", iStimSide,
                         "N/A", "N/A", iReactionTimes, str(tReactionTimes),
@@ -1058,7 +1061,7 @@ def doStimPairing():
                       condition, "1", programName, "N/A",
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       endTime, apparatusPresent,
-                      TIMEOUT_PERIOD, rewardDuration, "N/A",
+                      TIMEOUT_PERIOD, REWARD_TIME, "N/A",
                       "N/A", "N/A", 
                       "N/A", "N/A",
                       "N/A", "N/A", "N/A", "N/A",
@@ -1116,7 +1119,7 @@ def generateListOfAllStims():
   RtermLinkD = TerminalLinkStim("TermD")
   RtermLinkD.set_x(R_X)
 
-  stimList = [[LChoiceA], [CChoiceA], [RChoiceA], #FIX: Add more
+  stimList = [[LChoiceA], [CChoiceA], [RChoiceA],
               [LChoiceB], [CChoiceB], [RChoiceB],
               [LChoiceC], [CChoiceC], [RChoiceC],
               [LinitA], [RinitA],
@@ -1131,65 +1134,73 @@ def generateListOfAllStims():
 
 # Operant Training. "pecksToReward" signifsties the FR schedule.
 def doTraining(ITI, pecksToReward, rewardIfNotPecked):
+
   createStimuli()
-  stimList = generateListOfAllStims()
   trialNumber = 0
 
-  # Add 45 minute timer? 
-  # If no 45 minute timer, refer to previous FIX message
-  for i in range(0, len(stimList)):
-    trialNumber += 1
-    drawStims(stimList[i])
-    print("stimdur: ", stimDur)
-    stimPecked, clickFlag, peckNum, reactionTimes = waitForClicks(pecksToReward, stimList[i], stimDur)
+  expTimer = core.CountdownTimer(EXPERIMENT_TIME)
 
-    if rewardIfNotPecked or clickFlag:
-      giveReward(1)
+  while (expTimer.getTime() > 0):
 
-    drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
+    stimList = generateListOfAllStims()
 
-    if clickFlag == True:
-      print ("STIM POS: ", )
-      if stimPecked.get_x() == L_X:
-        stimSide = "LEFT"
-      elif stimPecked.get_x() == R_X:
-        stimSide = "RIGHT"
-      elif stimPecked.get_x() == 0:
-        stimSide = "CENTRE"
+    for i in range(0, len(stimList)):
+      trialNumber += 1
+
+      if (expTimer.getTime() <= 0):
+            break
+
+      drawStims(stimList[i])
+      print("stimdur: ", stimDur)
+      stimPecked, clickFlag, peckNum, reactionTimes = waitForClicks(pecksToReward, stimList[i], stimDur)
+
+      if rewardIfNotPecked or clickFlag:
+        giveReward(1)
+
+      drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
+
+      if clickFlag == True:
+        print ("STIM POS: ", )
+        if stimPecked.get_x() == L_X:
+          stimSide = "LEFT"
+        elif stimPecked.get_x() == R_X:
+          stimSide = "RIGHT"
+        elif stimPecked.get_x() == 0:
+          stimSide = "CENTRE"
+        else:
+          stimSide = "UNKOWN"
       else:
-        stimSide = "UNKOWN"
-    else:
-        stimSide = "NO STIM PECKED"
+          stimSide = "NO STIM PECKED"
 
-    stimPresented = ""
-    for j in range(0, len(stimList[i])):
-      stimPresented += stimList[i][j].name + " "
+      stimPresented = ""
+      for j in range(0, len(stimList[i])):
+        stimPresented += stimList[i][j].name + " "
 
-    writer.writerow([researchAssistant, subjectNumber, setNumber,
-                      sessionNumber, dateStarted + " " + timeStarted, contingency,
-                      condition, pecksToReward, programName, trialNumber,
-                      programLoadTime, birdInBoxTime, experimentStartTime, 
-                      "N/A", apparatusPresent,
-                      TIMEOUT_PERIOD, rewardDuration, stimPresented, 
-                      stimSide, str(reactionTimes), peckNum, 
-                      ITI])
+      writer.writerow([researchAssistant, subjectNumber, setNumber,
+                        sessionNumber, dateStarted + " " + timeStarted, contingency,
+                        condition, pecksToReward, programName, trialNumber,
+                        programLoadTime, birdInBoxTime, experimentStartTime, 
+                        "N/A", apparatusPresent,
+                        TIMEOUT_PERIOD, REWARD_TIME, stimPresented, 
+                        stimSide, str(reactionTimes), peckNum, 
+                        ITI])
 
-    waitForExitPress(ITI)
+      waitForExitPress(ITI)
 
-    if event.getKeys(keyList=["escape"]):
-        print("User pressed escape")
-        exit()
+      if event.getKeys(keyList=["escape"]):
+          print("User pressed escape")
+          exit()
 
   endTime = time.strftime("%H:%M")
 
-  writer.writerow([researchAssistant, subjectNumber, setNumber.
-                      sessionNumber, dateStarted + " " + timeStarted, contingency,
-                      condition, pecksToReward, programName, "N/A",
-                      programLoadTime, birdInBoxTime, experimentStartTime, 
-                      endTime, apparatusPresent,
-                      TIMEOUT_PERIOD, rewardDuration, "N/A", 
-                      "N/A", "N/A", "N/A", 
-                      ITI])
+  writer.writerow([researchAssistant, subjectNumber, setNumber,
+                   sessionNumber, dateStarted + " " + timeStarted, contingency,
+                   condition, pecksToReward, programName, "N/A",
+                   programLoadTime, birdInBoxTime, experimentStartTime, 
+                   endTime, apparatusPresent,
+                   TIMEOUT_PERIOD, REWARD_TIME, "N/A", 
+                   "N/A", "N/A", "N/A", 
+                   ITI])
 
   displayEndScreen()
 
@@ -1205,7 +1216,6 @@ def getUserInput():
     myDlg.addField('Set number:', 0)
     myDlg.addField('Condition:', choices = ['Autoshaping (FR1)', 'Operant Training (FR1)', 'Operant Training (FR3)', 'Operant Training (FR5)', 'Stim Pairing', 'Experimental Phase', 'Experimental Reversal'])
     myDlg.addField('Contingency:', choices = ['1', '2', '3', '4'])
-    myDlg.addField('Reward Duration:', 10)
     myDlg.addField('Stimulus Timeout:', 60)
     myDlg.addField('Is this a test?:', choices = ['Yes', 'No'])
     myDlg.addField('Research Assistant:')
@@ -1233,7 +1243,7 @@ def waitForSpacebar():
 def main():
     global ITI, contingency, reversal, subjectNumber, apparatusPresent
     global subjectNumber, sessionNumber, condition, contingency
-    global rewardDuration, stimulusTimeout, testRunFlag, researchAssistant
+    global stimulusTimeout, testRunFlag, researchAssistant
     global dateStarted, timeStarted, programStartTime, birdInBoxTime
     global programLoadTime, setNumber, programName, experimentStartTime, stimDur
 
@@ -1247,10 +1257,9 @@ def main():
     setNumber = userResponses[2]
     condition = userResponses[3]
     contingency = userResponses[4]
-    rewardDuration = userResponses[5]
-    stimDur = userResponses[6]
-    testRunFlag = userResponses[7]
-    researchAssistant = userResponses[8]
+    stimDur = userResponses[5]
+    testRunFlag = userResponses[6]
+    researchAssistant = userResponses[7]
 
     programName = "SubOptimalChoiceWithCommitment.py"
 
