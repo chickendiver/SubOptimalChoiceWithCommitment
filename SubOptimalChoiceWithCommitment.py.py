@@ -893,11 +893,11 @@ def doExperimentalPhase():
 
             tPeckNum, tReactionTimes = waitForTermLinks()
             #core.wait(TERM_DUR)
+
+            drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
             
             giveReward(termStimShown.chanceOfReinforcement)
 
-            drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
-            ## FIX: Add data output. Side pecked will be cStimPecked, iStimPecked .get_x == L_X or R_X
           
         cStimSide = ""
         iStimSide = ""
@@ -923,8 +923,6 @@ def doExperimentalPhase():
         
         # FIX: Verify this value
         subOptChosen = termStimShown.chanceOfReinforcement == 0.5
-
-        # FIX: '; '.join(stimList[i])
 
         cStimPresented = ""
         for j in range(0, len(stimList[i])):
@@ -1011,9 +1009,11 @@ def doStimPairing():
           tPeckNum, tReactionTimes = waitForTermLinks()
           #core.wait(TERM_DUR)
           
+          drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
+
           giveReward(termStimShown.chanceOfReinforcement)
 
-          drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
+          
           
           if iClickFlag == True:
             if iStimPecked.get_x() == L_X:
@@ -1176,7 +1176,6 @@ def doTraining(ITI, pecksToReward, rewardIfNotPecked):
 
     waitForExitPress(ITI)
 
-    ## FIX: TAKE INPUT FOR TERMINATION
     if event.getKeys(keyList=["escape"]):
         print("User pressed escape")
         exit()
