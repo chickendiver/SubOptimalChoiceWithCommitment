@@ -12,7 +12,7 @@ Priority 1:
 [DONE] 8. Test code on operant boxes
 [DONE] 9. Make termDur, stimDur, and timeoutPeriod all CONST.
 10. Add functionality for program to be run without opening PsychoPy
-11. Fix readPort code to give an immediate response.
+[DONE] 11. Fix readPort code to give an immediate response.
 
 Priority 2:
 
