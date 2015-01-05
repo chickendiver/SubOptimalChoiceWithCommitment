@@ -883,10 +883,10 @@ def doExperimentalPhase():
         if (expTimer.getTime() <= 0):
           break
         drawStims(stimList[i])
-        cStimPecked, cClickFlag, cPeckNum, cReactionTimes = waitForClicks(1, stimList[i], EXPERIMENT_TIME)
+        cStimPecked, cClickFlag, cPeckNum, cReactionTimes = waitForClicks(1, stimList[i], EXPERIMENT_TIME - expTimer.getTime())
         if cClickFlag == True:
           drawStims(cStimPecked.initStims)
-          iStimPecked, iClickFlag, iPeckNum, iReactionTimes = waitForClicks(1, cStimPecked.initStims, EXPERIMENT_TIME)
+          iStimPecked, iClickFlag, iPeckNum, iReactionTimes = waitForClicks(1, cStimPecked.initStims, EXPERIMENT_TIME - expTimer.getTime())
           if iClickFlag == True:
             termStimShown = iStimPecked.drawTermLinks()
             win.flip()
@@ -1001,7 +1001,7 @@ def doStimPairing():
         if (expTimer.getTime() <= 0):
           break
         drawStims(stimList[i])
-        iStimPecked, iClickFlag, iPeckNum, iReactionTimes = waitForClicks(1, stimList[i], EXPERIMENT_TIME)
+        iStimPecked, iClickFlag, iPeckNum, iReactionTimes = waitForClicks(1, stimList[i], EXPERIMENT_TIME - expTimer.getTime())
         if iClickFlag == True:
           termStimShown = iStimPecked.drawTermLinks()
           win.flip()
