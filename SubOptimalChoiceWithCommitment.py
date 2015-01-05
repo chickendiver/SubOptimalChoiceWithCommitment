@@ -44,7 +44,7 @@ REWARD_TIME = 1
 
 LINE_WIDTH = 4
 
-EXPERIMENT_TIME = 2700 #seconds = 45min
+EXPERIMENT_TIME = 6300 #seconds = 105min
 
 class ChoiceStim:
   def __init__(self, name):
