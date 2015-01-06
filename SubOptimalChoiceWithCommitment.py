@@ -42,7 +42,11 @@ TIMEOUT_PERIOD = 60
 #Time (in seconds) the hopper will stay up when the beam is broken
 REWARD_TIME = 1
 
+#Width of border around stimuli
 LINE_WIDTH = 4
+
+#Time of day at which experiment will start
+EXPERIMENT_START_TIME = [9, 15]
 
 EXPERIMENT_TIME = 6300 #seconds = 105min
 
@@ -310,7 +314,7 @@ def setup():
     
     #initialize the window
     win = visual.Window(fullscr = True, rgb = [-1.000,-1.000,-1.000], units = "pix", winType = "pyglet")
-    
+
     #setup input from the mouse
     mouse = event.Mouse(visible = True)
     core.checkPygletDuringWait = True
@@ -697,6 +701,12 @@ def giveReward(probability):
       if fiftyFifty[fiftyFiftyIndex] == 1:
         hopperDropped = dropHoppersAtRandom()
         print("Reward given with probability of: ", probability)
+      else:
+        print("Reward not given")
+        probability = 0
+        # In place of 1 second of hopper access
+        core.wait(REWARD_TIME)
+
     else:
       print("Reward not given")
       # In place of 1 second of hopper access
@@ -886,10 +896,10 @@ def doExperimentalPhase():
         if (expTimer.getTime() <= 0):
           break
         drawStims(stimList[i])
-        cStimPecked, cClickFlag, cPeckNum, cReactionTimes = waitForClicks(1, stimList[i], EXPERIMENT_TIME - expTimer.getTime())
+        cStimPecked, cClickFlag, cPeckNum, cReactionTimes = waitForClicks(1, stimList[i], expTimer.getTime())
         if cClickFlag == True:
           drawStims(cStimPecked.initStims)
-          iStimPecked, iClickFlag, iPeckNum, iReactionTimes = waitForClicks(1, cStimPecked.initStims, EXPERIMENT_TIME - expTimer.getTime())
+          iStimPecked, iClickFlag, iPeckNum, iReactionTimes = waitForClicks(1, cStimPecked.initStims, expTimer.getTime())
           if iClickFlag == True:
             termStimShown = iStimPecked.drawTermLinks()
             win.flip()
@@ -1004,20 +1014,17 @@ def doStimPairing():
         if (expTimer.getTime() <= 0):
           break
         drawStims(stimList[i])
-        iStimPecked, iClickFlag, iPeckNum, iReactionTimes = waitForClicks(1, stimList[i], EXPERIMENT_TIME - expTimer.getTime())
+        iStimPecked, iClickFlag, iPeckNum, iReactionTimes = waitForClicks(1, stimList[i], expTimer.getTime())
         if iClickFlag == True:
           termStimShown = iStimPecked.drawTermLinks()
           win.flip()
 
           tPeckNum, tReactionTimes = waitForTermLinks()
-          #core.wait(TERM_DUR)
           
           drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
 
           giveReward(termStimShown.chanceOfReinforcement)
 
-          
-          
           if iClickFlag == True:
             if iStimPecked.get_x() == L_X:
               iStimSide = "LEFT"
@@ -1238,6 +1245,24 @@ def waitForSpacebar():
       print("User pressed spacebar")
       break
 
+def waitForExperiment():
+  bibTextContent = "Bird in Box --- Waiting until " + str(EXPERIMENT_START_TIME[0]) + ":" + str(EXPERIMENT_START_TIME[1])
+  bibText =visual.TextStim(win, text=bibTextContent, pos=(0.0, 500), alignVert = "top")
+  bibText.draw()
+  win.flip()
+
+
+  while True:
+    if (time.localtime()[3] == EXPERIMENT_START_TIME[0]):
+      if (time.localtime()[4] >= EXPERIMENT_START_TIME[1]):
+        break
+    elif (time.localtime()[3] > EXPERIMENT_START_TIME[0]):
+      break
+    if event.getKeys(["escape"]):
+        print("User pressed escape")
+        exit()
+
+
 # Turns all inputs into global variables, sets up experiment, and decides
 # which experimental phase to call.
 def main():
@@ -1294,6 +1319,10 @@ def main():
       spacebarText.draw()
       win.flip()
       waitForSpacebar()
+
+      if testRunFlag == "No":
+        waitForExperiment()
+
       birdInBoxTime = time.strftime("%H:%M")
     except:
       print("Wait screen error")
