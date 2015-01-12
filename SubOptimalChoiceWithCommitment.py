@@ -34,7 +34,7 @@ CHOICE_Y = (screen_width/16)
 
 # Time terminal link is presented before reward is given
 # FIX: Check this value
-TERM_DUR = 5
+TERM_DUR = 10
 
 # Time (in seconds) the hopper will stay up if the beam is not broken.
 TIMEOUT_PERIOD = 60
