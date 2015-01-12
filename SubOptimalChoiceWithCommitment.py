@@ -32,7 +32,7 @@ R_X = (screen_width/3)
 I_STIM_Y = (-1*(screen_width/16))
 CHOICE_Y = (screen_width/16)
 
-# Time  terminal link is presented before rewar is given
+# Time terminal link is presented before reward is given
 # FIX: Check this value
 TERM_DUR = 5
 
@@ -910,7 +910,6 @@ def doExperimentalPhase():
             win.flip()
 
             tPeckNum, tReactionTimes = waitForTermLinks()
-            #core.wait(TERM_DUR)
 
             drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
             
@@ -940,7 +939,7 @@ def doExperimentalPhase():
           iStimSide = "NO STIM PECKED"
         
         # FIX: Verify this value
-        subOptChosen = termStimShown.chanceOfReinforcement == 0.5
+        subOptChosen = termStimShown.chanceOfReinforcement != 0.5
 
         cStimPresented = ""
         for j in range(0, len(stimList[i])):
@@ -1045,7 +1044,7 @@ def doStimPairing():
             iStimSide = "NO STIM PECKED"
           
           # FIX: Verify this value
-          subOptChosen = termStimShown.chanceOfReinforcement == 0.5
+          subOptChosen = termStimShown.chanceOfReinforcement != 0.5
 
           stimPresented = ""
           for j in range(0, len(stimList[i])):
