@@ -313,7 +313,7 @@ def rollDiceForFiftyFifty():
 
 
 def setup():
-    global win, mouse, rolledBefore, subjectNumber, datafile, writer, parallelPort, portValue, rolledFiftyFiftyBefore, trialNumber
+    global win, mouse, rolledBefore, subjectNumber, datafile, writer, parallelPort, portValue, rolledFiftyFiftyBefore, trialNumber, birdAte
 
     print("\nSetting up...")
     
@@ -328,6 +328,8 @@ def setup():
 
     portValue = 0x0000
     turnOnFan()
+
+    birdAte = False
 
     rolledBefore = False
     rolledFFBefore = False
@@ -967,7 +969,7 @@ def doExperimentalPhase():
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       "N/A", apparatusPresent,
                       TIMEOUT_PERIOD, REWARD_TIME, cStimPresented,
-                      iStimPresented, termStimShown.name, termStimShown.get_fill()
+                      iStimPresented, termStimShown.name, termStimShown.get_fill(),
                       cStimSide, iStimSide,
                       cStimPecked.name, cReactionTimes, iReactionTimes, str(tReactionTimes),
                       tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], TERM_DUR,
@@ -1070,7 +1072,7 @@ def doStimPairing():
                         programLoadTime, birdInBoxTime, experimentStartTime, 
                         "N/A", apparatusPresent,
                         TIMEOUT_PERIOD, REWARD_TIME, "N/A",
-                        stimPresented, termStimPresented, termStimShown.get_fill()
+                        stimPresented, termStimPresented, termStimShown.get_fill(),
                         "N/A", iStimSide,
                         "N/A", "N/A", iReactionTimes, str(tReactionTimes),
                         tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], TERM_DUR,
