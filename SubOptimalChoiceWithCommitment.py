@@ -212,6 +212,9 @@ class TerminalLinkStim:
 
   def set_fill (self, fillCol):
         self.fillColour = fillCol
+
+  def get_fill(self):
+        return self.fillColour
         
   def set_outline (self, outlineCol):
         self.outlineColour = outlineCol
@@ -260,6 +263,7 @@ def rollForTermResult(initialLink):
                       1,1,1,1,1,1,1,1,1,1,
                       1,1,1,1,1,1,1,1,1,1,
                       1,1,1,1,1,1,1,1,1,1]
+
       random.shuffle(termResults1)
       random.shuffle(termResults2)
       index1 = 0
@@ -349,7 +353,7 @@ def setup():
                       "ExperimentEndTime", "ApparatusPresent",
                       "TimeoutPeriod", "RewardTime", "StimulusPresented", 
                       "StimulusSide", "ReactionTimes", "PeckNum", 
-                      "ITI"])
+                      "ITI", "BirdAte"])
 
     else:
         writer.writerow(['ResearchAssistant', 'SubjectNumber', 'SetNumber', 
@@ -358,7 +362,7 @@ def setup():
                          'TrialNumber', 'ProgramLoadTime', 'BirdInBoxTime', 
                          'ExperimentStartTime', 'ExperimentEndTime', 
                          'ApparatusPresent', 'TimeoutPeriod', 'RewardTime', 
-                         'ChoiceStimulus', 'Initial-Link', 'Terminal-Link', 
+                         'ChoiceStimulus', 'Initial-Link', 'Terminal-Link', 'Terminal-LinkColour'
                          'ChoiceStimulusSidePecked', 'Initial-LinkSidePecked', 
                          'ChoiceStimulusPecked',
                          'ChoiceStimulusReactionTime', 'Initial-LinkReactionTime', 
@@ -367,7 +371,7 @@ def setup():
                          'Inter-TrialInterval(ITI)', 
                          'ChoiceStimulusScreenPeckCount', 
                          'InitialLinkScreenPeckCount', 
-                         'Terminal-LinkScreenPeckCount', 'Sub-OptimalLinkChosen'])
+                         'Terminal-LinkScreenPeckCount', 'Sub-OptimalLinkChosen', 'BirdAte'])
 
 # Creates all stimuli required, and sets them as global values
 def createStimuli():
@@ -685,7 +689,7 @@ def displayEndScreen():
 # 0.5 = 50%
 # 0 = no reward
 def giveReward(probability):
-  global fiftyFifty, fiftyFiftyIndex, rolledFiftyFiftyBefore
+  global fiftyFifty, fiftyFiftyIndex, rolledFiftyFiftyBefore, birdAte
   hopperDropped = ""
   if apparatusPresent:
     if probability == 1:
@@ -720,7 +724,9 @@ def giveReward(probability):
 
     if probability > 0:
 
+      birdAte = False
       hopperTimer = core.CountdownTimer(TIMEOUT_PERIOD)
+
       # Read IR beam
 
       if hopperDropped == "L":
@@ -729,6 +735,7 @@ def giveReward(probability):
           core.wait(0.1)
           irValue = readLeftHopperBeam()
           if irValue == 0:
+              birdAte = True
               break
         
         ## 1 second of hopper access
@@ -740,7 +747,8 @@ def giveReward(probability):
         while (hopperTimer.getTime() > 0):
           core.wait(0.1)
           irValue = readRightHopperBeam()
-          if irValue == 0:  
+          if irValue == 0:
+              birdAte = True
               break
 
         ## 1 second of hopper access
@@ -959,11 +967,11 @@ def doExperimentalPhase():
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       "N/A", apparatusPresent,
                       TIMEOUT_PERIOD, REWARD_TIME, cStimPresented,
-                      iStimPresented, termStimShown.name, 
+                      iStimPresented, termStimShown.name, termStimShown.get_fill()
                       cStimSide, iStimSide,
                       cStimPecked.name, cReactionTimes, iReactionTimes, str(tReactionTimes),
                       tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], TERM_DUR,
-                      ITI, cPeckNum, iPeckNum, tPeckNum, subOptChosen])
+                      ITI, cPeckNum, iPeckNum, tPeckNum, subOptChosen, birdAte])
 
         waitForExitPress(ITI)
 
@@ -971,15 +979,15 @@ def doExperimentalPhase():
 
     writer.writerow([researchAssistant, subjectNumber, setNumber,
                       sessionNumber, dateStarted + " " + timeStarted, contingency,
-                      condition, "1", programName, "N/A",
+                      condition, "1", programName, "N/A", 
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       endTime, apparatusPresent,
                       TIMEOUT_PERIOD, REWARD_TIME, "N/A",
-                      "N/A", "N/A", 
+                      "N/A", "N/A", "N/A"
                       "N/A", "N/A",
                       "N/A", "N/A", "N/A", "N/A",
                       "N/A", "N/A", TERM_DUR,
-                      ITI, "N/A", "N/A", "N/A", "N/A"])
+                      ITI, "N/A", "N/A", "N/A", "N/A", "N/A"])
 
     while (expTimer.getTime() > 0):
       drawStims(listOfBlanks)
@@ -1062,11 +1070,11 @@ def doStimPairing():
                         programLoadTime, birdInBoxTime, experimentStartTime, 
                         "N/A", apparatusPresent,
                         TIMEOUT_PERIOD, REWARD_TIME, "N/A",
-                        stimPresented, termStimPresented, 
+                        stimPresented, termStimPresented, termStimShown.get_fill()
                         "N/A", iStimSide,
                         "N/A", "N/A", iReactionTimes, str(tReactionTimes),
                         tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], TERM_DUR,
-                        ITI, "N/A", iPeckNum, tPeckNum, subOptChosen])
+                        ITI, "N/A", iPeckNum, tPeckNum, subOptChosen, birdAte])
 
           waitForExitPress(ITI)
 
@@ -1078,11 +1086,11 @@ def doStimPairing():
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       endTime, apparatusPresent,
                       TIMEOUT_PERIOD, REWARD_TIME, "N/A",
-                      "N/A", "N/A", 
+                      "N/A", "N/A", "N/A"
                       "N/A", "N/A",
                       "N/A", "N/A", "N/A", "N/A",
                       "N/A", "N/A", TERM_DUR,
-                      ITI, "N/A", "N/A", "N/A", "N/A"])
+                      ITI, "N/A", "N/A", "N/A", "N/A", "N/A"])
 
     while (expTimer.getTime() > 0):
       drawStims(listOfBlanks)

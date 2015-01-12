@@ -15,9 +15,9 @@ Priority 1:
 [DONE] 11. Fix readPort code to give an immediate response.
 
 12. Add error log
-13. Add "term link colour" column in data output
-14. Add "bird ate" to data output (indicating beam broken)
-15. Fix contingency colour reward percentage
+[DONE] 13. Add "term link colour" column in data output
+[DONE] 14. Add "bird ate" to data output (indicating beam broken)
+[DONE] 15. Fix contingency colour reward percentage
 
 Priority 2:
 
