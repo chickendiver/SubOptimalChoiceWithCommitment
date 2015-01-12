@@ -45,7 +45,8 @@ REWARD_TIME = 1
 #Width of border around stimuli
 LINE_WIDTH = 4
 
-#Time of day at which experiment will start
+# Time of day at which experiment will start
+# Set to 09:15
 EXPERIMENT_START_TIME = [9, 15]
 
 EXPERIMENT_TIME = 6300 #seconds = 105min
@@ -431,16 +432,16 @@ def matchStimuli(contingency, reversal):
         termLinkD.set_x(R_X)
 
         if reversal == False:
-          termLinkA.set_chanceOfReinforcement(0.5)
-          termLinkB.set_chanceOfReinforcement(0.5)
-          termLinkC.set_chanceOfReinforcement(1)
-          termLinkD.set_chanceOfReinforcement(0)
-
-        elif reversal == True:
           termLinkA.set_chanceOfReinforcement(1)
           termLinkB.set_chanceOfReinforcement(0)
           termLinkC.set_chanceOfReinforcement(0.5)
           termLinkD.set_chanceOfReinforcement(0.5)
+
+        elif reversal == True:
+          termLinkA.set_chanceOfReinforcement(0.5)
+          termLinkB.set_chanceOfReinforcement(0.5)
+          termLinkC.set_chanceOfReinforcement(1)
+          termLinkD.set_chanceOfReinforcement(0)
 
 
         choiceA.add_initStim(initA)
@@ -466,16 +467,16 @@ def matchStimuli(contingency, reversal):
         termLinkD.set_x(L_X)
 
         if reversal == False:
-          termLinkA.set_chanceOfReinforcement(0.5)
-          termLinkB.set_chanceOfReinforcement(1)
-          termLinkC.set_chanceOfReinforcement(0)
-          termLinkD.set_chanceOfReinforcement(0.5)
-
-        elif reversal == True:
           termLinkA.set_chanceOfReinforcement(0)
           termLinkB.set_chanceOfReinforcement(0.5)
           termLinkC.set_chanceOfReinforcement(0.5)
           termLinkD.set_chanceOfReinforcement(1)
+
+        elif reversal == True:
+          termLinkA.set_chanceOfReinforcement(0.5)
+          termLinkB.set_chanceOfReinforcement(1)
+          termLinkC.set_chanceOfReinforcement(0)
+          termLinkD.set_chanceOfReinforcement(0.5)
 
         choiceA.add_initStim(initB)
         choiceB.add_initStim(initA)
@@ -500,16 +501,16 @@ def matchStimuli(contingency, reversal):
         termLinkD.set_x(L_X)
 
         if reversal == False:
-          termLinkA.set_chanceOfReinforcement(1)
-          termLinkB.set_chanceOfReinforcement(0)
-          termLinkC.set_chanceOfReinforcement(0.5)
-          termLinkD.set_chanceOfReinforcement(0.5)
-
-        elif reversal == True:
           termLinkA.set_chanceOfReinforcement(0.5)
           termLinkB.set_chanceOfReinforcement(0.5)
           termLinkC.set_chanceOfReinforcement(1)
           termLinkD.set_chanceOfReinforcement(0)
+
+        elif reversal == True:
+          termLinkA.set_chanceOfReinforcement(1)
+          termLinkB.set_chanceOfReinforcement(0)
+          termLinkC.set_chanceOfReinforcement(0.5)
+          termLinkD.set_chanceOfReinforcement(0.5)
 
         choiceA.add_initStim(initB)
         choiceB.add_initStim(initA)
@@ -534,16 +535,16 @@ def matchStimuli(contingency, reversal):
         termLinkD.set_x(R_X)
 
         if reversal == False:
-          termLinkA.set_chanceOfReinforcement(0)
-          termLinkB.set_chanceOfReinforcement(0.5)
-          termLinkC.set_chanceOfReinforcement(0.5)
-          termLinkD.set_chanceOfReinforcement(1)
-
-        elif reversal == True:
           termLinkA.set_chanceOfReinforcement(0.5)
           termLinkB.set_chanceOfReinforcement(1)
           termLinkC.set_chanceOfReinforcement(0)
           termLinkD.set_chanceOfReinforcement(0.5)
+
+        elif reversal == True:
+          termLinkA.set_chanceOfReinforcement(1)
+          termLinkB.set_chanceOfReinforcement(0.5)
+          termLinkC.set_chanceOfReinforcement(0.5)
+          termLinkD.set_chanceOfReinforcement(0))
 
         choiceA.add_initStim(initA)
         choiceB.add_initStim(initB)
