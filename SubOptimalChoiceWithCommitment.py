@@ -323,7 +323,6 @@ def setup():
 
     portValue = 0x0000
     turnOnFan()
-    turnOnHouseLight()
 
     rolledBefore = False
     rolledFFBefore = False
@@ -566,10 +565,16 @@ def makeChoiceStimList():
     choiceList2 = [choiceA, choiceC]
     choiceList3 = [choiceB, choiceC]
 
-    for i in range(0,10):
+    for i in range(0,20):
+      # 20 of each type of forced choice
       choiceList.append([choiceA])
       choiceList.append([choiceB])
       choiceList.append([choiceC])
+
+      # 40 of each type of choice 
+      choiceList.append(choiceList1)
+      choiceList.append(choiceList2)
+      choiceList.append(choiceList3)
       choiceList.append(choiceList1)
       choiceList.append(choiceList2)
       choiceList.append(choiceList3)
@@ -989,9 +994,13 @@ def makeInitStimList():
 
     initList1 = [initA, initB]
 
-    for i in range(0,20):
+    for i in range(0,40):
+      # 40 of each forced choice
       initList.append([initA])
       initList.append([initB])
+
+      # 80 choice trials
+      initList.append(initList1)
       initList.append(initList1)
 
     random.shuffle(initList)
