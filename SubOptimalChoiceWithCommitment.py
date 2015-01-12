@@ -544,7 +544,7 @@ def matchStimuli(contingency, reversal):
           termLinkA.set_chanceOfReinforcement(1)
           termLinkB.set_chanceOfReinforcement(0.5)
           termLinkC.set_chanceOfReinforcement(0.5)
-          termLinkD.set_chanceOfReinforcement(0))
+          termLinkD.set_chanceOfReinforcement(0)
 
         choiceA.add_initStim(initA)
         choiceB.add_initStim(initB)
