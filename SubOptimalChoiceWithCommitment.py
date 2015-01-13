@@ -364,7 +364,7 @@ def setup():
                          'TrialNumber', 'ProgramLoadTime', 'BirdInBoxTime', 
                          'ExperimentStartTime', 'ExperimentEndTime', 
                          'ApparatusPresent', 'TimeoutPeriod', 'RewardTime', 
-                         'ChoiceStimulus', 'Initial-Link', 'Terminal-Link', 'Terminal-LinkColour'
+                         'ChoiceStimulus', 'Initial-Link', 'Terminal-Link', 'Terminal-LinkColour',
                          'ChoiceStimulusSidePecked', 'Initial-LinkSidePecked', 
                          'ChoiceStimulusPecked',
                          'ChoiceStimulusReactionTime', 'Initial-LinkReactionTime', 
@@ -759,6 +759,7 @@ def giveReward(probability):
  
   else:
     print("Apparatus not present")
+    birdAte = True
 
 # Randomly chooses a hopper to drop.
 # Call this function when it doesn't matter which hopper is dropped
@@ -894,6 +895,7 @@ def waitForTermLinks():
 # Main experimental phase. Reversal changes chance of reinforcement.
 def doExperimentalPhase():
     print("Starting experimental phase...")
+    global birdAte
 
     createStimuli()
     matchStimuli(contingency, reversal)
@@ -924,8 +926,9 @@ def doExperimentalPhase():
 
             drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
             
+            birdAte = False
             giveReward(termStimShown.chanceOfReinforcement)
-
+            
           
         cStimSide = ""
         iStimSide = ""
@@ -985,7 +988,7 @@ def doExperimentalPhase():
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       endTime, apparatusPresent,
                       TIMEOUT_PERIOD, REWARD_TIME, "N/A",
-                      "N/A", "N/A", "N/A"
+                      "N/A", "N/A", "N/A",
                       "N/A", "N/A",
                       "N/A", "N/A", "N/A", "N/A",
                       "N/A", "N/A", TERM_DUR,
@@ -1020,6 +1023,8 @@ def makeInitStimList():
 # Stimulus pairing phase.
 
 def doStimPairing():
+    global birdAte
+
     createStimuli()
     matchStimuli(contingency, reversal)
     stimList = makeInitStimList()
@@ -1042,7 +1047,9 @@ def doStimPairing():
           
           drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
 
+          birdAte = False
           giveReward(termStimShown.chanceOfReinforcement)
+          
 
           if iClickFlag == True:
             if iStimPecked.get_x() == L_X:
@@ -1088,7 +1095,7 @@ def doStimPairing():
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       endTime, apparatusPresent,
                       TIMEOUT_PERIOD, REWARD_TIME, "N/A",
-                      "N/A", "N/A", "N/A"
+                      "N/A", "N/A", "N/A",
                       "N/A", "N/A",
                       "N/A", "N/A", "N/A", "N/A",
                       "N/A", "N/A", TERM_DUR,
