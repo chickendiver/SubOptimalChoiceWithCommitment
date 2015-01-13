@@ -759,7 +759,37 @@ def giveReward(probability):
  
   else:
     print("Apparatus not present")
-    birdAte = True
+
+    ## FIX: MAKE THIS CODE MORE CONDENSED.
+    if probability == 1:
+      print("Reward given with probability of: ", probability)
+
+    elif probability == 0.5:
+      if not rolledFiftyFiftyBefore:
+        fiftyFifty = [0,0,0,0,0,0,0,0,0,0,
+                      0,0,0,0,0,0,0,0,0,0,
+                      1,1,1,1,1,1,1,1,1,1,
+                      1,1,1,1,1,1,1,1,1,1]
+
+        random.shuffle(fiftyFifty)
+        rolledFiftyFiftyBefore = True
+        fiftyFiftyIndex = -1
+      
+      fiftyFiftyIndex += 1
+      if fiftyFifty[fiftyFiftyIndex] == 1:
+        print("Reward given with probability of: ", probability)
+      else:
+        print("Reward not given")
+        probability = 0
+
+    else:
+      print("Reward not given")
+      # In place of 1 second of hopper access
+      core.wait(REWARD_TIME)
+
+    if probability > 0:
+      
+      birdAte = True
 
 # Randomly chooses a hopper to drop.
 # Call this function when it doesn't matter which hopper is dropped
