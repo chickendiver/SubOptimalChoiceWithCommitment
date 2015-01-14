@@ -13,6 +13,7 @@ Priority 1:
 [DONE] 9. Make termDur, stimDur, and timeoutPeriod all CONST.
 [DONE] 10. Add functionality for program to be run without opening PsychoPy
 [DONE] 11. Fix readPort code to give an immediate response.
+12. Add 
 
 12. Add error log
 [DONE] 13. Add "term link colour" column in data output
@@ -22,7 +23,7 @@ Priority 1:
 Priority 2:
 
 1. Add data input functionality for running birds without using a gui
-2. Add email notifications for when birds are run
+[WILL NOT FIX] 2. Add email notifications for when birds are run
 [WILL NOT FIX] 3. Make data files save to the lab server, and to the current directory if not available
 [DONE] 4. Make apparatusPresent depend on read from GamePort
 [DONE] 5. Make ResearchAssistant default to "unlisted"
