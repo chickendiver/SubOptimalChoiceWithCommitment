@@ -994,13 +994,13 @@ def doExperimentalPhase():
           iStimPresented += cStimPecked.initStims[h].name + " "
 
         if len(tReactionTimes) == 0:
-          tReactionTimes.append("N/A")
+          tReactionTimes.append("")
 
         writer.writerow([researchAssistant, subjectNumber, setNumber,
                       sessionNumber, dateStarted + " " + timeStarted, contingency,
                       condition, "1", programName, trialNumber,
                       programLoadTime, birdInBoxTime, experimentStartTime, 
-                      "N/A", apparatusPresent,
+                      "", apparatusPresent,
                       TIMEOUT_PERIOD, REWARD_TIME, cStimPresented,
                       iStimPresented, termStimShown.name, termStimShown.get_fill(),
                       cStimSide, iStimSide,
@@ -1014,15 +1014,15 @@ def doExperimentalPhase():
 
     writer.writerow([researchAssistant, subjectNumber, setNumber,
                       sessionNumber, dateStarted + " " + timeStarted, contingency,
-                      condition, "1", programName, "N/A", 
+                      condition, "1", programName, "", 
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       endTime, apparatusPresent,
-                      TIMEOUT_PERIOD, REWARD_TIME, "N/A",
-                      "N/A", "N/A", "N/A",
-                      "N/A", "N/A",
-                      "N/A", "N/A", "N/A", "N/A",
-                      "N/A", "N/A", TERM_DUR,
-                      ITI, "N/A", "N/A", "N/A", "N/A", "N/A"])
+                      TIMEOUT_PERIOD, REWARD_TIME, "",
+                      "", "", "",
+                      "", "",
+                      "", "", "", "",
+                      "", "", TERM_DUR,
+                      ITI, "", "", "", "", ""])
 
     while (expTimer.getTime() > 0):
       drawStims(listOfBlanks)
@@ -1101,19 +1101,19 @@ def doStimPairing():
           termStimPresented = termStimShown.name
 
           if len(tReactionTimes) == 0:
-            tReactionTimes.append("N/A")
+            tReactionTimes.append("")
 
           writer.writerow([researchAssistant, subjectNumber, setNumber,
                         sessionNumber, dateStarted + " " + timeStarted, contingency,
                         condition, "1", programName, trialNumber,
                         programLoadTime, birdInBoxTime, experimentStartTime, 
-                        "N/A", apparatusPresent,
-                        TIMEOUT_PERIOD, REWARD_TIME, "N/A",
+                        "", apparatusPresent,
+                        TIMEOUT_PERIOD, REWARD_TIME, "",
                         stimPresented, termStimPresented, termStimShown.get_fill(),
-                        "N/A", iStimSide,
-                        "N/A", "N/A", iReactionTimes, str(tReactionTimes),
+                        "", iStimSide,
+                        "", "", iReactionTimes, str(tReactionTimes),
                         tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], TERM_DUR,
-                        ITI, "N/A", iPeckNum, tPeckNum, subOptChosen, birdAte])
+                        ITI, "", iPeckNum, tPeckNum, subOptChosen, birdAte])
 
           waitForExitPress(ITI)
 
@@ -1121,15 +1121,15 @@ def doStimPairing():
 
     writer.writerow([researchAssistant, subjectNumber, setNumber,
                       sessionNumber, dateStarted + " " + timeStarted, contingency,
-                      condition, "1", programName, "N/A",
+                      condition, "1", programName, "",
                       programLoadTime, birdInBoxTime, experimentStartTime, 
                       endTime, apparatusPresent,
-                      TIMEOUT_PERIOD, REWARD_TIME, "N/A",
-                      "N/A", "N/A", "N/A",
-                      "N/A", "N/A",
-                      "N/A", "N/A", "N/A", "N/A",
-                      "N/A", "N/A", TERM_DUR,
-                      ITI, "N/A", "N/A", "N/A", "N/A", "N/A"])
+                      TIMEOUT_PERIOD, REWARD_TIME, "",
+                      "", "", "",
+                      "", "",
+                      "", "", "", "",
+                      "", "", TERM_DUR,
+                      ITI, "", "", "", "", ""])
 
     while (expTimer.getTime() > 0):
       drawStims(listOfBlanks)
@@ -1243,7 +1243,7 @@ def doTraining(ITI, pecksToReward, rewardIfNotPecked):
                         sessionNumber, dateStarted + " " + timeStarted, contingency,
                         condition, pecksToReward, programName, trialNumber,
                         programLoadTime, birdInBoxTime, experimentStartTime, 
-                        "N/A", apparatusPresent,
+                        "", apparatusPresent,
                         TIMEOUT_PERIOD, REWARD_TIME, stimPresented, 
                         stimSide, str(reactionTimes), peckNum, 
                         ITI])
@@ -1258,11 +1258,11 @@ def doTraining(ITI, pecksToReward, rewardIfNotPecked):
 
   writer.writerow([researchAssistant, subjectNumber, setNumber,
                    sessionNumber, dateStarted + " " + timeStarted, contingency,
-                   condition, pecksToReward, programName, "N/A",
+                   condition, pecksToReward, programName, "",
                    programLoadTime, birdInBoxTime, experimentStartTime, 
                    endTime, apparatusPresent,
-                   TIMEOUT_PERIOD, REWARD_TIME, "N/A", 
-                   "N/A", "N/A", "N/A", 
+                   TIMEOUT_PERIOD, REWARD_TIME, "", 
+                   "", "", "", 
                    ITI])
 
   displayEndScreen()
@@ -1420,10 +1420,10 @@ def main():
       print("Experiment error")
       endTime = time.strftime("%H:%M")
 
-      writer.writerow(["N/A", "N/A", "N/A",
-                        "N/A", "N/A", "N/A",
-                        "N/A", "N/A", "N/A", "N/A",
-                        "N/A", "N/A", "N/A", 
+      writer.writerow(["", "", "",
+                        "", "", "",
+                        "", "", "", "",
+                        "", "", "", 
                         endTime])
       writer.writerow([])
       datafile.close()
