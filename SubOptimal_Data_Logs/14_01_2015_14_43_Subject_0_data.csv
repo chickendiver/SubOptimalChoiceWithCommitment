@@ -1,0 +1,4 @@
+ResearchAssistant,SubjectNumber,SetNumber,SessionNumber,DateandTimeRun,Contingency,Condition,NumberofPecksRequired,ProgramName,TrialNumber,ProgramLoadTime,BirdInBoxTime,ExperimentStartTime,ExperimentEndTime,ApparatusPresent,TimeoutPeriod,RewardTime,ChoiceStimulus,Initial-Link,Terminal-Link,Terminal-LinkColour,ChoiceStimulusSidePecked,Initial-LinkSidePecked,ChoiceStimulusPecked,ChoiceStimulusReactionTime,Initial-LinkReactionTime,Terminal-LinkPeckLog,TerminalLinkLatency,Terminal-LinkFinalResponse,Terminal-LinkDuration,Inter-TrialInterval(ITI),ChoiceStimulusScreenPeckCount,InitialLinkScreenPeckCount,Terminal-LinkScreenPeckCount,Sub-OptimalLinkChosen,BirdAte
+Unlisted,0,0,0,14_01_2015 14:43,1,Stim Pairing,1,SubOptimalChoiceWithCommitment.py,1,14:43,14:43,14:43,,False,60,1,,InitA InitB ,TermB,Orange,,LEFT,,,"1.23277113016, 0.0963029168779, 0.133674004814, 0.133089014911, 0.120953261387, 0.498104471713",,,,10,5,,6,0,True,False
+,,,,,,,,,,,,,14:43
+

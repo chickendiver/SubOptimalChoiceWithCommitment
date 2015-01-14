@@ -995,6 +995,27 @@ def doExperimentalPhase():
 
         if len(tReactionTimes) == 0:
           tReactionTimes.append("")
+        tPeckLog = ""
+        for m in range(0, len(tReactionTimes)):
+          if m == 0:
+            tPeckLog = str(tReactionTimes[m])
+          else:
+            tPeckLog = tPeckLog + ", " + str(tReactionTimes[m])
+
+        cReactTimeStr = ""
+        for k in range(0, len(cReactionTimes)):
+          if k == 0:
+            cReactTimeStr = str(cReactionTimes[k])
+          else:
+            cReactTimeStr = cReactTimeStr + ", " + str(cReactionTimes[k])
+
+        iReactTimeStr = ""
+        for l in range(0, len(iReactionTimes)):
+          if l == 0:
+            iReactTimeStr = str(iReactionTimes[l])
+          else:
+            iReactTimeStr = iReactTimeStr + ", " + str(iReactionTimes[l])
+
 
         writer.writerow([researchAssistant, subjectNumber, setNumber,
                       sessionNumber, dateStarted + " " + timeStarted, contingency,
@@ -1004,7 +1025,7 @@ def doExperimentalPhase():
                       TIMEOUT_PERIOD, REWARD_TIME, cStimPresented,
                       iStimPresented, termStimShown.name, termStimShown.get_fill(),
                       cStimSide, iStimSide,
-                      cStimPecked.name, cReactionTimes, iReactionTimes, str(tReactionTimes),
+                      cStimPecked.name, cReactTimeStr, iReactTimeStr, tPeckLog,
                       tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], TERM_DUR,
                       ITI, cPeckNum, iPeckNum, tPeckNum, subOptChosen, birdAte])
 
@@ -1102,6 +1123,20 @@ def doStimPairing():
 
           if len(tReactionTimes) == 0:
             tReactionTimes.append("")
+          tPeckLog = ""
+
+          for m in range(0, len(tReactionTimes)):
+            if m == 0:
+              tPeckLog = str(tReactionTimes[m])
+            else:
+              tPeckLog = tPeckLog + ", " + str(tReactionTimes[m])
+
+          iReactTimeStr = ""
+          for l in range(0, len(iReactionTimes)):
+            if l == 0:
+              iReactTimeStr = str(iReactionTimes[l])
+            else:
+              iReactTimeStr = iReactTimeStr + ", " + str(iReactionTimes[l])
 
           writer.writerow([researchAssistant, subjectNumber, setNumber,
                         sessionNumber, dateStarted + " " + timeStarted, contingency,
@@ -1111,7 +1146,7 @@ def doStimPairing():
                         TIMEOUT_PERIOD, REWARD_TIME, "",
                         stimPresented, termStimPresented, termStimShown.get_fill(),
                         "", iStimSide,
-                        "", "", iReactionTimes, str(tReactionTimes),
+                        "", "", iReactTimeStr, tPeckLog,
                         tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], TERM_DUR,
                         ITI, "", iPeckNum, tPeckNum, subOptChosen, birdAte])
 
@@ -1239,13 +1274,20 @@ def doTraining(ITI, pecksToReward, rewardIfNotPecked):
       for j in range(0, len(stimList[i])):
         stimPresented += stimList[i][j].name + " "
 
+      reactTimeStr = ""
+      for k in range(0, len(reactionTimes)):
+        if k == 0:
+          reactTimeStr = str(reactionTimes[k])
+        else:
+          reactTimeStr = reactTimeStr + ", " + str(reactionTimes[k])
+
       writer.writerow([researchAssistant, subjectNumber, setNumber,
                         sessionNumber, dateStarted + " " + timeStarted, contingency,
                         condition, pecksToReward, programName, trialNumber,
                         programLoadTime, birdInBoxTime, experimentStartTime, 
                         "", apparatusPresent,
                         TIMEOUT_PERIOD, REWARD_TIME, stimPresented, 
-                        stimSide, str(reactionTimes), peckNum, 
+                        stimSide, reactTimeStr, peckNum, 
                         ITI])
 
       waitForExitPress(ITI)
