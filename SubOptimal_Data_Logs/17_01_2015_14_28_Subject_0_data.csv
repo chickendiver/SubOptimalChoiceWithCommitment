@@ -1,0 +1,2 @@
+ResearchAssistant,SubjectNumber,SetNumber,SessionNumber,DateStarted,Contingency,Condition,PeckstoReward,ProgramName,TrialNumber,ProgramLoadTime,BirdInBoxTime,StartTime,ExperimentEndTime,ApparatusPresent,TimeoutPeriod,RewardTime,StimulusPresented,StimulusSide,ReactionTimes,PeckNum,ITI,BirdAte
+Unlisted,0,0,0,17_01_2015 14:28,1,Autoshaping (FR1),1,SubOptimalChoiceWithCommitment.py,1,14:28,14:28,14:28,,False,60,1,TermB ,LEFT,1.13660092017,1,5

@@ -1,0 +1,65 @@
+DEBUG:root:
+
+
+17_01_2015_15_42:
+
+
+DEBUG:root:Checking for apparatus
+DEBUG:root:Apparatus value 1
+DEBUG:root:
+Setting up...
+DEBUG:root:C:\Users\target\Documents\GitHub\SubOptimalChoiceWithCommitment\SubOptimal_Data_Logs
+DEBUG:root:User pressed spacebar
+DEBUG:root:
+Creating stimuli...
+DEBUG:root:Drawing stimuli...
+DEBUG:root:stimdur: 60
+DEBUG:root:Waiting for clicks...
+DEBUG:root:[434 -60]
+DEBUG:root:Apparatus not present
+DEBUG:root:Reward given with probability of: 1
+DEBUG:root:Drawing stimuli...
+DEBUG:root:Waiting for exit key to be pressed
+DEBUG:root:User pressed escape
+DEBUG:root:
+
+
+17_01_2015_15_42:
+
+
+DEBUG:root:Checking for apparatus
+DEBUG:root:Apparatus value 1
+DEBUG:root:
+Setting up...
+DEBUG:root:C:\Users\target\Documents\GitHub\SubOptimalChoiceWithCommitment\SubOptimal_Data_Logs
+DEBUG:root:User pressed spacebar
+DEBUG:root:
+Creating stimuli...
+DEBUG:root:Drawing stimuli...
+DEBUG:root:stimdur: 60
+DEBUG:root:Waiting for clicks...
+DEBUG:root:[397 -90]
+DEBUG:root:[420 -90]
+DEBUG:root:Apparatus not present
+DEBUG:root:Reward given with probability of: 1
+DEBUG:root:Drawing stimuli...
+DEBUG:root:Waiting for exit key to be pressed
+DEBUG:root:User pressed escape
+DEBUG:root:
+
+
+17_01_2015 @ _15:43:
+
+
+DEBUG:root:Checking for apparatus
+DEBUG:root:Apparatus value 1
+DEBUG:root:
+Setting up...
+DEBUG:root:C:\Users\target\Documents\GitHub\SubOptimalChoiceWithCommitment\SubOptimal_Data_Logs
+DEBUG:root:User pressed spacebar
+DEBUG:root:
+Creating stimuli...
+DEBUG:root:Drawing stimuli...
+DEBUG:root:stimdur: 60
+DEBUG:root:Waiting for clicks...
+DEBUG:root:User pressed escape
