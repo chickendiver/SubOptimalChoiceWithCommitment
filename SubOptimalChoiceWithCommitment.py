@@ -315,7 +315,6 @@ def rollDiceForFiftyFifty():
 
     return FFResults[FFIndex]
 
-
 def setup():
     global win, mouse, rolledBefore, subjectNumber, datafile, writer, parallelPort, portValue, rolledFiftyFiftyBefore, trialNumber, birdAte
 
@@ -1029,7 +1028,7 @@ def doExperimentalPhase():
                       iStimPresented, termStimShown.name, termStimShown.get_fill(),
                       cStimSide, iStimSide,
                       cStimPecked.name, cReactTimeStr, iReactTimeStr, tPeckLog,
-                      tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], TERM_DUR,
+                      tReactionTimes[0], sum(tReactionTimes), TERM_DUR,
                       ITI, cPeckNum, iPeckNum, tPeckNum, subOptChosen, birdAte])
 
         waitForExitPress(ITI)
@@ -1150,7 +1149,7 @@ def doStimPairing():
                         stimPresented, termStimPresented, termStimShown.get_fill(),
                         "", iStimSide,
                         "", "", iReactTimeStr, tPeckLog,
-                        tReactionTimes[0], tReactionTimes[(len(tReactionTimes)-1)], TERM_DUR,
+                        tReactionTimes[0], sum(tReactionTimes), TERM_DUR,
                         ITI, "", iPeckNum, tPeckNum, subOptChosen, birdAte])
 
           waitForExitPress(ITI)
