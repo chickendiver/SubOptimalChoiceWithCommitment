@@ -79,3 +79,156 @@ DEBUG:root:Drawing stimuli...
 DEBUG:root:stimdur: 60
 DEBUG:root:Waiting for clicks...
 DEBUG:root:User pressed escape
+DEBUG:root:
+
+
+17_01_2015 @ 15:47:
+
+
+DEBUG:root:
+
+
+17_01_2015 @ 15:48:
+
+
+DEBUG:root:Checking for apparatus
+DEBUG:root:Apparatus value 1
+DEBUG:root:Setting up...
+DEBUG:root:C:\Users\target\Documents\GitHub\SubOptimalChoiceWithCommitment\SubOptimal_Data_Logs
+DEBUG:root:User pressed spacebar
+DEBUG:root:Creating stimuli...
+DEBUG:root:Drawing stimuli...
+DEBUG:root:stimdur: 60
+DEBUG:root:Waiting for clicks...
+DEBUG:root:User pressed escape
+DEBUG:root:
+
+
+17_01_2015 @ 15:57:
+
+
+DEBUG:root:Checking for apparatus
+DEBUG:root:Apparatus value 1
+DEBUG:root:Setting up...
+DEBUG:root:C:\Users\target\Documents\GitHub\SubOptimalChoiceWithCommitment\SubOptimal_Data_Logs
+DEBUG:root:User pressed spacebar
+DEBUG:root:Creating stimuli...
+DEBUG:root:Drawing stimuli...
+DEBUG:root:stimdur: 60
+DEBUG:root:Waiting for clicks...
+DEBUG:root:[-440  -40]
+DEBUG:root:Apparatus not present
+DEBUG:root:Reward given with probability of: 1
+DEBUG:root:Drawing stimuli...
+DEBUG:root:Waiting for exit key to be pressed
+DEBUG:root:Drawing stimuli...
+DEBUG:root:stimdur: 60
+DEBUG:root:Waiting for clicks...
+DEBUG:root:[232  -1]
+DEBUG:root:[232  -1]
+DEBUG:root:[294  45]
+DEBUG:root:[352  66]
+DEBUG:root:[460  54]
+DEBUG:root:Apparatus not present
+DEBUG:root:Reward given with probability of: 1
+DEBUG:root:Drawing stimuli...
+DEBUG:root:Waiting for exit key to be pressed
+DEBUG:root:User pressed escape
+DEBUG:root:
+
+
+17_01_2015 @ 15:57:
+
+
+DEBUG:root:Checking for apparatus
+DEBUG:root:Apparatus value 1
+DEBUG:root:Setting up...
+DEBUG:root:C:\Users\target\Documents\GitHub\SubOptimalChoiceWithCommitment\SubOptimal_Data_Logs
+DEBUG:root:User pressed spacebar
+DEBUG:root:Starting experimental phase...
+DEBUG:root:Creating stimuli...
+DEBUG:root:Matching Stimuli...
+DEBUG:root:Randomizing choice stimuli...
+DEBUG:root:Drawing stimuli...
+DEBUG:root:Waiting for clicks...
+DEBUG:root:[-439   83]
+DEBUG:root:Drawing stimuli...
+DEBUG:root:Waiting for clicks...
+DEBUG:root:[-430   82]
+DEBUG:root:[-332   69]
+DEBUG:root:[-324   56]
+DEBUG:root:[-344   12]
+DEBUG:root:[-413  -25]
+DEBUG:root:[-416  -38]
+DEBUG:root:[-420  -59]
+DEBUG:root:Waiting for terminal clicks...
+DEBUG:root:[-422  -71]
+DEBUG:root:[-422  -80]
+DEBUG:root:[-398 -111]
+DEBUG:root:[-363 -133]
+DEBUG:root:[-284 -127]
+DEBUG:root:[-247  -43]
+DEBUG:root:[-328   23]
+DEBUG:root:[-388   32]
+DEBUG:root:[-409    5]
+DEBUG:root:[-393  -66]
+DEBUG:root:[-291  -68]
+DEBUG:root:[-249  -23]
+DEBUG:root:[-231   33]
+DEBUG:root:[-236  179]
+DEBUG:root:[-378  212]
+DEBUG:root:[-603  125]
+DEBUG:root:[-574 -209]
+DEBUG:root:[-255 -301]
+DEBUG:root:[-140  -35]
+DEBUG:root:[-281  202]
+DEBUG:root:[-425   82]
+DEBUG:root:[  -2 -166]
+DEBUG:root:[150  15]
+DEBUG:root:[ -8 217]
+DEBUG:root:[-578  219]
+DEBUG:root:[-136 -383]
+DEBUG:root:[ 603 -159]
+DEBUG:root:[291 209]
+DEBUG:root:[-404  336]
+DEBUG:root:[-453  143]
+DEBUG:root:[ 554 -256]
+DEBUG:root:[665 -34]
+DEBUG:root:[-101  313]
+DEBUG:root:[-203  195]
+DEBUG:root:[ 15 -22]
+DEBUG:root:[539   2]
+DEBUG:root:[115 335]
+DEBUG:root:[-74 278]
+DEBUG:root:[-124  130]
+DEBUG:root:[78 -3]
+DEBUG:root:[-219  -65]
+DEBUG:root:[-313  141]
+DEBUG:root:[287 128]
+DEBUG:root:[480 112]
+DEBUG:root:[303 248]
+DEBUG:root:[-86 256]
+DEBUG:root:[-107 -114]
+DEBUG:root:[-197 -220]
+DEBUG:root:[-683  196]
+DEBUG:root:[-295  359]
+DEBUG:root:[ 37 175]
+DEBUG:root:[682 -27]
+DEBUG:root:[605 288]
+DEBUG:root:[116 249]
+DEBUG:root:[ -69 -188]
+DEBUG:root:[-683   81]
+DEBUG:root:[-669  338]
+DEBUG:root:[ 31 376]
+DEBUG:root:[266 238]
+DEBUG:root:[556  98]
+DEBUG:root:[630  82]
+DEBUG:root:[  74 -249]
+DEBUG:root:[-129 -228]
+DEBUG:root:[-136 -113]
+DEBUG:root:[ 47 319]
+DEBUG:root:Drawing stimuli...
+DEBUG:root:Apparatus not present
+DEBUG:root:Reward given with probability of: 1
+DEBUG:root:Waiting for exit key to be pressed
+DEBUG:root:User pressed escape
