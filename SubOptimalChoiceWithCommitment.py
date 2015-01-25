@@ -36,10 +36,6 @@ R_X = (screen_width/3)
 I_STIM_Y = (-1*(screen_width/16))
 CHOICE_Y = (screen_width/16)
 
-# Time terminal link is presented before reward is given
-# FIX: Check this value
-TERM_DUR = 10
-
 # Time (in seconds) the hopper will stay up if the beam is not broken.
 TIMEOUT_PERIOD = 60
 
@@ -1372,7 +1368,7 @@ def waitForExperiment():
 # Turns all inputs into global variables, sets up experiment, and decides
 # which experimental phase to call.
 def main():
-    global ITI, contingency, reversal, subjectNumber, apparatusPresent
+    global ITI, contingency, reversal, subjectNumber, apparatusPresent, TERM_DUR
     global subjectNumber, sessionNumber, condition, contingency
     global stimulusTimeout, testRunFlag, researchAssistant
     global dateStarted, timeStarted, programStartTime, birdInBoxTime
@@ -1416,10 +1412,12 @@ def main():
         raise
 
     if testRunFlag == "Yes":
-      ITI = 5
+      ITI = 2
+      TERM_DUR = 2
       mouse.setVisible(1)
     else:
       ITI = 10
+      TERM_DUR = 10
       mouse.setVisible(0)
 
     try:
