@@ -232,3 +232,40 @@ DEBUG:root:Apparatus not present
 DEBUG:root:Reward given with probability of: 1
 DEBUG:root:Waiting for exit key to be pressed
 DEBUG:root:User pressed escape
+DEBUG:root:
+
+
+22_01_2015 @ 16:25:
+
+
+DEBUG:root:Checking for apparatus
+DEBUG:root:Apparatus value 1
+DEBUG:root:Setting up...
+DEBUG:root:C:\Users\Samsungpc\Documents\GitHub\SubOptimalChoiceWithCommitment\SubOptimal_Data_Logs
+DEBUG:root:User pressed spacebar
+DEBUG:root:Creating stimuli...
+DEBUG:root:Drawing stimuli...
+DEBUG:root:stimdur: 60
+DEBUG:root:Waiting for clicks...
+DEBUG:root:User pressed escape
+DEBUG:root:
+
+
+22_01_2015 @ 16:29:
+
+
+DEBUG:root:Checking for apparatus
+DEBUG:root:Apparatus value 1
+DEBUG:root:Setting up...
+DEBUG:root:C:\Users\Samsungpc\Documents\GitHub\SubOptimalChoiceWithCommitment\SubOptimal_Data_Logs
+DEBUG:root:User pressed spacebar
+DEBUG:root:Creating stimuli...
+DEBUG:root:Matching Stimuli...
+DEBUG:root:Randomizing init stimuli...
+DEBUG:root:Drawing stimuli...
+DEBUG:root:Waiting for clicks...
+DEBUG:root:[527 -92]
+DEBUG:root:Waiting for terminal clicks...
+DEBUG:root:Drawing stimuli...
+DEBUG:root:Apparatus not present
+DEBUG:root:Reward not given

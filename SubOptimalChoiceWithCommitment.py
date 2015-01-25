@@ -997,6 +997,10 @@ def doExperimentalPhase():
 
         if len(tReactionTimes) == 0:
           tReactionTimes.append("")
+          sumReactionTimes = ""
+        else:
+          sumReactionTimes = sum(tReactionTimes)
+
         tPeckLog = ""
         for m in range(0, len(tReactionTimes)):
           if m == 0:
@@ -1028,7 +1032,7 @@ def doExperimentalPhase():
                       iStimPresented, termStimShown.name, termStimShown.get_fill(),
                       cStimSide, iStimSide,
                       cStimPecked.name, cReactTimeStr, iReactTimeStr, tPeckLog,
-                      tReactionTimes[0], sum(tReactionTimes), TERM_DUR,
+                      tReactionTimes[0], sumReactionTimes, TERM_DUR,
                       ITI, cPeckNum, iPeckNum, tPeckNum, subOptChosen, birdAte])
 
         waitForExitPress(ITI)
@@ -1125,6 +1129,9 @@ def doStimPairing():
 
           if len(tReactionTimes) == 0:
             tReactionTimes.append("")
+            sumReactionTimes = ""
+          else:
+            sumReactionTimes = sum(tReactionTimes)
           tPeckLog = ""
 
           for m in range(0, len(tReactionTimes)):
@@ -1149,7 +1156,7 @@ def doStimPairing():
                         stimPresented, termStimPresented, termStimShown.get_fill(),
                         "", iStimSide,
                         "", "", iReactTimeStr, tPeckLog,
-                        tReactionTimes[0], sum(tReactionTimes), TERM_DUR,
+                        tReactionTimes[0], sumReactionTimes, TERM_DUR,
                         ITI, "", iPeckNum, tPeckNum, subOptChosen, birdAte])
 
           waitForExitPress(ITI)
