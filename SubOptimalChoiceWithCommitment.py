@@ -23,11 +23,6 @@ elif _platform == "win32":
    screen_width = GetSystemMetrics (0)
    screen_height = GetSystemMetrics (1)
 
-logging.basicConfig(filename='log_output.log',level=logging.DEBUG)
-logging.basicConfig(filename='log_output.log', level=logging.ERROR)
-
-logging.debug('\n\n\n' + (time.strftime("%d_%m_%Y @ ")) + (time.strftime("%H:%M")) + ':\n\n')
-
   # Constants
   # -------------------------------------------------------------------------------
   
@@ -310,6 +305,31 @@ def rollDiceForFiftyFifty():
       FFIndex = -1
 
     return FFResults[FFIndex]
+
+def initialize_logger(output_dir):
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+     
+    # create console handler and set level to info
+    handler = logging.StreamHandler()
+    handler.setLevel(logging.INFO)
+    formatter = logging.Formatter("%(levelname)s - %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+ 
+    # create error file handler and set level to error
+    handler = logging.FileHandler(os.path.join(output_dir, "error.log"),"w", encoding=None, delay="true")
+    handler.setLevel(logging.ERROR)
+    formatter = logging.Formatter("%(levelname)s - %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+ 
+    # create debug file handler and set level to debug
+    handler = logging.FileHandler(os.path.join(output_dir, "all.log"),"w")
+    handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter("%(levelname)s - %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
 
 def setup():
     global win, mouse, rolledBefore, subjectNumber, datafile, writer, parallelPort, portValue, rolledFiftyFiftyBefore, trialNumber, birdAte
@@ -1373,6 +1393,16 @@ def main():
     global stimulusTimeout, testRunFlag, researchAssistant
     global dateStarted, timeStarted, programStartTime, birdInBoxTime
     global programLoadTime, setNumber, programName, experimentStartTime, stimDur
+ 
+    initialize_logger('./')
+     
+    logging.debug("debug message")
+    logging.info("info message")
+    logging.warning("warning message")
+    logging.error("error message")
+    logging.critical("critical message")
+
+    logging.info('\n\n\n' + (time.strftime("%d_%m_%Y @ ")) + (time.strftime("%H:%M")) + ':\n\n')
 
     userResponses, userCancelled = getUserInput()
 
