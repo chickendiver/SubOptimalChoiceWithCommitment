@@ -786,6 +786,8 @@ def giveReward(probability):
       if not rolledFiftyFiftyBefore:
         fiftyFifty = [0,0,0,0,0,0,0,0,0,0,
                       0,0,0,0,0,0,0,0,0,0,
+                      0,0,0,0,0,0,0,0,0,0,
+                      1,1,1,1,1,1,1,1,1,1,
                       1,1,1,1,1,1,1,1,1,1,
                       1,1,1,1,1,1,1,1,1,1]
 
@@ -794,6 +796,9 @@ def giveReward(probability):
         fiftyFiftyIndex = -1
       
       fiftyFiftyIndex += 1
+      if fiftyFiftyIndex == (len(fiftyFifty) -1):
+        rolledFiftyFiftyBefore = False
+
       if fiftyFifty[fiftyFiftyIndex] == 1:
         logging.debug("Reward given with probability of: " + str(probability))
       else:
@@ -954,6 +959,9 @@ def doExperimentalPhase():
 
     trialNumber = 0
 
+    print("StimList Len: " + str(len(stimList)))
+    logging.debug("StimList Length " +  str(len(stimList)))
+
     for i in range(0,len(stimList)):
         choicePeckNum = 0
         initPeckNum = 0
@@ -1039,6 +1047,7 @@ def doExperimentalPhase():
             iReactTimeStr = iReactTimeStr + ", " + str(iReactionTimes[l])
 
 
+        logging.debug(str(expTimer.getTime()))
         writer.writerow([researchAssistant, subjectNumber, setNumber,
                       sessionNumber, dateStarted + " " + timeStarted, contingency,
                       condition, "1", programName, trialNumber,
@@ -1054,6 +1063,7 @@ def doExperimentalPhase():
         waitForExitPress(ITI)
 
     endTime = time.strftime("%H:%M")
+    logging.debug(str(endTime))
 
     writer.writerow([researchAssistant, subjectNumber, setNumber,
                       sessionNumber, dateStarted + " " + timeStarted, contingency,
@@ -1067,8 +1077,8 @@ def doExperimentalPhase():
                       "", "", TERM_DUR,
                       ITI, "", "", "", "", ""])
 
-    while (expTimer.getTime() > 0):
-      drawStims(listOfBlanks)
+    drawStims(listOfBlanks)
+    waitForExitPress(expTimer.getTime())
 
     displayEndScreen()
 
@@ -1191,8 +1201,8 @@ def doStimPairing():
                       "", "", TERM_DUR,
                       ITI, "", "", "", "", ""])
 
-    while (expTimer.getTime() > 0):
-      drawStims(listOfBlanks)
+    drawStims(listOfBlanks)
+    waitForExitPress(expTimer.getTime())
 
     displayEndScreen()
 
