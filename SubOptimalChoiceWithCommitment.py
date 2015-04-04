@@ -44,8 +44,10 @@ LINE_WIDTH = 4
 # Set to 09:15
 EXPERIMENT_START_TIME = [9, 15]
 
+#Time (in seconds) the experiment will run
 EXPERIMENT_TIME = 6300 #seconds = 105min
 
+#A stimulus which can lead to one of two other stimuli
 class ChoiceStim:
   def __init__(self, name):
           self.x = 0
@@ -110,8 +112,7 @@ class ChoiceStim:
           self.boundingBox = visual.Rect(win, lineWidth = 4, width = self.width, height = self.height, pos = (self.x, self.y), units = "pix", lineColor = self.outlineColour, fillColor = self.fillColour)
           self.boundingBox.draw()
 
-          
-
+#A stimulus which leads to one other stimulus, directly below it
 class InitialLinkStim:
   def __init__(self, name):
           self.x = 0
@@ -194,6 +195,7 @@ class InitialLinkStim:
 
           return termStimShown
 
+#A stimulus which is presented and then holds for a particular period of time, regardless of input
 class TerminalLinkStim:
   def __init__(self, name):
           self.x = 0
@@ -244,20 +246,16 @@ class TerminalLinkStim:
         self.boundingBox = visual.Circle(win, lineWidth = LINE_WIDTH, radius = self.radius, pos = (self.x, self.y), units = "pix", lineColor = self.outlineColour, fillColor = self.fillColour)
         self.boundingBox.draw()
           
-
+#Determine which terminal link is shown
 def rollForTermResult(initialLink):
     global termResults1, termResults2, rolledBefore, index1, index2
 
     if not rolledBefore:
-      termResults1 = [0,0,0,0,0,0,0,0,1,1,
-                      1,1,1,1,1,1,1,1,1,1,
-                      1,1,1,1,1,1,1,1,1,1,
-                      1,1,1,1,1,1,1,1,1,1]
+      termResults1 = [0,0,1,1,1,
+                      1,1,1,1,1]
 
-      termResults2 = [0,0,0,0,0,0,0,0,1,1,
-                      1,1,1,1,1,1,1,1,1,1,
-                      1,1,1,1,1,1,1,1,1,1,
-                      1,1,1,1,1,1,1,1,1,1]
+      termResults2 = [0,0,1,1,1,
+                      1,1,1,1,1]
 
       random.shuffle(termResults1)
       random.shuffle(termResults2)
@@ -288,10 +286,8 @@ def rollDiceForFiftyFifty():
     global rolledFFBefore, FFResults, FFIndex
 
     if not rolledFFBefore:
-        FFResults = [0,0,0,0,0,0,0,0,0,0,
-                     0,0,0,0,0,0,0,0,0,0,
-                     1,1,1,1,1,1,1,1,1,1,
-                     1,1,1,1,1,1,1,1,1,1]
+        FFResults = [0,0,0,0,0,
+                     1,1,1,1,1]
 
         random.shuffle(FFResults)
         FFIndex = -1
@@ -306,6 +302,7 @@ def rollDiceForFiftyFifty():
 
     return FFResults[FFIndex]
 
+#Starts logging for admin purposes
 def initialize_logger(output_dir):
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
@@ -331,6 +328,7 @@ def initialize_logger(output_dir):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
+#Creates window, sets up mouse, etc.
 def setup():
     global win, mouse, rolledBefore, subjectNumber, datafile, writer, parallelPort, portValue, rolledFiftyFiftyBefore, trialNumber, birdAte
 
@@ -704,7 +702,7 @@ def displayEndScreen():
   win.flip()
   waitForExitPress()
   
-# Probabilities: 
+# Probabilities:
 # 1 = 100%
 # 0.5 = 50%
 # 0 = no reward
@@ -718,10 +716,8 @@ def giveReward(probability):
 
     elif probability == 0.5:
       if not rolledFiftyFiftyBefore:
-        fiftyFifty = [0,0,0,0,0,0,0,0,0,0,
-                      0,0,0,0,0,0,0,0,0,0,
-                      1,1,1,1,1,1,1,1,1,1,
-                      1,1,1,1,1,1,1,1,1,1]
+        fiftyFifty = [0,0,0,0,0,
+                      1,1,1,1,1]
 
         random.shuffle(fiftyFifty)
         rolledFiftyFiftyBefore = True
@@ -784,12 +780,8 @@ def giveReward(probability):
 
     elif probability == 0.5:
       if not rolledFiftyFiftyBefore:
-        fiftyFifty = [0,0,0,0,0,0,0,0,0,0,
-                      0,0,0,0,0,0,0,0,0,0,
-                      0,0,0,0,0,0,0,0,0,0,
-                      1,1,1,1,1,1,1,1,1,1,
-                      1,1,1,1,1,1,1,1,1,1,
-                      1,1,1,1,1,1,1,1,1,1]
+        fiftyFifty = [0,0,0,0,0,
+                      1,1,1,1,1]
 
         random.shuffle(fiftyFifty)
         rolledFiftyFiftyBefore = True
@@ -988,7 +980,7 @@ def doExperimentalPhase():
           
         cStimSide = ""
         iStimSide = ""
-        if cPeckNum == True:
+        if cClickFlag == True:
           if cStimPecked.get_x() == L_X:
             cStimSide = "LEFT"
           elif cStimPecked.get_x() == R_X:
@@ -998,7 +990,7 @@ def doExperimentalPhase():
         else:
           cStimSide = "NO STIM PECKED"
 
-        if iPeckNum == True:
+        if cClickFlag == True:
           if iStimPecked.get_x() == L_X:
             iStimSide = "LEFT"
           elif iStimPecked.get_x() == R_X:
@@ -1104,7 +1096,6 @@ def makeInitStimList():
     return initList
 
 # Stimulus pairing phase.
-
 def doStimPairing():
     global birdAte
 
@@ -1370,6 +1361,7 @@ def getUserInput():
 
     return experimentParameters, userCancelled
 
+#Waits for spacebar input from user for indefinite period of time
 def waitForSpacebar():
 
   while True:
@@ -1377,6 +1369,7 @@ def waitForSpacebar():
       logging.debug("User pressed spacebar")
       break
 
+#Timer function which only allows the experiment to be run at a certain time
 def waitForExperiment():
   bibTextContent = "Bird in Box --- Waiting until " + str(EXPERIMENT_START_TIME[0]) + ":" + str(EXPERIMENT_START_TIME[1])
   bibText =visual.TextStim(win, text=bibTextContent, pos=(0.0, 500), alignVert = "top")
