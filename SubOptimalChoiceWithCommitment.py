@@ -23,8 +23,8 @@ elif _platform == "win32":
    screen_width = GetSystemMetrics (0)
    screen_height = GetSystemMetrics (1)
 
-  # Constants
-  # -------------------------------------------------------------------------------
+# Constants
+# -------------------------------------------------------------------------------
   
 L_X = (-1*(screen_width/3))
 R_X = (screen_width/3)
@@ -41,6 +41,8 @@ REWARD_TIME = 1
 LINE_WIDTH = 4
 
 # Time of day at which experiment will start
+# First element represents hours (24hr format)
+# Second element represents minutes
 # Set to 09:15
 EXPERIMENT_START_TIME = [9, 15]
 
@@ -248,35 +250,39 @@ class TerminalLinkStim:
           
 #Determine which terminal link is shown
 def rollForTermResult(initialLink):
-    global termResults1, termResults2, rolledBefore, index1, index2
+    global termResults1, termResults2, rolledABefore, rolledBBefore, index1, index2
 
-    if not rolledBefore:
+    #reset the chance output array for stims of InitA
+    if not rolledABefore:
       termResults1 = [0,0,1,1,1,
                       1,1,1,1,1]
 
+      random.shuffle(termResults1)
+      index1 = 0
+
+    #reset the chance output array for stims of InitB
+    if not rolledBBefore:
       termResults2 = [0,0,1,1,1,
                       1,1,1,1,1]
-
-      random.shuffle(termResults1)
       random.shuffle(termResults2)
-      index1 = 0
       index2 = 0
 
-    rolledBefore = True
+    rolledABefore = True
+    rolledBBefore = True
 
     if initialLink.name == "InitA":
       result = termResults1[index1]
       index1 += 1
 
       if index1 == len(termResults1):
-        rolledBefore = False
+        rolledABefore = False
 
     elif initialLink.name == "InitB":
       result = termResults2[index2]
       index2 += 1
 
       if index2 == len(termResults2):
-        rolledBefore = False
+        rolledBBefore = False
 
     return result
 
@@ -330,7 +336,7 @@ def initialize_logger(output_dir):
 
 #Creates window, sets up mouse, etc.
 def setup():
-    global win, mouse, rolledBefore, subjectNumber, datafile, writer, parallelPort, portValue, rolledFiftyFiftyBefore, trialNumber, birdAte
+    global win, mouse, rolledABefore, rolledBBefore, subjectNumber, datafile, writer, parallelPort, portValue, rolledFiftyFiftyBefore, trialNumber, birdAte
 
     logging.debug("Setting up...")
     
@@ -348,7 +354,8 @@ def setup():
 
     birdAte = False
 
-    rolledBefore = False
+    rolledABefore = False  
+    rolledBBefore = False
     rolledFFBefore = False
     rolledFiftyFiftyBefore = False
     trialNumber = 0
