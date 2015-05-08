@@ -663,7 +663,7 @@ def waitForClicks(targetPeckRequired, stimuli, duration):
           logging.debug(pos)
 
           for i in range (0,len(stimuli)):
-            if stimuli[i].boundingBox.contains(pos):
+            if stimuli[i].getBoundingBox().contains(pos):
               targetPeckNum += 1
               if targetPeckNum >= targetPeckRequired:
                 targetFlag = True
