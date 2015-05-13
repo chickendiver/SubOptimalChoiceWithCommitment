@@ -732,9 +732,8 @@ def giveReward(probability):
 
         random.shuffle(fiftyFifty)
         rolledFiftyFiftyBefore = True
-        fiftyFiftyIndex = -1
+        fiftyFiftyIndex = 0
       
-      fiftyFiftyIndex += 1
       if fiftyFifty[fiftyFiftyIndex] == 1:
         hopperDropped = dropHoppersAtRandom()
         logging.debug("Reward given with probability of: " + str(probability))
@@ -743,6 +742,10 @@ def giveReward(probability):
         probability = 0
         # In place of 1 second of hopper access
         core.wait(REWARD_TIME)
+
+      fiftyFiftyIndex += 1
+      if fiftyFiftyIndex == len(fiftyFifty):
+        rolledFiftyFiftyBefore = False
 
     else:
       logging.debug("Reward not given")
@@ -1383,7 +1386,7 @@ def getUserInput():
     '''myDlg.addField('Condition:', choices = ['Autoshaping (FR1)', 'Operant Training (FR1)', 'Operant Training (FR3)', 'Operant Training (FR5)', 'Stim Pairing', 'Experimental Phase', 'Experimental Reversal'])
     myDlg.addField('Contingency:', choices = ['1', '2', '3', '4'])
     myDlg.addField('Stimulus Timeout:', 60)'''
-    myDlg.addField('Is this a test?:', choices = ['Yes', 'No'])
+    myDlg.addField('Is this a test?:', choices = ['No', 'Yes'])
     myDlg.addField('Research Assistant:')
     myDlg.show()  # show dialog and wait for OK or Cancel
     
@@ -1547,6 +1550,7 @@ def main():
       contingencyText = visual.TextStim(win, text = "Contingency: " + str(contingency), alignHoriz = 'center', pos = (0, 150))
       stimDurText = visual.TextStim(win, text = "Stimulus Duration: " + str(stimDur), alignHoriz = 'center', pos = (0, 100))
       spacebarText =visual.TextStim(win, text='Press spacebar to begin', alignHoriz = 'center', pos = (0, -50))
+      timeText = visual.TextStim(win, text='Start Time: ' + str(EXPERIMENT_START_TIME[0]) + ":" + str(EXPERIMENT_START_TIME[1]), alignHoriz = 'center', pos = (0, -50))
       birdNumText.draw()
       sessionNumberText.draw()
       setNumberText.draw()
