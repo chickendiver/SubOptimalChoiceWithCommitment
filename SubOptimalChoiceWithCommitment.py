@@ -2,6 +2,7 @@ from sys import platform as _platform
 from psychopy import visual, core, parallel, gui, event
 import time, csv, random, datetime, os, logging, sys
 import readPort
+import ctypes
 
 #Determine which OS is being used, and calculate the screen size
 if _platform == "linux" or _platform == "linux2":
@@ -47,7 +48,7 @@ LINE_WIDTH = 4
 EXPERIMENT_START_TIME = [9, 15]
 
 #Time (in seconds) the experiment will run
-EXPERIMENT_TIME = 6300 #seconds = 105min
+EXPERIMENT_TIME = 5400 #seconds = 105min
 
 #A stimulus which can lead to one of two other stimuli
 class ChoiceStim:
@@ -1379,9 +1380,9 @@ def getUserInput():
     myDlg.addField('Subject number:', 0)
     myDlg.addField('Session number:', 0)
     myDlg.addField('Set number:', 0)
-    myDlg.addField('Condition:', choices = ['Autoshaping (FR1)', 'Operant Training (FR1)', 'Operant Training (FR3)', 'Operant Training (FR5)', 'Stim Pairing', 'Experimental Phase', 'Experimental Reversal'])
+    '''myDlg.addField('Condition:', choices = ['Autoshaping (FR1)', 'Operant Training (FR1)', 'Operant Training (FR3)', 'Operant Training (FR5)', 'Stim Pairing', 'Experimental Phase', 'Experimental Reversal'])
     myDlg.addField('Contingency:', choices = ['1', '2', '3', '4'])
-    myDlg.addField('Stimulus Timeout:', 60)
+    myDlg.addField('Stimulus Timeout:', 60)'''
     myDlg.addField('Is this a test?:', choices = ['Yes', 'No'])
     myDlg.addField('Research Assistant:')
     myDlg.show()  # show dialog and wait for OK or Cancel
@@ -1407,7 +1408,7 @@ def waitForSpacebar():
 #Timer function which only allows the experiment to be run at a certain time
 def waitForExperiment():
   bibTextContent = "Bird in Box --- Waiting until " + str(EXPERIMENT_START_TIME[0]) + ":" + str(EXPERIMENT_START_TIME[1])
-  bibText =visual.TextStim(win, text=bibTextContent, pos=(0.0, 500), alignVert = "top")
+  bibText = visual.TextStim(win, text=bibTextContent, pos=(0.0, 500), alignVert = "top")
   bibText.draw()
   win.flip()
 
@@ -1422,6 +1423,35 @@ def waitForExperiment():
         logging.debug("User pressed escape")
         exit()
 
+def assignExperimentalValues(subject, session, setNum):
+  # ['Autoshaping (FR1)', 'Operant Training (FR1)', 'Operant Training (FR3)', 'Operant Training (FR5)', 'Stim Pairing', 'Experimental Phase', 'Experimental Reversal']
+
+  condition = ""
+  contingency = 0
+  # Take input from CSV file and compare values to subject, session, set
+  # Then, assign condition and contingency based on these values
+
+  with open('birdData.csv', 'rb') as csvfile:
+    inputDataReader = csv.reader(csvfile, delimiter=',', quotechar='|')
+    for row in inputDataReader:
+      print(row)
+      if row[0] == "Bird Number":
+        pass
+      elif (int(row[0]) == subject) and (int(row[1]) == session) and (int(row[2]) == setNum):
+        condition = row[3]
+        contingency = row[4]
+        break
+
+
+  # Assign stimulus duration based on condition
+  if condition[0:11] == "Autoshaping":
+      stimDur = 10
+  elif condition == "Operant Training (FR1)" or condition == "Operant Training (FR3)" or condition == "Operant Training (FR5)":
+      stimDur = 60
+  else:
+    stimDur = 60
+
+  return condition, contingency, stimDur
 
 # Turns all inputs into global variables, sets up experiment, and decides
 # which experimental phase to call.
@@ -1440,21 +1470,32 @@ def main():
     logging.error("error message")
     logging.critical("critical message")
 
+    condition = ""
+
     logging.info('\n\n\n' + (time.strftime("%d_%m_%Y @ ")) + (time.strftime("%H:%M")) + ':\n\n')
 
-    userResponses, userCancelled = getUserInput()
+    # Ask for bird info
+    # If incorrect information given, ask again
+    while (condition == ""):
+      userResponses, userCancelled = getUserInput()
 
-    if userCancelled == True:
-      exit()
+      if userCancelled == True:
+        exit()
 
-    subjectNumber = userResponses[0]
-    sessionNumber = userResponses[1]
-    setNumber = userResponses[2]
-    condition = userResponses[3]
-    contingency = userResponses[4]
-    stimDur = userResponses[5]
-    testRunFlag = userResponses[6]
-    researchAssistant = userResponses[7]
+      subjectNumber = userResponses[0]
+      sessionNumber = userResponses[1]
+      setNumber = userResponses[2]
+
+      condition, contingency, stimDur = assignExperimentalValues(subjectNumber, sessionNumber, setNumber)
+      print ("Condition = " + str(condition))
+      print ("Contingency = " + str(contingency))
+      print ("Stim Dur = " + str(stimDur))
+
+      if condition == "":
+        ctypes.windll.user32.MessageBoxA(0, "When RAs don't do their job right, Jeff gets sad. \n\nPlease enter valid bird parameters", "Invalid parameters", 0)
+
+    testRunFlag = userResponses[3]
+    researchAssistant = userResponses[4]
 
     programName = "SubOptimalChoiceWithCommitment.py"
 
@@ -1545,7 +1586,7 @@ def main():
       writer.writerow(["", "", "",
                         "", "", "",
                         "", "", "", "",
-                        "", "", "", 
+                        "", "", "", "", "",
                         endTime])
       writer.writerow([])
       datafile.close()
