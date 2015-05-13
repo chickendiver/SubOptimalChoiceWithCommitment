@@ -45,7 +45,7 @@ LINE_WIDTH = 4
 # First element represents hours (24hr format)
 # Second element represents minutes
 # Set to 09:15
-EXPERIMENT_START_TIME = [9, 15]
+EXPERIMENT_START_TIME = []
 
 #Time (in seconds) the experiment will run
 EXPERIMENT_TIME = 5400 #seconds = 105min
@@ -1404,6 +1404,9 @@ def waitForSpacebar():
     if event.getKeys(["space"]):
       logging.debug("User pressed spacebar")
       break
+    elif event.getKeys(["escape"]):
+      logging.debug("User pressed escape")
+      exit()
 
 #Timer function which only allows the experiment to be run at a certain time
 def waitForExperiment():
@@ -1440,6 +1443,12 @@ def assignExperimentalValues(subject, session, setNum):
       elif (int(row[0]) == subject) and (int(row[1]) == session) and (int(row[2]) == setNum):
         condition = row[3]
         contingency = row[4]
+        if row[5] == "" or row[6] == "":
+          pass
+        else:
+          EXPERIMENT_START_TIME.append(int(row[5]))
+          EXPERIMENT_START_TIME.append(int(row[6]))
+        print EXPERIMENT_START_TIME
         break
 
 
@@ -1449,7 +1458,7 @@ def assignExperimentalValues(subject, session, setNum):
   elif condition == "Operant Training (FR1)" or condition == "Operant Training (FR3)" or condition == "Operant Training (FR5)":
       stimDur = 60
   else:
-    stimDur = 60
+    stimDur = "N/A"
 
   return condition, contingency, stimDur
 
@@ -1531,7 +1540,19 @@ def main():
 
     try:
       programLoadTime = time.strftime("%H:%M")
-      spacebarText =visual.TextStim(win, text='Press spacebar to begin', alignHoriz = 'center', alignVert = 'center')
+      birdNumText = visual.TextStim(win, text = "Subject Number: " + str(subjectNumber), alignHoriz = 'center', pos = (0, 350))
+      sessionNumberText = visual.TextStim(win, text = "Session Number: " + str(sessionNumber), alignHoriz = 'center', pos = (0, 300))
+      setNumberText = visual.TextStim(win, text = "Set Number: " + str(setNumber), alignHoriz = 'center', pos = (0, 250))
+      conditionText = visual.TextStim(win, text = "Condition: " + str(condition), alignHoriz = 'center', pos = (0, 200))
+      contingencyText = visual.TextStim(win, text = "Contingency: " + str(contingency), alignHoriz = 'center', pos = (0, 150))
+      stimDurText = visual.TextStim(win, text = "Stimulus Duration: " + str(stimDur), alignHoriz = 'center', pos = (0, 100))
+      spacebarText =visual.TextStim(win, text='Press spacebar to begin', alignHoriz = 'center', pos = (0, -50))
+      birdNumText.draw()
+      sessionNumberText.draw()
+      setNumberText.draw()
+      conditionText.draw()
+      contingencyText.draw()
+      stimDurText.draw()
       spacebarText.draw()
       win.flip()
       waitForSpacebar()
