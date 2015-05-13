@@ -390,9 +390,10 @@ def setup():
                          'ChoiceStimulus', 'Initial-Link', 'Terminal-Link', 'Terminal-LinkColour',
                          'ChoiceStimulusSidePecked', 'Initial-LinkSidePecked', 
                          'ChoiceStimulusPecked',
-                         'ChoiceStimulusReactionTime', 'Initial-LinkReactionTime', 
+                         'ChoiceStimulusPeckLatency', 'Initial-LinkPeckLatency',
+                         'ChoiceStimulusTargetReactionTime', 'Initial-LinkTargetReactionTime', 
                          'Terminal-LinkPeckLog', 'TerminalLinkLatency', 
-                         'Terminal-LinkFinalResponse', 'Terminal-LinkDuration', 
+                         'Terminal-LinkTargetResponse', 'Terminal-LinkDuration', 
                          'Inter-TrialInterval(ITI)', 
                          'ChoiceStimulusScreenPeckCount', 
                          'InitialLinkScreenPeckCount', 
@@ -642,6 +643,7 @@ def waitForClicks(targetPeckRequired, stimuli, duration):
     targetPeckNum = 0
     targetPecked = ""
     oldMouseIsDown = True
+    targetPeckID = []
 
     targetFlag = False
     reactionTimes = []
@@ -665,6 +667,7 @@ def waitForClicks(targetPeckRequired, stimuli, duration):
           for i in range (0,len(stimuli)):
             if stimuli[i].boundingBox.contains(pos):
               targetPeckNum += 1
+              targetPeckID.append(peckNum + 1)
               if targetPeckNum >= targetPeckRequired:
                 targetFlag = True
                 targetPecked = stimuli[i]
@@ -680,7 +683,7 @@ def waitForClicks(targetPeckRequired, stimuli, duration):
         exit()
 
 
-    return targetPecked, targetFlag, peckNum, reactionTimes
+    return targetPecked, targetFlag, peckNum, reactionTimes, targetPeckID
 
 # Waits for the user to press the escape key
 # Used for ITI waiting
@@ -910,12 +913,13 @@ def checkForApparatus():
   else:
     return False
 
-def waitForTermLinks():
+def waitForTermLinks(stimulus):
 
   logging.debug("Waiting for terminal clicks...")
   peckNum = 0
   oldMouseIsDown = True
 
+  targetPeckID = []
   reactionTimes = []
   reactionTimer = core.Clock()
   stimTimer = core.CountdownTimer(TERM_DUR)
@@ -933,6 +937,9 @@ def waitForTermLinks():
         pos = mouse.getPos()
         logging.debug(pos)
 
+        if stimulus.boundingBox.contains(pos):
+              targetPeckID.append(peckNum + 1)
+
         peckNum += 1
      
     oldMouseIsDown = mouseIsDown
@@ -941,7 +948,7 @@ def waitForTermLinks():
       logging.debug("User pressed escape")
       exit()
 
-  return peckNum, reactionTimes
+  return peckNum, reactionTimes, targetPeckID
 
 
 # Main experimental phase. Reversal changes chance of reinforcement.
@@ -969,15 +976,15 @@ def doExperimentalPhase():
         if (expTimer.getTime() <= 0):
           break
         drawStims(stimList[i])
-        cStimPecked, cClickFlag, cPeckNum, cReactionTimes = waitForClicks(1, stimList[i], expTimer.getTime())
+        cStimPecked, cClickFlag, cPeckNum, cReactionTimes, cTargetID = waitForClicks(1, stimList[i], expTimer.getTime())
         if cClickFlag == True:
           drawStims(cStimPecked.initStims)
-          iStimPecked, iClickFlag, iPeckNum, iReactionTimes = waitForClicks(1, cStimPecked.initStims, expTimer.getTime())
+          iStimPecked, iClickFlag, iPeckNum, iReactionTimes, iTargetID = waitForClicks(1, cStimPecked.initStims, expTimer.getTime())
           if iClickFlag == True:
             termStimShown = iStimPecked.drawTermLinks()
             win.flip()
 
-            tPeckNum, tReactionTimes = waitForTermLinks()
+            tPeckNum, tReactionTimes, tTargetIDs = waitForTermLinks(termStimShown)
 
             drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
             
@@ -1018,11 +1025,19 @@ def doExperimentalPhase():
         for h in range(0, len(cStimPecked.initStims)):
           iStimPresented += cStimPecked.initStims[h].name + " "
 
-        if len(tReactionTimes) == 0:
+        if len(tTargetIDs) == 0:
           tReactionTimes.append("")
-          sumReactionTimes = ""
+          termLinkTargetReactionTimeStr = ""
         else:
-          sumReactionTimes = sum(tReactionTimes)
+            termLinkTargetReactionTimeList = []
+            for i in range(0, len(tTargetIDs)):
+              termLinkTargetReactionTimeList.append(sum(tReactionTimes[0:tTargetIDs[i]]))
+
+              for j in range (0, len(termLinkTargetReactionTimeList)):
+                if j == 0:
+                  termLinkTargetReactionTimeStr = str(termLinkTargetReactionTimeList[j])
+                else:
+                  termLinkTargetReactionTimeStr = termLinkTargetReactionTimeStr + ", " + str(termLinkTargetReactionTimeList[j])
 
         tPeckLog = ""
         for m in range(0, len(tReactionTimes)):
@@ -1045,6 +1060,9 @@ def doExperimentalPhase():
           else:
             iReactTimeStr = iReactTimeStr + ", " + str(iReactionTimes[l])
 
+        cTargetRT = sum(cReactionTimes)
+        iTargetRT = sum(iReactionTimes)
+
 
         logging.debug(str(expTimer.getTime()))
         writer.writerow([researchAssistant, subjectNumber, setNumber,
@@ -1055,8 +1073,8 @@ def doExperimentalPhase():
                       TIMEOUT_PERIOD, REWARD_TIME, cStimPresented,
                       iStimPresented, termStimShown.name, termStimShown.get_fill(),
                       cStimSide, iStimSide,
-                      cStimPecked.name, cReactTimeStr, iReactTimeStr, tPeckLog,
-                      tReactionTimes[0], sumReactionTimes, TERM_DUR,
+                      cStimPecked.name, cReactTimeStr, iReactTimeStr, cTargetRT, iTargetRT, tPeckLog,
+                      tReactionTimes[0], termLinkTargetReactionTimeStr, TERM_DUR,
                       ITI, cPeckNum, iPeckNum, tPeckNum, subOptChosen, birdAte])
 
         waitForExitPress(ITI)
@@ -1072,7 +1090,7 @@ def doExperimentalPhase():
                       TIMEOUT_PERIOD, REWARD_TIME, "",
                       "", "", "",
                       "", "",
-                      "", "", "", "",
+                      "", "", "", "", "", "",
                       "", "", TERM_DUR,
                       ITI, "", "", "", "", ""])
 
@@ -1119,12 +1137,12 @@ def doStimPairing():
         if (expTimer.getTime() <= 0):
           break
         drawStims(stimList[i])
-        iStimPecked, iClickFlag, iPeckNum, iReactionTimes = waitForClicks(1, stimList[i], expTimer.getTime())
+        iStimPecked, iClickFlag, iPeckNum, iReactionTimes, targetID = waitForClicks(1, stimList[i], expTimer.getTime())
         if iClickFlag == True:
           termStimShown = iStimPecked.drawTermLinks()
           win.flip()
 
-          tPeckNum, tReactionTimes = waitForTermLinks()
+          tPeckNum, tReactionTimes, tTargetIDs = waitForTermLinks(termStimShown)
           
           drawStims(listOfBlanks) #Display blank stimuli for duration of ITI
 
@@ -1151,11 +1169,19 @@ def doStimPairing():
 
           termStimPresented = termStimShown.name
 
-          if len(tReactionTimes) == 0:
+          if len(tTargetIDs) == 0:
             tReactionTimes.append("")
-            sumReactionTimes = ""
+            termLinkTargetReactionTimeStr = ""
           else:
-            sumReactionTimes = sum(tReactionTimes)
+              termLinkTargetReactionTimeList = []
+              for i in range(0, len(tTargetIDs)):
+                termLinkTargetReactionTimeList.append(sum(tReactionTimes[0:tTargetIDs[i]]))
+
+                for j in range (0, len(termLinkTargetReactionTimeList)):
+                  if j == 0:
+                    termLinkTargetReactionTimeStr = str(termLinkTargetReactionTimeList[j])
+                  else:
+                    termLinkTargetReactionTimeStr = termLinkTargetReactionTimeStr + ", " + str(termLinkTargetReactionTimeList[j])
           tPeckLog = ""
 
           for m in range(0, len(tReactionTimes)):
@@ -1171,6 +1197,8 @@ def doStimPairing():
             else:
               iReactTimeStr = iReactTimeStr + ", " + str(iReactionTimes[l])
 
+          iTargetRT = sum(iReactionTimes)
+
           writer.writerow([researchAssistant, subjectNumber, setNumber,
                         sessionNumber, dateStarted + " " + timeStarted, contingency,
                         condition, "1", programName, trialNumber,
@@ -1179,8 +1207,8 @@ def doStimPairing():
                         TIMEOUT_PERIOD, REWARD_TIME, "",
                         stimPresented, termStimPresented, termStimShown.get_fill(),
                         "", iStimSide,
-                        "", "", iReactTimeStr, tPeckLog,
-                        tReactionTimes[0], sumReactionTimes, TERM_DUR,
+                        "", "", iReactTimeStr, "", iTargetRT, tPeckLog,
+                        tReactionTimes[0], termLinkTargetReactionTimeStr, TERM_DUR,
                         ITI, "", iPeckNum, tPeckNum, subOptChosen, birdAte])
 
           waitForExitPress(ITI)
@@ -1283,7 +1311,7 @@ def doTraining(ITI, pecksToReward, rewardIfNotPecked):
 
       drawStims(stimList[i])
       logging.debug("stimdur: " + str(stimDur))
-      stimPecked, clickFlag, peckNum, reactionTimes = waitForClicks(pecksToReward, stimList[i], stimDur)
+      stimPecked, clickFlag, peckNum, reactionTimes, targetID = waitForClicks(pecksToReward, stimList[i], stimDur)
 
       if rewardIfNotPecked or clickFlag:
         giveReward(1)
