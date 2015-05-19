@@ -131,7 +131,7 @@ class InitialLinkStim:
   def set_subOpt(self, value):
         self.subOpt = value
 
-  def get_subOpt():
+  def get_subOpt(self):
          return self.subOpt
 
   def set_fill (self, fillCol):
@@ -456,7 +456,9 @@ def matchStimuli(contingency, reversal):
         choiceB.set_x(R_X)
 
         initA.set_x(L_X)
+        initA.set_subOpt(True)
         initB.set_x(R_X)
+        initB.set_subOpt(False)
 
         termLinkA.set_x(L_X)
         termLinkB.set_x(L_X)
@@ -492,7 +494,9 @@ def matchStimuli(contingency, reversal):
         choiceB.set_x(L_X)
 
         initA.set_x(R_X)
+        initA.set_subOpt(False)
         initB.set_x(L_X)
+        initB.set_subOpt(True)
 
         termLinkA.set_x(L_X)
         termLinkB.set_x(R_X)
@@ -505,28 +509,32 @@ def matchStimuli(contingency, reversal):
           termLinkC.set_chanceOfReinforcement(0.5)
           termLinkD.set_chanceOfReinforcement(1)
 
+        '''
         elif reversal == True:
           termLinkA.set_chanceOfReinforcement(0.5)
           termLinkB.set_chanceOfReinforcement(1)
           termLinkC.set_chanceOfReinforcement(0)
           termLinkD.set_chanceOfReinforcement(0.5)
+        '''
 
-        choiceA.add_initStim(initB)
-        choiceB.add_initStim(initA)
+        choiceA.add_initStim(initA)
+        choiceB.add_initStim(initB)
         #choiceC.add_initStim(initA)
         #choiceC.add_initStim(initB)
 
-        initA.add_termStim(termLinkD)
-        initA.add_termStim(termLinkA)
-        initB.add_termStim(termLinkB)
-        initB.add_termStim(termLinkC)
+        initA.add_termStim(termLinkB) #Orange 20%
+        initA.add_termStim(termLinkC) #Red 80%
+        initB.add_termStim(termLinkD) #Purple 20%
+        initB.add_termStim(termLinkA) #Green 80%
         
     elif contingency == "3":
         choiceA.set_x(L_X)
         choiceB.set_x(R_X)
 
         initA.set_x(L_X)
+        initA.set_subOpt(False)
         initB.set_x(R_X)
+        initB.set_subOpt(True)
 
         termLinkA.set_x(R_X)
         termLinkB.set_x(R_X)
@@ -534,33 +542,37 @@ def matchStimuli(contingency, reversal):
         termLinkD.set_x(L_X)
 
         if reversal == False:
-          termLinkA.set_chanceOfReinforcement(0.5)
-          termLinkB.set_chanceOfReinforcement(0.5)
-          termLinkC.set_chanceOfReinforcement(1)
-          termLinkD.set_chanceOfReinforcement(0)
-
-        elif reversal == True:
           termLinkA.set_chanceOfReinforcement(1)
           termLinkB.set_chanceOfReinforcement(0)
           termLinkC.set_chanceOfReinforcement(0.5)
           termLinkD.set_chanceOfReinforcement(0.5)
 
-        choiceA.add_initStim(initB)
-        choiceB.add_initStim(initA)
+        '''
+        elif reversal == True:
+          termLinkA.set_chanceOfReinforcement(1)
+          termLinkB.set_chanceOfReinforcement(0)
+          termLinkC.set_chanceOfReinforcement(0.5)
+          termLinkD.set_chanceOfReinforcement(0.5)
+        '''
+
+        choiceA.add_initStim(initA)
+        choiceB.add_initStim(initB)
         #choiceC.add_initStim(initA)
         #choiceC.add_initStim(initB)
 
-        initA.add_termStim(termLinkA)
-        initA.add_termStim(termLinkB)
-        initB.add_termStim(termLinkC)
-        initB.add_termStim(termLinkD)
+        initA.add_termStim(termLinkC)
+        initA.add_termStim(termLinkD)
+        initB.add_termStim(termLinkA)
+        initB.add_termStim(termLinkB)
 
     elif contingency == "4":
         choiceA.set_x(R_X)
         choiceB.set_x(L_X)
 
         initA.set_x(R_X)
+        initA.set_subOpt(True)
         initB.set_x(L_X)
+        initB.set_subOpt(False)
 
         termLinkA.set_x(R_X)
         termLinkB.set_x(L_X)
@@ -568,16 +580,18 @@ def matchStimuli(contingency, reversal):
         termLinkD.set_x(R_X)
 
         if reversal == False:
-          termLinkA.set_chanceOfReinforcement(0.5)
-          termLinkB.set_chanceOfReinforcement(1)
-          termLinkC.set_chanceOfReinforcement(0)
-          termLinkD.set_chanceOfReinforcement(0.5)
+          termLinkA.set_chanceOfReinforcement(0)
+          termLinkB.set_chanceOfReinforcement(0.5)
+          termLinkC.set_chanceOfReinforcement(0.5)
+          termLinkD.set_chanceOfReinforcement(1)
 
+        '''
         elif reversal == True:
           termLinkA.set_chanceOfReinforcement(1)
           termLinkB.set_chanceOfReinforcement(0.5)
           termLinkC.set_chanceOfReinforcement(0.5)
           termLinkD.set_chanceOfReinforcement(0)
+        '''
 
         choiceA.add_initStim(initA)
         choiceB.add_initStim(initB)
@@ -999,23 +1013,25 @@ def doExperimentalPhase():
             cStimSide = "LEFT"
           elif cStimPecked.get_x() == R_X:
             cStimSide = "RIGHT"
-          elif cStimPecked.get_x() == 0:
-            cStimSide = "CENTRE"
         else:
           cStimSide = "NO STIM PECKED"
 
-        if cClickFlag == True:
+        if iClickFlag == True:
           if iStimPecked.get_x() == L_X:
             iStimSide = "LEFT"
           elif iStimPecked.get_x() == R_X:
             iStimSide = "RIGHT"
-          elif iStimPecked.get_x() == 0:
-            iStimSide = "CENTRE"
         else:
           iStimSide = "NO STIM PECKED"
         
+
+        logging.debug("GOT HERE")
         # FIX: Verify this value
-        subOptChosen = termStimShown.chanceOfReinforcement != 0.5
+        try:
+        	logging.debug(str(iStimPecked.get_subOpt()))
+       	except Exception, e:
+       		print str(e)
+        subOptChosen = str(iStimPecked.get_subOpt())
 
         cStimPresented = ""
         for j in range(0, len(stimList[i])):
@@ -1065,17 +1081,20 @@ def doExperimentalPhase():
 
 
         logging.debug(str(expTimer.getTime()))
-        writer.writerow([researchAssistant, subjectNumber, setNumber,
-                      sessionNumber, dateStarted + " " + timeStarted, contingency,
-                      condition, "1", programName, trialNumber,
-                      programLoadTime, birdInBoxTime, experimentStartTime, 
-                      "", apparatusPresent,
-                      TIMEOUT_PERIOD, REWARD_TIME, cStimPresented,
-                      iStimPresented, termStimShown.name, termStimShown.get_fill(),
-                      cStimSide, iStimSide,
-                      cStimPecked.name, cReactTimeStr, iReactTimeStr, cTargetRT, iTargetRT, tPeckLog,
-                      tReactionTimes[0], termLinkTargetReactionTimeStr, TERM_DUR,
-                      ITI, cPeckNum, iPeckNum, tPeckNum, subOptChosen, birdAte])
+        try:
+        	writer.writerow([researchAssistant, subjectNumber, setNumber,
+			      sessionNumber, dateStarted + " " + timeStarted, contingency,
+			      condition, "1", programName, trialNumber,
+			      programLoadTime, birdInBoxTime, experimentStartTime, 
+			      "", apparatusPresent,
+			      TIMEOUT_PERIOD, REWARD_TIME, cStimPresented,
+			      iStimPresented, termStimShown.name, termStimShown.get_fill(),
+			      cStimSide, iStimSide,
+			      cStimPecked.name, cReactTimeStr, iReactTimeStr, cTargetRT, iTargetRT, tPeckLog,
+			      tReactionTimes[0], termLinkTargetReactionTimeStr, TERM_DUR,
+			      ITI, cPeckNum, iPeckNum, tPeckNum, subOptChosen, birdAte])
+        except Exception, e:
+	   		print str(e)
 
         waitForExitPress(ITI)
 
@@ -1155,13 +1174,12 @@ def doStimPairing():
               iStimSide = "LEFT"
             elif iStimPecked.get_x() == R_X:
               iStimSide = "RIGHT"
-            elif iStimPecked.get_x() == 0:
-              iStimSide = "CENTRE"
           else:
             iStimSide = "NO STIM PECKED"
           
           # FIX: Verify this value
-          subOptChosen = termStimShown.chanceOfReinforcement != 0.5
+          logging.debug("Suboptimal = " + str(iStimPecked.get_subOpt()))
+          subOptChosen = iStimPecked.get_subOpt()
 
           stimPresented = ""
           for j in range(0, len(stimList[i])):
@@ -1425,15 +1443,18 @@ def waitForExperiment():
   win.flip()
 
 
-  while True:
-    if (time.localtime()[3] == EXPERIMENT_START_TIME[0]):
-      if (time.localtime()[4] >= EXPERIMENT_START_TIME[1]):
-        break
-    elif (time.localtime()[3] > EXPERIMENT_START_TIME[0]):
-      break
-    if event.getKeys(["escape"]):
-        logging.debug("User pressed escape")
-        exit()
+  if EXPERIMENT_START_TIME[0] == "":
+  	pass
+  else:
+	  while True:
+	    if (time.localtime()[3] == EXPERIMENT_START_TIME[0]):
+	      if (time.localtime()[4] >= EXPERIMENT_START_TIME[1]):
+	        break
+	    elif (time.localtime()[3] > EXPERIMENT_START_TIME[0]):
+	      break
+	    if event.getKeys(["escape"]):
+	        logging.debug("User pressed escape")
+	        exit()
 
 def assignExperimentalValues(subject, session, setNum):
   # ['Autoshaping (FR1)', 'Operant Training (FR1)', 'Operant Training (FR3)', 'Operant Training (FR5)', 'Stim Pairing', 'Experimental Phase', 'Experimental Reversal']
@@ -1453,10 +1474,11 @@ def assignExperimentalValues(subject, session, setNum):
         condition = row[3]
         contingency = row[4]
         if row[5] == "" or row[6] == "":
-          pass
+	    	EXPERIMENT_START_TIME.append("")
+	        EXPERIMENT_START_TIME.append("")
         else:
-          EXPERIMENT_START_TIME.append(int(row[5]))
-          EXPERIMENT_START_TIME.append(int(row[6]))
+	        EXPERIMENT_START_TIME.append(int(row[5]))
+	        EXPERIMENT_START_TIME.append(int(row[6]))
         print EXPERIMENT_START_TIME
         break
 
@@ -1531,8 +1553,8 @@ def main():
 
     try: 
       setup()
-    except:
-      e = sys.exc_info()[0]
+    except Exception, e:
+      logging.debug(str(e))
       
       if type(e) != type(SystemExit):
         logging.exception(e)
@@ -1568,15 +1590,15 @@ def main():
       waitForSpacebar()
 
       if testRunFlag == "No":
-        waitForExperiment()
+      	waitForExperiment()
 
       birdInBoxTime = time.strftime("%H:%M")
-    except:
-      e = sys.exc_info()[0]
+    except Exception, e:
+    	logging.debug(e)
       
-      if type(e) != type(SystemExit):
-        logging.exception(e)
-        raise
+    	if type(e) != type(SystemExit):
+    		logging.exception(str(e))
+    		raise
 
     try:
       experimentStartTime = time.strftime("%H:%M")
@@ -1610,7 +1632,7 @@ def main():
           reversal = True
           doExperimentalPhase()
       experimentEndTime = time.strftime("%H:%M")'''
-    except:
+    except Exception, e:
       e = sys.exc_info()[0]
       endTime = time.strftime("%H:%M")
 
@@ -1622,8 +1644,8 @@ def main():
       writer.writerow([])
       datafile.close()
 
+      logging.debug(str(e))
       if type(e) != type(SystemExit):
-        logging.exception(e)
         raise
     else:
       logging.debug("Experiment finished cleanly")
