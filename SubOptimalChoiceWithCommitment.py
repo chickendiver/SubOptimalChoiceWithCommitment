@@ -1447,7 +1447,7 @@ def assignExperimentalValues(subject, session, setNum):
     inputDataReader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in inputDataReader:
       print(row)
-      if row[0] == "Bird Number":
+      if row[0] == "Bird Number" or int(row[0]) == 0:
         pass
       elif (int(row[0]) == subject) and (int(row[1]) == session) and (int(row[2]) == setNum):
         condition = row[3]
