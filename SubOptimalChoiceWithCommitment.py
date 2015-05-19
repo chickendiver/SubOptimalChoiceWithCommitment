@@ -98,7 +98,11 @@ class ChoiceStim:
           self.boundingBox.draw()
           CBInnerRect.draw()
 
-        elif self.name == "ChoiceC":
+        else:
+          self.boundingBox = visual.Rect(win, lineWidth = 4, width = self.width, height = self.height, pos = (self.x, self.y), units = "pix", lineColor = self.outlineColour, fillColor = self.fillColour)
+          self.boundingBox.draw()
+
+        '''elif self.name == "ChoiceC":
           topRight = (self.x + (self.width/2), self.y + (self.height/2))
           bottomLeft = (self.x - (self.width/2), self.y - (self.height/2))
           topLeft = (self.x - (self.width/2), self.y + (self.height/2))
@@ -110,10 +114,7 @@ class ChoiceStim:
           self.boundingBox.draw()
           CALine1.draw()
           CALine2.draw()
-
-        else:
-          self.boundingBox = visual.Rect(win, lineWidth = 4, width = self.width, height = self.height, pos = (self.x, self.y), units = "pix", lineColor = self.outlineColour, fillColor = self.fillColour)
-          self.boundingBox.draw()
+        '''
 
 #A stimulus which leads to one other stimulus, directly below it
 class InitialLinkStim:
@@ -402,8 +403,8 @@ def setup():
 
 # Creates all stimuli required, and sets them as global values
 def createStimuli():
-    global blankLeftChoiceStim, blankCentreChoiceStim, blankRightChoiceStim
-    global blankLeftTermStim, blankRightTermStim, choiceA, choiceB, choiceC
+    global blankLeftChoiceStim, blankRightChoiceStim #blankCentreChoiceStim, 
+    global blankLeftTermStim, blankRightTermStim, choiceA, choiceB#, choiceC
     global initA, initB, termLinkA, termLinkB, termLinkC, termLinkD
     global listOfBlanks
 
@@ -412,11 +413,11 @@ def createStimuli():
     listOfBlanks = []
 
     blankLeftChoiceStim = ChoiceStim("BlankL")
-    blankCentreChoiceStim = ChoiceStim("BlankC")
+    #blankCentreChoiceStim = ChoiceStim("BlankC")
     blankRightChoiceStim = ChoiceStim("BlankR")
 
     blankLeftChoiceStim.set_x(L_X)
-    blankCentreChoiceStim.set_x(0)
+    #blankCentreChoiceStim.set_x(0)
     blankRightChoiceStim.set_x(R_X)
 
     blankLeftTermStim = TerminalLinkStim("BlankL")
@@ -426,14 +427,14 @@ def createStimuli():
     blankRightTermStim.set_x(R_X)
 
     listOfBlanks.append(blankLeftChoiceStim)
-    listOfBlanks.append(blankCentreChoiceStim)
+    #listOfBlanks.append(blankCentreChoiceStim)
     listOfBlanks.append(blankRightChoiceStim)
     listOfBlanks.append(blankLeftTermStim)
     listOfBlanks.append(blankRightTermStim)
 
     choiceA = ChoiceStim("ChoiceA")
     choiceB = ChoiceStim("ChoiceB")
-    choiceC = ChoiceStim("ChoiceC")
+    #choiceC = ChoiceStim("ChoiceC")
 
     initA = InitialLinkStim("InitA")
     initB = InitialLinkStim("InitB")
@@ -468,17 +469,18 @@ def matchStimuli(contingency, reversal):
           termLinkC.set_chanceOfReinforcement(0.5)
           termLinkD.set_chanceOfReinforcement(0.5)
 
+        '''
         elif reversal == True:
           termLinkA.set_chanceOfReinforcement(0.5)
           termLinkB.set_chanceOfReinforcement(0.5)
           termLinkC.set_chanceOfReinforcement(1)
           termLinkD.set_chanceOfReinforcement(0)
-
+        '''
 
         choiceA.add_initStim(initA)
         choiceB.add_initStim(initB)
-        choiceC.add_initStim(initA) 
-        choiceC.add_initStim(initB)
+        #choiceC.add_initStim(initA) 
+        #choiceC.add_initStim(initB)
 
         initA.add_termStim(termLinkA)
         initA.add_termStim(termLinkB)
@@ -489,8 +491,8 @@ def matchStimuli(contingency, reversal):
         choiceA.set_x(R_X)
         choiceB.set_x(L_X)
 
-        initA.set_x(L_X)
-        initB.set_x(R_X)
+        initA.set_x(R_X)
+        initB.set_x(L_X)
 
         termLinkA.set_x(L_X)
         termLinkB.set_x(R_X)
@@ -511,8 +513,8 @@ def matchStimuli(contingency, reversal):
 
         choiceA.add_initStim(initB)
         choiceB.add_initStim(initA)
-        choiceC.add_initStim(initA)
-        choiceC.add_initStim(initB)
+        #choiceC.add_initStim(initA)
+        #choiceC.add_initStim(initB)
 
         initA.add_termStim(termLinkD)
         initA.add_termStim(termLinkA)
@@ -523,8 +525,8 @@ def matchStimuli(contingency, reversal):
         choiceA.set_x(L_X)
         choiceB.set_x(R_X)
 
-        initA.set_x(R_X)
-        initB.set_x(L_X)
+        initA.set_x(L_X)
+        initB.set_x(R_X)
 
         termLinkA.set_x(R_X)
         termLinkB.set_x(R_X)
@@ -545,8 +547,8 @@ def matchStimuli(contingency, reversal):
 
         choiceA.add_initStim(initB)
         choiceB.add_initStim(initA)
-        choiceC.add_initStim(initA)
-        choiceC.add_initStim(initB)
+        #choiceC.add_initStim(initA)
+        #choiceC.add_initStim(initB)
 
         initA.add_termStim(termLinkA)
         initA.add_termStim(termLinkB)
@@ -579,8 +581,8 @@ def matchStimuli(contingency, reversal):
 
         choiceA.add_initStim(initA)
         choiceB.add_initStim(initB)
-        choiceC.add_initStim(initA)
-        choiceC.add_initStim(initB)
+        #choiceC.add_initStim(initA)
+        #choiceC.add_initStim(initB)
 
         initA.add_termStim(termLinkD)
         initA.add_termStim(termLinkA)
@@ -594,22 +596,16 @@ def makeChoiceStimList():
     choiceList = []
 
     choiceList1 = [choiceA, choiceB]
-    choiceList2 = [choiceA, choiceC]
-    choiceList3 = [choiceB, choiceC]
+    choiceList2 = [choiceB, choiceA]
 
-    for i in range(0,20):
-      # 20 of each type of forced choice
+    for i in range(0,40):
+      # 40 of each type of forced choice
       choiceList.append([choiceA])
       choiceList.append([choiceB])
-      choiceList.append([choiceC])
 
       # 40 of each type of choice 
       choiceList.append(choiceList1)
       choiceList.append(choiceList2)
-      choiceList.append(choiceList3)
-      choiceList.append(choiceList1)
-      choiceList.append(choiceList2)
-      choiceList.append(choiceList3)
 
     random.shuffle(choiceList)
 
@@ -1242,19 +1238,19 @@ def generateListOfAllStims():
 
   LChoiceA = ChoiceStim("ChoiceA")
   LChoiceA.set_x(L_X)
-  CChoiceA = ChoiceStim("ChoiceA")
+  #CChoiceA = ChoiceStim("ChoiceA")
   RChoiceA = ChoiceStim("ChoiceA")
   RChoiceA.set_x(R_X)
   LChoiceB = ChoiceStim("ChoiceB")
   LChoiceB.set_x(L_X)
-  CChoiceB = ChoiceStim("ChoiceB")
+  #CChoiceB = ChoiceStim("ChoiceB")
   RChoiceB = ChoiceStim("ChoiceB")
   RChoiceB.set_x(R_X)
-  LChoiceC = ChoiceStim("ChoiceC")
-  LChoiceC.set_x(L_X)
-  CChoiceC = ChoiceStim("ChoiceC")
-  RChoiceC = ChoiceStim("ChoiceC")
-  RChoiceC.set_x(R_X)
+  #LChoiceC = ChoiceStim("ChoiceC")
+  #LChoiceC.set_x(L_X)
+  #CChoiceC = ChoiceStim("ChoiceC")
+  #RChoiceC = ChoiceStim("ChoiceC")
+  #RChoiceC.set_x(R_X)
 
   LinitA = InitialLinkStim("InitA")
   LinitA.set_x(L_X)
@@ -1282,9 +1278,19 @@ def generateListOfAllStims():
   RtermLinkD = TerminalLinkStim("TermD")
   RtermLinkD.set_x(R_X)
 
+  '''
   stimList = [[LChoiceA], [CChoiceA], [RChoiceA],
               [LChoiceB], [CChoiceB], [RChoiceB],
               [LChoiceC], [CChoiceC], [RChoiceC],
+              [LinitA], [RinitA],
+              [LinitB], [RinitB],
+              [LtermLinkA], [RtermLinkA],
+              [LtermLinkB], [RtermLinkB],
+              [LtermLinkC], [RtermLinkC],
+              [LtermLinkD], [RtermLinkD]]
+   '''
+  stimList = [[LChoiceA], [RChoiceA],
+              [LChoiceB], [RChoiceB],
               [LinitA], [RinitA],
               [LinitB], [RinitB],
               [LtermLinkA], [RtermLinkA],
@@ -1383,7 +1389,7 @@ def getUserInput():
     myDlg.addField('Subject number:', 0)
     myDlg.addField('Session number:', 0)
     myDlg.addField('Set number:', 0)
-    '''myDlg.addField('Condition:', choices = ['Autoshaping (FR1)', 'Operant Training (FR1)', 'Operant Training (FR3)', 'Operant Training (FR5)', 'Stim Pairing', 'Experimental Phase', 'Experimental Reversal'])
+    '''myDlg.addField('Condition:', choices = ['Autoshaping (FR1)', 'Operant Training (FR1)', 'Operant Training (FR3)', 'Operant Training (FR5)', 'Stim Pairing', 'Experimental Phase'])
     myDlg.addField('Contingency:', choices = ['1', '2', '3', '4'])
     myDlg.addField('Stimulus Timeout:', 60)'''
     myDlg.addField('Is this a test?:', choices = ['No', 'Yes'])
@@ -1504,7 +1510,7 @@ def main():
       print ("Stim Dur = " + str(stimDur))
 
       if condition == "":
-        ctypes.windll.user32.MessageBoxA(0, "When RAs don't do their job right, Jeff gets sad. \n\nPlease enter valid bird parameters", "Invalid parameters", 0)
+        ctypes.windll.user32.MessageBoxA(0, "When the numbers aren't inputted correctly, Jeff gets sad. \n\nPlease enter valid bird parameters", "Invalid parameters", 0)
 
     testRunFlag = userResponses[3]
     researchAssistant = userResponses[4]
@@ -1549,8 +1555,8 @@ def main():
       conditionText = visual.TextStim(win, text = "Condition: " + str(condition), alignHoriz = 'center', pos = (0, 200))
       contingencyText = visual.TextStim(win, text = "Contingency: " + str(contingency), alignHoriz = 'center', pos = (0, 150))
       stimDurText = visual.TextStim(win, text = "Stimulus Duration: " + str(stimDur), alignHoriz = 'center', pos = (0, 100))
-      spacebarText =visual.TextStim(win, text='Press spacebar to begin', alignHoriz = 'center', pos = (0, -50))
-      timeText = visual.TextStim(win, text='Start Time: ' + str(EXPERIMENT_START_TIME[0]) + ":" + str(EXPERIMENT_START_TIME[1]), alignHoriz = 'center', pos = (0, -50))
+      spacebarText =visual.TextStim(win, text='Press spacebar to begin', alignHoriz = 'center', pos = (0, 50))
+      timeText = visual.TextStim(win, text='Start Time: ' + str(EXPERIMENT_START_TIME[0]) + ":" + str(EXPERIMENT_START_TIME[1]), alignHoriz = 'center', pos = (0, -100))
       birdNumText.draw()
       sessionNumberText.draw()
       setNumberText.draw()
@@ -1600,10 +1606,10 @@ def main():
       elif condition == 'Experimental Phase':
           reversal = False
           doExperimentalPhase()
-      elif condition == 'Experimental Reversal':
+      '''elif condition == 'Experimental Reversal':
           reversal = True
           doExperimentalPhase()
-      experimentEndTime = time.strftime("%H:%M")
+      experimentEndTime = time.strftime("%H:%M")'''
     except:
       e = sys.exc_info()[0]
       endTime = time.strftime("%H:%M")
