@@ -1456,7 +1456,7 @@ def waitForExperiment():
 	        logging.debug("User pressed escape")
 	        exit()
 
-def assignExperimentalValues(subject, session, setNum):
+def assignExperimentalValues(subject, setNum): #session,
   # ['Autoshaping (FR1)', 'Operant Training (FR1)', 'Operant Training (FR3)', 'Operant Training (FR5)', 'Stim Pairing', 'Experimental Phase', 'Experimental Reversal']
 
   condition = ""
@@ -1464,13 +1464,15 @@ def assignExperimentalValues(subject, session, setNum):
   # Take input from CSV file and compare values to subject, session, set
   # Then, assign condition and contingency based on these values
 
+  print(subject)
+  print(setNum)
   with open('birdData.csv', 'rb') as csvfile:
     inputDataReader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in inputDataReader:
       print(row)
       if row[0] == "Bird Number" or int(row[0]) == 0:
         pass
-      elif (int(row[0]) == subject) and (int(row[1]) == session) and (int(row[2]) == setNum):
+      elif (int(row[0]) == subject) and (int(row[2]) == setNum): #and (int(row[1]) == session)
         condition = row[3]
         contingency = row[4]
         if row[5] == "" or row[6] == "":
@@ -1526,7 +1528,7 @@ def main():
       sessionNumber = userResponses[1]
       setNumber = userResponses[2]
 
-      condition, contingency, stimDur = assignExperimentalValues(subjectNumber, sessionNumber, setNumber)
+      condition, contingency, stimDur = assignExperimentalValues(subjectNumber, setNumber) #sessionNumber,
       print ("Condition = " + str(condition))
       print ("Contingency = " + str(contingency))
       print ("Stim Dur = " + str(stimDur))
